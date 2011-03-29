@@ -1,0 +1,1 @@
+Due to participation in the RoboCup German Open 2011 competition (http://www.robocupgermanopen.de/) there will be a slight delay till the hector_slam stack is made available here.
