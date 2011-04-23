@@ -1,3 +1,12 @@
+=Disclaimer=
+
+The hector_slam stack source code is in the process of getting cleaned up for an official
+release. The functionality for processing logfiles below however, can be considered stable
+and will continue to work despite changes to code structure and functionality.
+
+
+=Playing back Datasets=
+
 To process datasets, the following steps have to be taken:
 Download a dataset from http://code.google.com/p/tu-darmstadt-ros-pkg/downloads/list 
 
