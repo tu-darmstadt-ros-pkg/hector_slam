@@ -1,0 +1,9 @@
+<stack>
+  <description brief="hector_slam">hector_slam</description>
+  <author>Maintained by Stefan Kohlbrecher</author>
+  <license>BSD</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://code.google.com/p/tu-darmstadt-ros-pkg/w/list</url>
+  <depend stack="ros" />
+
+</stack>
