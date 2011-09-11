@@ -31,7 +31,7 @@
 
 #include "ros/ros.h"
 
-#include "hector_scanmatcher/HectorDebugInfo.h"
+#include "hector_mapping/HectorDebugInfo.h"
 
 
 class HectorDebugInfoProvider : public HectorDebugInfoInterface
@@ -42,7 +42,7 @@ public:
   {
     ros::NodeHandle nh_;
 
-    debugInfoPublisher_ = nh_.advertise<hector_scanmatcher::HectorDebugInfo>("hector_debug_info", 50, true);
+    debugInfoPublisher_ = nh_.advertise<hector_mapping::HectorDebugInfo>("hector_debug_info", 50, true);
   };
 
   virtual void sendAndResetData()
@@ -54,7 +54,7 @@ public:
 
   virtual void addHessianMatrix(const Eigen::Matrix3f& hessian)
   {
-    hector_scanmatcher::HectorIterData iterData;
+    hector_mapping::HectorIterData iterData;
 
     for (int i=0; i < 9; ++i){
       iterData.hessian[i] = static_cast<double>(hessian.data()[i]);
@@ -82,7 +82,7 @@ public:
   }
 
 
-  hector_scanmatcher::HectorDebugInfo debugInfo;
+  hector_mapping::HectorDebugInfo debugInfo;
 
   ros::Publisher debugInfoPublisher_;
 

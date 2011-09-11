@@ -59,11 +59,11 @@ public:
   ros::ServiceServer dynamicMapServiceServer_;
 };
 
-class HectorSlamRos
+class HectorMappingRos
 {
 public:
-  HectorSlamRos();
-  ~HectorSlamRos();
+  HectorMappingRos();
+  ~HectorMappingRos();
 
 
   void scanCallback(const sensor_msgs::LaserScan& scan);

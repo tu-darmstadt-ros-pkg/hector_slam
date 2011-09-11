@@ -44,7 +44,7 @@
 
 #define MAP_IDX(sx, i, j) ((sx) * (j) + (i))
 
-HectorSlamRos::HectorSlamRos()
+HectorMappingRos::HectorMappingRos()
   : debugInfoProvider(0)
   , hectorDrawings(0)
   , lastGetMapUpdateIndex(-100)
@@ -150,7 +150,7 @@ HectorSlamRos::HectorSlamRos()
 
     if ( (i == 0) && p_advertise_map_service_)
     {
-      tmp.dynamicMapServiceServer_ = node_.advertiseService("dynamic_map", &HectorSlamRos::mapCallback, this);
+      tmp.dynamicMapServiceServer_ = node_.advertiseService("dynamic_map", &HectorMappingRos::mapCallback, this);
     }
 
     setServiceGetMapData(tmp.map_, slamProcessor->getGridMap(i));
@@ -167,8 +167,8 @@ HectorSlamRos::HectorSlamRos()
   ROS_INFO("HectorSM p_update_factor_free_: %f p_update_factor_occupied_: %f", p_update_factor_free_, p_update_factor_occupied_);
   ROS_INFO("HectorSM p_map_update_distance_threshold_: %f p_map_update_angle_threshold_: %f", p_map_update_distance_threshold_, p_map_update_angle_threshold_);
 
-  scanSubscriber_ = node_.subscribe(p_scan_topic_, 50, &HectorSlamRos::scanCallback, this);
-  sysMsgSubscriber_ = node_.subscribe(p_sys_msg_topic_, 2, &HectorSlamRos::sysMsgCallback, this);
+  scanSubscriber_ = node_.subscribe(p_scan_topic_, 50, &HectorMappingRos::scanCallback, this);
+  sysMsgSubscriber_ = node_.subscribe(p_sys_msg_topic_, 2, &HectorMappingRos::sysMsgCallback, this);
 
   poseUpdatePublisher_ = node_.advertise<geometry_msgs::PoseWithCovarianceStamped>(p_pose_update_topic_, 1, false);
   posePublisher_ = node_.advertise<geometry_msgs::PoseStamped>("slam_out_pose", 1, false);
@@ -180,17 +180,17 @@ HectorSlamRos::HectorSlamRos()
     tfB_ = new tf::TransformBroadcaster();
     ROS_ASSERT(tfB_);
 
-    transform_thread_ = new boost::thread(boost::bind(&HectorSlamRos::publishTransformLoop, this, p_transform_pub_period_));
+    transform_thread_ = new boost::thread(boost::bind(&HectorMappingRos::publishTransformLoop, this, p_transform_pub_period_));
   }
 
-  map__publish_thread_ = new boost::thread(boost::bind(&HectorSlamRos::publishMapLoop, this, p_map_pub_period_));
+  map__publish_thread_ = new boost::thread(boost::bind(&HectorMappingRos::publishMapLoop, this, p_map_pub_period_));
 
   map_to_odom_.setIdentity();
 
   lastMapPublishTime = ros::Time(0,0);
 }
 
-HectorSlamRos::~HectorSlamRos()
+HectorMappingRos::~HectorMappingRos()
 {
   delete slamProcessor;
 
@@ -210,7 +210,7 @@ HectorSlamRos::~HectorSlamRos()
     delete map__publish_thread_;
 }
 
-void HectorSlamRos::scanCallback(const sensor_msgs::LaserScan& scan)
+void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 {
   if (hectorDrawings)
   {
@@ -364,7 +364,7 @@ void HectorSlamRos::scanCallback(const sensor_msgs::LaserScan& scan)
   }
 }
 
-void HectorSlamRos::sysMsgCallback(const std_msgs::String& string)
+void HectorMappingRos::sysMsgCallback(const std_msgs::String& string)
 {
   ROS_INFO("HectorSM sysMsgCallback, msg contents: %s", string.data.c_str());
 
@@ -375,7 +375,7 @@ void HectorSlamRos::sysMsgCallback(const std_msgs::String& string)
   }
 }
 
-bool HectorSlamRos::mapCallback(nav_msgs::GetMap::Request  &req,
+bool HectorMappingRos::mapCallback(nav_msgs::GetMap::Request  &req,
                                 nav_msgs::GetMap::Response &res)
 {
   ROS_INFO("HectorSM Map service called");
@@ -383,7 +383,7 @@ bool HectorSlamRos::mapCallback(nav_msgs::GetMap::Request  &req,
   return true;
 }
 
-void HectorSlamRos::publishMap(MapPublisherContainer& mapPublisher, const hectorslam::GridMap& gridMap, ros::Time timestamp, MapLockerInterface* mapMutex)
+void HectorMappingRos::publishMap(MapPublisherContainer& mapPublisher, const hectorslam::GridMap& gridMap, ros::Time timestamp, MapLockerInterface* mapMutex)
 {
   nav_msgs::GetMap::Response& map_ (mapPublisher.map_);
 
@@ -431,7 +431,7 @@ void HectorSlamRos::publishMap(MapPublisherContainer& mapPublisher, const hector
   mapPublisher.mapPublisher_.publish(map_.map);
 }
 
-bool HectorSlamRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan& scan, hectorslam::DataContainer& dataContainer, float scaleToMap)
+bool HectorMappingRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan& scan, hectorslam::DataContainer& dataContainer, float scaleToMap)
 {
   unsigned int size = scan.ranges.size();
 
@@ -459,7 +459,7 @@ bool HectorSlamRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan& sc
   return true;
 }
 
-bool HectorSlamRos::rosPointCloudToDataContainer(const sensor_msgs::PointCloud& pointCloud, const tf::StampedTransform& laserTransform, hectorslam::DataContainer& dataContainer, float scaleToMap)
+bool HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointCloud& pointCloud, const tf::StampedTransform& laserTransform, hectorslam::DataContainer& dataContainer, float scaleToMap)
 {
   unsigned int size = pointCloud.points.size();
   //ROS_INFO("size: %d", size);
@@ -494,7 +494,7 @@ bool HectorSlamRos::rosPointCloudToDataContainer(const sensor_msgs::PointCloud& 
   return true;
 }
 
-void HectorSlamRos::setServiceGetMapData(nav_msgs::GetMap::Response& map_, const hectorslam::GridMap& gridMap)
+void HectorMappingRos::setServiceGetMapData(nav_msgs::GetMap::Response& map_, const hectorslam::GridMap& gridMap)
 {
   Eigen::Vector2f mapOrigin (gridMap.getWorldCoords(Eigen::Vector2f::Zero()));
   mapOrigin.array() -= gridMap.getCellLength()*0.5f;
@@ -512,7 +512,7 @@ void HectorSlamRos::setServiceGetMapData(nav_msgs::GetMap::Response& map_, const
   map_.map.data.resize(map_.map.info.width * map_.map.info.height);
 }
 
-void HectorSlamRos::publishTransformLoop(double p_transform_pub_period_)
+void HectorMappingRos::publishTransformLoop(double p_transform_pub_period_)
 {
   if(p_transform_pub_period_ == 0)
     return;
@@ -525,7 +525,7 @@ void HectorSlamRos::publishTransformLoop(double p_transform_pub_period_)
   }
 }
 
-void HectorSlamRos::publishMapLoop(double map_pub_period)
+void HectorMappingRos::publishMapLoop(double map_pub_period)
 {
   if(p_transform_pub_period_ == 0)
     return;
@@ -548,7 +548,7 @@ void HectorSlamRos::publishMapLoop(double map_pub_period)
   }
 }
 
-void HectorSlamRos::publishTransform()
+void HectorMappingRos::publishTransform()
 {
   map_to_odom_mutex_.lock();
   tfB_->sendTransform( tf::StampedTransform (map_to_odom_, last_scan_time_, p_map_frame_, p_odom_frame_));
