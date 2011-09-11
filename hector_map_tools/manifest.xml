@@ -1,0 +1,21 @@
+<package>
+  <description brief="hector_map_tools">
+
+     hector_map_tools contains some functions related to accessing information from OccupancyGridMap maps.
+     Consists of a single header that can be used by adding the package to another package's manifest.xml.
+
+  </description>
+  <author>Stefan Kohlbrecher</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hector_map_tools</url>
+  <depend package="nav_msgs"/>
+  <depend package="eigen"/>
+  
+  <export>
+  <cpp cflags="-I${prefix}/include" />
+  </export>
+
+</package>
+
+
