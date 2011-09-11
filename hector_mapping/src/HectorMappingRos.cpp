@@ -180,7 +180,7 @@ HectorMappingRos::HectorMappingRos()
     tfB_ = new tf::TransformBroadcaster();
     ROS_ASSERT(tfB_);
 
-    transform_thread_ = new boost::thread(boost::bind(&HectorMappingRos::publishTransformLoop, this, p_transform_pub_period_));
+    //transform_thread_ = new boost::thread(boost::bind(&HectorMappingRos::publishTransformLoop, this, p_transform_pub_period_));
   }
 
   map__publish_thread_ = new boost::thread(boost::bind(&HectorMappingRos::publishMapLoop, this, p_map_pub_period_));
@@ -357,10 +357,10 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
       odom_to_map.setIdentity();
     }
 
-    map_to_odom_mutex_.lock();
     map_to_odom_ = tf::Transform(tf::Quaternion( odom_to_map.getRotation() ),
                                  tf::Point(      odom_to_map.getOrigin() ) ).inverse();
-    map_to_odom_mutex_.unlock();
+
+    tfB_->sendTransform( tf::StampedTransform (map_to_odom_, last_scan_time_, p_map_frame_, p_odom_frame_));
   }
 }
 
@@ -548,10 +548,4 @@ void HectorMappingRos::publishMapLoop(double map_pub_period)
   }
 }
 
-void HectorMappingRos::publishTransform()
-{
-  map_to_odom_mutex_.lock();
-  tfB_->sendTransform( tf::StampedTransform (map_to_odom_, last_scan_time_, p_map_frame_, p_odom_frame_));
-  map_to_odom_mutex_.unlock();
-}
 

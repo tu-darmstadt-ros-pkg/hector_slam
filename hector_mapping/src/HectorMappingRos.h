@@ -109,7 +109,6 @@ protected:
   laser_geometry::LaserProjection projector_;
 
   tf::Transform map_to_odom_;
-  boost::mutex map_to_odom_mutex_;
 
   boost::thread* transform_thread_;
   boost::thread* map__publish_thread_;
