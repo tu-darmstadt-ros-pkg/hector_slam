@@ -28,7 +28,7 @@ rosbuild_genmsg()
 include_directories(include/hector_slam_lib)
 
 rosbuild_add_executable(hector_mapping src/HectorDebugInfoProvider.h src/HectorDrawings.h src/HectorMappingRos.h src/HectorMappingRos.cpp src/main.cpp)
-//rosbuild_add_executable(hector_mapper src/HectorDebugInfoProvider.h src/HectorDrawings.h src/HectorMapperRos.h src/HectorMapperRos.cpp src/main_mapper.cpp)
+#rosbuild_add_executable(hector_mapper src/HectorDebugInfoProvider.h src/HectorDrawings.h src/HectorMapperRos.h src/HectorMapperRos.cpp src/main_mapper.cpp)
 
 #common commands for building c++ executables and libraries
 #rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
