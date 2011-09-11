@@ -1,6 +1,6 @@
 <stack>
-  <description brief="hector_slam">hector_slam</description>
-  <author>Maintained by Stefan Kohlbrecher</author>
+  <description brief="hector_slam">hector_slam contains ROS packages related to performing SLAM in unstructed environments like those encountered the Urban Search and Rescue (USAR) scenarios of the RoboCup Rescue competition</description>
+  <author>Maintained by Stefan Kohlbrecher, Johannes Meyer</author>
   <license>BSD</license>  
   <review status="unreviewed" notes=""/>
   <url>http://code.google.com/p/tu-darmstadt-ros-pkg/w/list</url>
