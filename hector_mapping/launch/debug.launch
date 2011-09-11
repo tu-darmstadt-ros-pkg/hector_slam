@@ -1,0 +1,13 @@
+<launch>
+    <node pkg="hector_scanmatcher" type="hector_scanmatcher" name="hector_scanmatcher" output="screen"> 
+<!-- <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">-->
+        <remap from="scan" to="base_scan/scan" />
+        <param name="base_frame" value="base_scan/scan" />
+        <param name="odom_frame" value="odom"/>
+        <param name="outputTiming" value="true"/>
+        <param name="use_tf_scan_transformation" value="false"/>
+        <param name="pubDrawings" value="true"/>
+        <param name="pubDebugOutput" value="true"/>
+        <param name="map_resolution" value="0.05"/>
+    </node>
+</launch>
