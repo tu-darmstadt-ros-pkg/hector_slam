@@ -61,18 +61,19 @@ public:
 
     private_nh.param("target_frame_name", p_target_frame_name_, std::string("map"));
     private_nh.param("source_frame_name", p_source_frame_name_, std::string("scanmatcher_frame"));
-    private_nh.param("trajectory_update_rate", p_update_rate_, 4.0);
+    private_nh.param("trajectory_update_rate", p_trajectory_update_rate_, 4.0);
+    private_nh.param("trajectory_publish_rate", p_trajectory_publish_rate_, 0.25);
 
+    ros::NodeHandle nh;
+    sys_cmd_sub_ = nh.subscribe("syscommand", 1, &PathContainer::sysCmdCallback, this);
+    trajectory_pub_ = nh.advertise<nav_msgs::Path>("trajectory",1, true);
 
-    sys_cmd_sub_ = private_nh.subscribe("syscommand", 1, &PathContainer::sysCmdCallback, this);
-
-    //pose_update_sub_ = n.subscribe("poseupdate", 1, &PathContainer::poseUpdateCallback, this);
-
-    trajectory_provider_service_ = private_nh.advertiseService("robot_trajectory", &PathContainer::trajectoryProviderCallBack, this);
+    trajectory_provider_service_ = nh.advertiseService("trajectory", &PathContainer::trajectoryProviderCallBack, this);
 
     last_reset_time_ = ros::Time::now();
 
-    update_timer_ = private_nh.createTimer(ros::Duration(1.0 / p_update_rate_), &PathContainer::trajectoryUpdateTimerCallback, this, false);
+    update_trajectory_timer_ = private_nh.createTimer(ros::Duration(1.0 / p_trajectory_update_rate_), &PathContainer::trajectoryUpdateTimerCallback, this, false);
+    publish_trajectory_timer_ = private_nh.createTimer(ros::Duration(1.0 / p_trajectory_publish_rate_), &PathContainer::publishTrajectoryTimerCallback, this, false);
 
     pose_source_.pose.orientation.w = 1.0;
     pose_source_.header.frame_id = p_source_frame_name_;
@@ -114,8 +115,13 @@ public:
     }
     catch(tf::TransformException e)
     {      
-      ROS_ERROR("Transform from %s to %s failed: %s \n", p_target_frame_name_.c_str(), pose_source_.header.frame_id.c_str(), e.what() );
+      //ROS_ERROR("Transform from %s to %s failed: %s \n", p_target_frame_name_.c_str(), pose_source_.header.frame_id.c_str(), e.what() );
     }
+  }
+
+  void publishTrajectoryTimerCallback(const ros::TimerEvent& event)
+  {
+    trajectory_pub_.publish(trajectory_.trajectory);
   }
 
   /*
@@ -156,7 +162,7 @@ public:
   bool trajectoryProviderCallBack(hector_nav_msgs::GetRobotTrajectory::Request  &req,
                                   hector_nav_msgs::GetRobotTrajectory::Response &res )
   {
-    ROS_INFO("hector_path_provider service called");
+    //ROS_INFO("hector_path_provider service called");
 
     res = trajectory_;
 
@@ -166,18 +172,21 @@ public:
   //parameters
   std::string p_target_frame_name_;
   std::string p_source_frame_name_;
-  double p_update_rate_;
+  double p_trajectory_update_rate_;
+  double p_trajectory_publish_rate_;
 
   // Zero pose used for transformation to target_frame.
   geometry_msgs::PoseStamped pose_source_;
 
   ros::ServiceServer trajectory_provider_service_;
 
-  ros::Timer update_timer_;
+  ros::Timer update_trajectory_timer_;
+  ros::Timer publish_trajectory_timer_;
 
 
   //ros::Subscriber pose_update_sub_;
   ros::Subscriber sys_cmd_sub_;
+  ros::Publisher  trajectory_pub_;
 
   hector_nav_msgs::GetRobotTrajectory::Response trajectory_;
 
