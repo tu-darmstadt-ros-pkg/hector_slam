@@ -59,9 +59,9 @@ HectorMappingRos::HectorMappingRos()
   private_nh_.param("pub_drawings", p_pub_drawings, false);
   private_nh_.param("pub_debug_output", p_pub_debug_output_, false);
   private_nh_.param("pub_map_odom_transform", p_pub_map_odom_transform_,true);
+  private_nh_.param("pub_map_scanmatch_transform", p_pub_map_scanmatch_transform_,false);
   private_nh_.param("pub_odometry", p_pub_odometry_,false);
   private_nh_.param("advertise_map_service", p_advertise_map_service_,false);
-
 
   private_nh_.param("map_resolution", p_map_resolution_, 0.025);
   private_nh_.param("map_size", p_map_size_, 1024);
@@ -179,8 +179,6 @@ HectorMappingRos::HectorMappingRos()
   {
     tfB_ = new tf::TransformBroadcaster();
     ROS_ASSERT(tfB_);
-
-    //transform_thread_ = new boost::thread(boost::bind(&HectorMappingRos::publishTransformLoop, this, p_transform_pub_period_));
   }
 
   map__publish_thread_ = new boost::thread(boost::bind(&HectorMappingRos::publishMapLoop, this, p_map_pub_period_));
@@ -230,7 +228,6 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   }
   else
   {
-
     sensor_msgs::PointCloud pointCloud;
 
     ros::Duration dur (0.5);
@@ -361,6 +358,16 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
                                  tf::Point(      odom_to_map.getOrigin() ) ).inverse();
 
     tfB_->sendTransform( tf::StampedTransform (map_to_odom_, last_scan_time_, p_map_frame_, p_odom_frame_));
+  }
+
+  if (p_pub_map_scanmatch_transform_){
+    //tf::Stamped<tf::Pose> scanmatcher_to_map (btTransform(tf::createQuaternionFromRPY(0.0, 0.0, static_cast<double>(slamPose.z())),
+    //                                                                         btVector3(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()), 0.0)),
+    //                       scan.header.stamp,"scanmatch_frame");
+
+    tf::Transform scanmatcher_to_map (tf::createQuaternionFromRPY(0.0, 0.0, static_cast<double>(slamPose.z())),
+                                      tf::Point(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()),0.0));
+    tfB_->sendTransform( tf::StampedTransform(scanmatcher_to_map, last_scan_time_, p_map_frame_, "scanmatcher_frame"));
   }
 }
 
@@ -510,19 +517,6 @@ void HectorMappingRos::setServiceGetMapData(nav_msgs::GetMap::Response& map_, co
 
   map_.map.header.frame_id = p_map_frame_;
   map_.map.data.resize(map_.map.info.width * map_.map.info.height);
-}
-
-void HectorMappingRos::publishTransformLoop(double p_transform_pub_period_)
-{
-  if(p_transform_pub_period_ == 0)
-    return;
-
-  ros::Rate r(1.0 / p_transform_pub_period_);
-  while(ros::ok())
-  {
-    publishTransform();
-    r.sleep();
-  }
 }
 
 void HectorMappingRos::publishMapLoop(double map_pub_period)
