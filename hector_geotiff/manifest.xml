@@ -15,7 +15,7 @@
   <depend package="hector_map_tools"/>
   <depend package="hector_nav_msgs"/>
 
-  <rosdep name="geotiff"/>
+  <rosdep name="qt4"/>
 
 </package>
 
