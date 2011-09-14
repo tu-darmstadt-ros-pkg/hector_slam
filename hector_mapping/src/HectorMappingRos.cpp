@@ -67,6 +67,7 @@ HectorMappingRos::HectorMappingRos()
   private_nh_.param("map_size", p_map_size_, 1024);
   private_nh_.param("map_start_x", p_map_start_x_, 0.5);
   private_nh_.param("map_start_y", p_map_start_y_, 0.5);
+  private_nh_.param("map_multi_res_levels", p_map_multi_res_levels_, 3);
 
   private_nh_.param("update_factor_free", p_update_factor_free_, 0.4);
   private_nh_.param("update_factor_occupied", p_update_factor_occupied_, 0.9);
@@ -120,7 +121,7 @@ HectorMappingRos::HectorMappingRos()
     odometryPublisher_ = node_.advertise<nav_msgs::Odometry>("scanmatch_odom", 50);
   }
 
-  slamProcessor = new hectorslam::HectorSlamProcessor(static_cast<float>(p_map_resolution_), p_map_size_, Eigen::Vector2f(p_map_start_x_, p_map_start_y_), 3, hectorDrawings, debugInfoProvider);
+  slamProcessor = new hectorslam::HectorSlamProcessor(static_cast<float>(p_map_resolution_), p_map_size_, Eigen::Vector2f(p_map_start_x_, p_map_start_y_), p_map_multi_res_levels_, hectorDrawings, debugInfoProvider);
   slamProcessor->setUpdateFactorFree(p_update_factor_free_);
   slamProcessor->setUpdateFactorOccupied(p_update_factor_occupied_);
   slamProcessor->setMapUpdateMinDistDiff(0.4f);
