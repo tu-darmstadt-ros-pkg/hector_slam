@@ -1,0 +1,20 @@
+<package>
+  <description brief="hector_map_server">
+
+     hector_map_server
+
+  </description>
+  <author>stefan</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hector_map_server</url>
+  <depend package="nav_msgs"/>
+  <depend package="hector_map_tools"/>
+  <depend package="hector_geotiff"/>
+  <depend package="hector_marker_drawing"/>
+  <depend package="hector_nav_msgs"/>
+  <depend package="tf"/>
+
+</package>
+
+
