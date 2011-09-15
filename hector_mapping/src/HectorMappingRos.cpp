@@ -351,7 +351,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     }
     catch(tf::TransformException e)
     {
-      ROS_ERROR("Transform from %s to %s failed\n", p_base_frame_.c_str(), p_odom_frame_.c_str());
+      ROS_ERROR("Transform failed %s",e.what());
       odom_to_map.setIdentity();
     }
 
