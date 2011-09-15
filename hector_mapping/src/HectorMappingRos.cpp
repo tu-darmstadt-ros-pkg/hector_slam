@@ -345,6 +345,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   {
     try
     {
+      tf_.waitForTransform(p_odom_frame_,p_base_frame_, scan.header.stamp, ros::Duration(0.5));
       tf_.transformPose(p_odom_frame_,tf::Stamped<tf::Pose> (btTransform(tf::createQuaternionFromRPY(0.0, 0.0, static_cast<double>(slamPose.z())),
                                                                          btVector3(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()), 0.0)).inverse(),
                                                              scan.header.stamp, p_base_frame_),odom_to_map);
