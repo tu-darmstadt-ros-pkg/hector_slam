@@ -1,0 +1,2 @@
+geotiff:
+  ubuntu: libgeotiff-dev
