@@ -1,5 +1,5 @@
 <launch>
-  <node pkg="hector_scanmatcher" type="hector_scanmatcher" name="hector_scanmatcher" output="screen">
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
     <param name="scan_topic" value="laser1/scan" />
     <param name="base_frame" value="base_stabilized" />
     <param name="output_timing" value="false"/>
@@ -15,16 +15,15 @@
 
     <remap from="map" to="scanmatcher_map" />
   </node>
-  <group unless="$(optenv REALROBOT false)">
-    <param name="hector_scanmatcher/odom_frame" value="nav"/>
-    <param name="hector_scanmatcher/pub_map_odom_transform" value="true"/>
 
-    <param name="hector_scanmatcher/pub_map_odom_transform" value="false"/>
+  <group unless="$(optenv REALROBOT false)">
+    <param name="hector_mapping/odom_frame" value="nav"/>
+    <param name="hector_mapping/pub_map_odom_transform" value="false"/>
     <node pkg="tf" type="static_transform_publisher" name="map_nav_broadcaster" args="0 0 0 0 0 0 map nav 100" />
     <param name="use_tf_pose_start_estimate" value="true"/>
   </group>
   <group if="$(optenv REALROBOT false)">
-    <param name="hector_scanmatcher/pub_map_odom_transform" value="false"/>
+    <param name="hector_mapping/pub_map_odom_transform" value="false"/>
     <node pkg="tf" type="static_transform_publisher" name="map_nav_broadcaster" args="0 0 0 0 0 0 map nav 100" />
   </group>
 </launch>

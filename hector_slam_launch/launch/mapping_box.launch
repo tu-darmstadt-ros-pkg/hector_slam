@@ -8,7 +8,7 @@
     </node>
   </group>
 
-  <node pkg="hector_scanmatcher" type="hector_scanmatcher" name="hector_scanmatcher" output="screen">
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
     <param name="base_frame" value="base_stabilized" />
     <param name="odom_frame" value="nav"/>
     <param name="output_timing" value="false"/>
@@ -35,7 +35,7 @@
     -->
     </node>
 
-    <param name="hector_scanmatcher/pub_map_odom_transform" value="false"/>
+    <param name="hector_mapping/pub_map_odom_transform" value="false"/>
     <node pkg="tf" type="static_transform_publisher" name="map_nav_broadcaster" args="0 0 0 0 0 0 map nav 100"/>
   </launch>
   
