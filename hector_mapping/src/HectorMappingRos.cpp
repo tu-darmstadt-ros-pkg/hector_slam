@@ -164,7 +164,7 @@ HectorMappingRos::HectorMappingRos()
   ROS_INFO("HectorSM p_base_frame_: %s p_map_frame_: %s p_odom_frame_: %s Scan Topic: %s", p_base_frame_.c_str(), p_map_frame_.c_str(), p_odom_frame_.c_str(), p_scan_topic_.c_str());
   ROS_INFO("HectorSM p_use_tf_scan_transformation_: %s", p_use_tf_scan_transformation_ ? ("true") : ("false"));
   ROS_INFO("HectorSM p_pub_map_odom_transform_: %s", p_pub_map_odom_transform_ ? ("true") : ("false"));
-  ROS_INFO("HectorSM p_transform_pub_period_: %f p_map_pub_period_: %f", p_transform_pub_period_, p_map_pub_period_); 
+  ROS_INFO("HectorSM p_transform_pub_period_: %f p_map_pub_period_: %f", p_transform_pub_period_, p_map_pub_period_);
   ROS_INFO("HectorSM p_update_factor_free_: %f p_update_factor_occupied_: %f", p_update_factor_free_, p_update_factor_occupied_);
   ROS_INFO("HectorSM p_map_update_distance_threshold_: %f p_map_update_angle_threshold_: %f", p_map_update_distance_threshold_, p_map_update_angle_threshold_);
 
@@ -176,11 +176,9 @@ HectorMappingRos::HectorMappingRos()
 
   scan_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud>("slam_cloud",1,false);
 
-  if (p_pub_map_odom_transform_)
-  {
-    tfB_ = new tf::TransformBroadcaster();
-    ROS_ASSERT(tfB_);
-  }
+  tfB_ = new tf::TransformBroadcaster();
+  ROS_ASSERT(tfB_);
+
 
   map__publish_thread_ = new boost::thread(boost::bind(&HectorMappingRos::publishMapLoop, this, p_map_pub_period_));
 
@@ -385,7 +383,7 @@ void HectorMappingRos::sysMsgCallback(const std_msgs::String& string)
 }
 
 bool HectorMappingRos::mapCallback(nav_msgs::GetMap::Request  &req,
-                                nav_msgs::GetMap::Response &res)
+                                   nav_msgs::GetMap::Response &res)
 {
   ROS_INFO("HectorSM Map service called");
   res = mapPubContainer[0].map_;
