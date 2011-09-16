@@ -9,7 +9,7 @@
     
     <!-- Frame names -->
     <param name="base_frame" value="base_link" />
-    <param name="odom_frame" value="base_link"/>
+    <param name="odom_frame" value="odom"/>
     <param name="output_timing" value="false"/>
     
     <!-- Tf use -->
