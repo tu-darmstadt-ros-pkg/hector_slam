@@ -63,7 +63,7 @@ public:
     geotiff_writer_.setMapFilePath(p_map_file_path_);
     geotiff_writer_.setUseUtcTimeSuffix(true);
 
-    pn_.param("map_file_base_name", p_map_file_base_name_, std::string("RRL_2011_HectorDarmstadt_Mission4"));
+    pn_.param("map_file_base_name", p_map_file_base_name_, std::string("GeoTiffMap"));
 
     pn_.param("draw_background_checkerboard", p_draw_background_checkerboard_, true);
     pn_.param("draw_free_space_grid", p_draw_free_space_grid_, true);
