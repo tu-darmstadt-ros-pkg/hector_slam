@@ -143,7 +143,6 @@ protected:
   double p_map_start_y_;
   int p_map_multi_res_levels_;
 
-  double p_transform_pub_period_;
   double p_map_pub_period_;
 
   ros::Time lastMapPublishTime;

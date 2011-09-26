@@ -88,7 +88,6 @@ HectorMappingRos::HectorMappingRos()
 
   private_nh_.param("output_timing", p_timing_output_,false);
 
-  private_nh_.param("transform_pub_period", p_transform_pub_period_, 0.05);
   private_nh_.param("map_pub_period", p_map_pub_period_, 2.0);
 
   double tmp = 0.0;
@@ -164,7 +163,7 @@ HectorMappingRos::HectorMappingRos()
   ROS_INFO("HectorSM p_base_frame_: %s p_map_frame_: %s p_odom_frame_: %s Scan Topic: %s", p_base_frame_.c_str(), p_map_frame_.c_str(), p_odom_frame_.c_str(), p_scan_topic_.c_str());
   ROS_INFO("HectorSM p_use_tf_scan_transformation_: %s", p_use_tf_scan_transformation_ ? ("true") : ("false"));
   ROS_INFO("HectorSM p_pub_map_odom_transform_: %s", p_pub_map_odom_transform_ ? ("true") : ("false"));
-  ROS_INFO("HectorSM p_transform_pub_period_: %f p_map_pub_period_: %f", p_transform_pub_period_, p_map_pub_period_);
+  ROS_INFO("HectorSM p_map_pub_period_: %f", p_map_pub_period_);
   ROS_INFO("HectorSM p_update_factor_free_: %f p_update_factor_occupied_: %f", p_update_factor_free_, p_update_factor_occupied_);
   ROS_INFO("HectorSM p_map_update_distance_threshold_: %f p_map_update_angle_threshold_: %f", p_map_update_distance_threshold_, p_map_update_angle_threshold_);
 
@@ -521,9 +520,6 @@ void HectorMappingRos::setServiceGetMapData(nav_msgs::GetMap::Response& map_, co
 
 void HectorMappingRos::publishMapLoop(double map_pub_period)
 {
-  if(p_transform_pub_period_ == 0)
-    return;
-
   ros::Rate r(1.0 / map_pub_period);
   while(ros::ok())
   {
