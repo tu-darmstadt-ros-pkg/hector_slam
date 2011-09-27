@@ -42,8 +42,6 @@
 #include "tf/transform_listener.h"
 #include "tf/transform_broadcaster.h"
 
-#include "tf/message_filter.h"
-
 #include <boost/thread.hpp>
 
 

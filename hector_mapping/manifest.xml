@@ -14,7 +14,6 @@
   <depend package="tf"/>
   <depend package="eigen"/>
   <depend package="laser_geometry"/>
-  <depend package="eigen_conversions"/>
   <depend package="tf_conversions"/>
 
 </package>

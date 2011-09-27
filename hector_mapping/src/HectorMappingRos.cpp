@@ -33,10 +33,7 @@
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
 
-
 #include "sensor_msgs/PointCloud2.h"
-
-#include "tf_conversions/tf_eigen.h"
 
 #include "HectorDrawings.h"
 #include "HectorDebugInfoProvider.h"
