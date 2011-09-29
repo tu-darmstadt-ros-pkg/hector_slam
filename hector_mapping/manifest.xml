@@ -7,7 +7,7 @@
   <author>Stefan Kohlbrecher</author>
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
-  <url>http://code.google.com/p/tu-darmstadt-ros-pkg/w/list</url>
+  <url>http://www.ros.org/wiki/hector_mapping</url>
   <depend package="roscpp"/>
   <depend package="nav_msgs"/>
   <depend package="visualization_msgs"/>
