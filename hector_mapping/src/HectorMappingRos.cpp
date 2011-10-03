@@ -120,8 +120,8 @@ HectorMappingRos::HectorMappingRos()
   slamProcessor = new hectorslam::HectorSlamProcessor(static_cast<float>(p_map_resolution_), p_map_size_, Eigen::Vector2f(p_map_start_x_, p_map_start_y_), p_map_multi_res_levels_, hectorDrawings, debugInfoProvider);
   slamProcessor->setUpdateFactorFree(p_update_factor_free_);
   slamProcessor->setUpdateFactorOccupied(p_update_factor_occupied_);
-  slamProcessor->setMapUpdateMinDistDiff(0.4f);
-  slamProcessor->setMapUpdateMinAngleDiff(0.13f);
+  slamProcessor->setMapUpdateMinDistDiff(p_map_update_distance_threshold_);
+  slamProcessor->setMapUpdateMinAngleDiff(p_map_update_angle_threshold_);
 
   int mapLevels = slamProcessor->getMapLevels();
   mapLevels = 1;
