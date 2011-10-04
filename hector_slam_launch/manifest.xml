@@ -1,7 +1,7 @@
 <package>
   <description brief="hector_slam_launch">
 
-     hector_slam_launch
+     hector_slam_launch contains logfiles for launching hector_slam with different robot systems/setups/postprocessing scenarios
 
   </description>
   <author>Stefan Kohlbrecher</author>

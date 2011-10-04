@@ -2,7 +2,7 @@
   <description brief="hector_map_tools">
 
      hector_map_tools contains some functions related to accessing information from OccupancyGridMap maps.
-     Consists of a single header that can be used by adding the package to another package's manifest.xml.
+     Currently consists of a single header.
 
   </description>
   <author>Stefan Kohlbrecher</author>
