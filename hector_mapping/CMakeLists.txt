@@ -9,7 +9,7 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
 #  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
 #set(ROS_BUILD_TYPE RelWithDebInfo)
 #set(ROS_BUILD_TYPE Debug)
-set(ROS_BUILD_TYPE Release)
+#set(ROS_BUILD_TYPE Release)
 
 rosbuild_init()
 rosbuild_add_boost_directories()
