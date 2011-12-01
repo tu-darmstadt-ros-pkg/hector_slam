@@ -145,6 +145,8 @@ public:
           drawing_provider_->setScale(static_cast<double>(cube_scale));
 
           drawing_provider_->drawPoint(start);
+
+          drawing_provider_->setColor(0.0, 1.0, 0.0);
           drawing_provider_->drawPoint(end);
 
           if (dist >= 0.0f){
