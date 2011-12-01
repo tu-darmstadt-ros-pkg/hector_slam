@@ -160,15 +160,11 @@ public:
       }
       return true;
 
-
-    }    catch(tf::TransformException e)
-    {
-      ROS_ERROR("Transform failed\n");
-
     }
-
-    // = operator is overloaded to make deep copy (tricky!)
-
+    catch(tf::TransformException e)
+    {
+      ROS_ERROR("Transform failed in lookup distance service call: %s",e.what());
+    }
 
     return false;
   }
