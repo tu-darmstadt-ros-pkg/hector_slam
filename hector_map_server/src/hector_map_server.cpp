@@ -136,30 +136,30 @@ public:
 
         res.distance = dist/cos(angle);
 
-
-        //debug drawing
-        if (true){
-
-          float cube_scale = map_ptr_->info.resolution;
-          drawing_provider_->setColor(1.0, 0.0, 0.0);
-          drawing_provider_->setScale(static_cast<double>(cube_scale));
-
-          drawing_provider_->drawPoint(start);
-
-          drawing_provider_->setColor(0.0, 1.0, 0.0);
-          drawing_provider_->drawPoint(end);
-
-          if (dist >= 0.0f){
-            drawing_provider_->setColor(0.0, 0.0, 1.0);
-            drawing_provider_->drawPoint(hit_world);
-          }
-
-          drawing_provider_->sendAndResetData();
-        }
-
       }else{
         res.distance = -1.0f;
       }
+
+      //debug drawing
+      if (true){
+
+        float cube_scale = map_ptr_->info.resolution;
+        drawing_provider_->setColor(1.0, 0.0, 0.0);
+        drawing_provider_->setScale(static_cast<double>(cube_scale));
+
+        drawing_provider_->drawPoint(start);
+
+        drawing_provider_->setColor(0.0, 1.0, 0.0);
+        drawing_provider_->drawPoint(end);
+
+        if (dist >= 0.0f){
+          drawing_provider_->setColor(0.0, 0.0, 1.0);
+          drawing_provider_->drawPoint(hit_world);
+        }
+
+        drawing_provider_->sendAndResetData();
+      }
+
       return true;
 
     }
