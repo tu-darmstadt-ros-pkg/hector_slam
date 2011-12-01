@@ -155,10 +155,10 @@ public:
           }
 
           drawing_provider_->sendAndResetData();
-        }else{
-          res.distance = -1.0;
         }
 
+      }else{
+        res.distance = -1.0f;
       }
       return true;
 
