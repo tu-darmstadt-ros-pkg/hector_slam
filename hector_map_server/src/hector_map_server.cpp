@@ -183,32 +183,39 @@ public:
 
     try{
 
-      tf::StampedTransform stamped_pose;
+      tf::Stamped<tf::Pose> ooi_pose, transformed_pose, search_position;
+      tf::poseStampedMsgToTF(req.ooi_pose, ooi_pose);
 
-      tf_->waitForTransform(map_ptr_->header.frame_id,ooi_pose.header.frame_id, ooi_pose.header.stamp, ros::Duration(0.5));
-      tf_->lookupTransform(map_ptr_->header.frame_id, ooi_pose.header.frame_id, ooi_pose.header.stamp, stamped_pose);
+      tf_->waitForTransform(map_ptr_->header.frame_id, req.ooi_pose.header.frame_id, req.ooi_pose.header.stamp, ros::Duration(0.5));
+      tf_->transformPose(map_ptr_->header.frame_id, ooi_pose, transformed_pose);
 
-      //tf::Point v2_tf;
-      //tf::pointMsgToTF(req.point.point,v2_tf);
+      tf::Vector3 direction(-0.5, 0.0, 0.0);
+      search_position = transformed_pose;
+      search_position.setOrigin(transformed_pose.getOrigin() + transformed_pose.getBasis() * direction);
 
-      tf::Vector3 v1 = stamped_pose * tf::Vector3(0.0, 0.0, 0.0);
+      tf::poseStampedTFToMsg(search_position, res.search_pose);
 
-      //warning: 3D!
-      tf::Vector3 v2 = stamped_pose * tf::Vector3(-1.0, 0.0, 0.0);
+//      //tf::Point v2_tf;
+//      //tf::pointMsgToTF(req.point.point,v2_tf);
 
-      tf::Vector3 dir = v2-v1;
+//      tf::Vector3 v1 = stamped_pose * tf::Vector3(0.0, 0.0, 0.0);
 
-      Eigen::Vector2f dir_2d (dir.x(), dir.y());
+//      //warning: 3D!
+//      tf::Vector3 v2 = stamped_pose * tf::Vector3(-1.0, 0.0, 0.0);
 
-      dir_2d.normalize();
+//      tf::Vector3 dir = v2-v1;
 
-      Eigen::Vector2f searchPos (Eigen::Vector2f(v1.x(),v1.y()) + (dir_2d*0.5f));
+//      Eigen::Vector2f dir_2d (dir.x(), dir.y());
 
-      //copy original pose message but set translation
-      res.search_pose.pose = ooi_pose.pose;
+//      dir_2d.normalize();
 
-      res.search_pose.pose.position.x = searchPos.x();
-      res.search_pose.pose.position.y = searchPos.y();
+//      Eigen::Vector2f searchPos (Eigen::Vector2f(v1.x(),v1.y()) + (dir_2d*0.5f));
+
+//      //copy original pose message but set translation
+//      res.search_pose.pose = ooi_pose.pose;
+
+//      res.search_pose.pose.position.x = searchPos.x();
+//      res.search_pose.pose.position.y = searchPos.y();
 
       return true;
 
