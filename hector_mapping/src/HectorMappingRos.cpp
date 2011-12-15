@@ -212,7 +212,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 
   last_scan_time_ = scan.header.stamp;
 
-  ros::Time startTime = ros::Time::now();
+  ros::WallTime startTime = ros::WallTime::now();
 
   if (!p_use_tf_scan_transformation_)
   {
@@ -276,7 +276,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 
   if (p_timing_output_)
   {
-    ros::Duration duration = ros::Time::now() - startTime;
+    ros::WallDuration duration = ros::WallTime::now() - startTime;
     ROS_INFO("HectorSLAM Iter took: %f milliseconds", duration.toSec()*1000.0f );
   }
 
