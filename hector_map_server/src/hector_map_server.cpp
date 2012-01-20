@@ -186,7 +186,7 @@ public:
       tf_->waitForTransform(map_ptr_->header.frame_id, req.ooi_pose.header.frame_id, req.ooi_pose.header.stamp, ros::Duration(0.5));
       tf_->transformPose(map_ptr_->header.frame_id, ooi_pose, transformed_pose);
 
-      tf::Vector3 direction(-0.5, 0.0, 0.0);
+      tf::Vector3 direction(-req.distance, 0.0, 0.0);
       search_position = transformed_pose;
       search_position.setOrigin(transformed_pose.getOrigin() + transformed_pose.getBasis() * direction);
 
