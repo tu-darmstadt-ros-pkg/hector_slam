@@ -5,7 +5,7 @@
     
     <!-- Frame names -->
     <param name="map_frame" value="map" />
-    <param name="base_frame" value="base_stabilized" />
+    <param name="base_frame" value="base_footprint" />
     <param name="odom_frame" value="nav" />
     
     <!-- Tf use -->
@@ -25,6 +25,8 @@
     <param name="update_factor_occupied" value="0.9" />    
     <param name="map_update_distance_thresh" value="0.4"/>
     <param name="map_update_angle_thresh" value="0.06" />
+    <param name="laser_z_min_value" value = "-1.0" />
+    <param name="laser_z_max_value" value = "1.0" />
     
     <!-- Advertising config --> 
     <param name="advertise_map_service" value="true"/>

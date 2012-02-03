@@ -9,7 +9,7 @@
   </group>
 
   <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
-    <param name="base_frame" value="base_stabilized" />
+    <param name="base_frame" value="base_footprint" />
     <param name="odom_frame" value="nav"/>
     <param name="output_timing" value="false"/>
     
