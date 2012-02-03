@@ -355,7 +355,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 
 //    map_to_odom_ = tf::Transform(tf::Quaternion( odom_to_map.getRotation() ),
 //                                 tf::Point(      odom_to_map.getOrigin() ) ).inverse();
-    map_to_odom_ = odom_to_base.inverse() * tf::Transform(tf::createQuaternionFromYaw(static_cast<double>(slamPose.z())), tf::Point(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()), 0.0));
+    map_to_odom_ = tf::Transform(tf::createQuaternionFromYaw(static_cast<double>(slamPose.z())), tf::Point(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()), 0.0)) * odom_to_base.inverse();
 
     tfB_->sendTransform( tf::StampedTransform (map_to_odom_, last_scan_time_, p_map_frame_, p_odom_frame_));
   }
