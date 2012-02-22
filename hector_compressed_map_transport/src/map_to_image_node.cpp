@@ -39,12 +39,11 @@
 
 #include <hector_map_tools/HectorMapTools.h>
 
-#include "map_to_image_tools/MapToImageTools.h"
-
 using namespace std;
 
 /**
- * @brief This node provides occupancy grid maps as images via image_transport, so the transmission consumes less bandwidth. This code can only be considered a proof-of-concept.
+ * @brief This node provides occupancy grid maps as images via image_transport, so the transmission consumes less bandwidth.
+ * The provided code is a incomplete proof of concept.
  */
 class MapAsImageProvider
 {
