@@ -39,8 +39,6 @@
 #include "HectorDebugInfoProvider.h"
 #include "HectorMapMutex.h"
 
-#define MAP_IDX(sx, i, j) ((sx) * (j) + (i))
-
 HectorMappingRos::HectorMappingRos()
   : debugInfoProvider(0)
   , hectorDrawings(0)
