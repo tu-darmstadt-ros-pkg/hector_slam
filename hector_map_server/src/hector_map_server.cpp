@@ -67,27 +67,20 @@ public:
     get_search_pos_service_ = nh.advertiseService(get_search_pos_service_name, &OccupancyGridContainer::getSearchPosServiceCallback, this);
 
     map_sub_ = nh.subscribe("map", 1, &OccupancyGridContainer::mapCallback, this);
-
-    //throttled_map__publish_thread_ = new boost::thread(boost::bind(&OccupancyGridContainer::publishThrottledMapLoop, this, 10.0));
-
-    //ros::Timer timer = nh.createTimer(ros::Duration(10.0), &OccupancyGridContainer::throttledMapPublishTimerCallback, false);
-    //timer.start();
-
   }
 
   ~OccupancyGridContainer()
-  {
-    //if(throttled_map__publish_thread_){
-    //  delete throttled_map__publish_thread_;
-    //}
-  }
+  {}
 
   bool mapServiceCallback(nav_msgs::GetMap::Request  &req,
                           nav_msgs::GetMap::Response &res )
   {
     ROS_INFO("hector_map_server map service called");
 
-    // = operator is overloaded to make deep copy (tricky!)
+    if (!map_ptr_){
+      ROS_INFO("map_server has no map yet, no map service available");
+      return false;
+    }
 
     res.map = *map_ptr_;
 
@@ -102,6 +95,7 @@ public:
 
     if (!map_ptr_){
       ROS_INFO("map_server has no map yet, no lookup service available");
+      return false;
     }
 
     tf::StampedTransform stamped_pose;
@@ -173,6 +167,7 @@ public:
   {
     if (!map_ptr_){
       ROS_INFO("map_server has no map yet, no get best search pos service available");
+      return false;
     }
 
 
@@ -273,41 +268,6 @@ public:
     dist_meas_.setMap(map_ptr_);
   }
 
-  /*
-  void throttledMapPublishTimerCallback(const ros::TimerEvent& e)
-  {
-    if (map_ptr_ != 0){
-      throttled_map_pub_.publish(*map_ptr_);
-    }
-  }
-  */
-
-  /*
-  void publishThrottledMapLoop(double p_transform_pub_period_)
-  {
-    if(p_transform_pub_period_ == 0)
-      return;
-
-    ros::Rate r(1.0 / p_transform_pub_period_);
-    while(ros::ok())
-    {
-
-      if (map_ptr_ != 0){
-        ros::Time mapTime (ros::Time::now());
-        //publishMap(mapPubContainer[2],slamProcessor->getGridMap(2), mapTime);
-        //publishMap(mapPubContainer[1],slamProcessor->getGridMap(1), mapTime);
-        //publishMap(mapPubContainer[0],slamProcessor->getGridMap(0), mapTime, slamProcessor->getMapMutex(0));
-        throttled_map_pub_.publish(*map_ptr_);
-      }
-
-      r.sleep();
-    }
-  }
-  */
-
-  //Publishers
-  //ros::Publisher throttled_map_pub_;
-
   //Services
   ros::ServiceServer map_service_;
   ros::ServiceServer dist_lookup_service_;
@@ -317,8 +277,6 @@ public:
   ros::Subscriber map_sub_;
 
   HectorMapTools::DistanceMeasurementProvider dist_meas_;
-
-  //boost::thread* throttled_map__publish_thread_;
 
   HectorDrawings* drawing_provider_;
   tf::TransformListener* tf_;
@@ -355,12 +313,9 @@ class HectorMapServer
 public:
     OccupancyGridContainer* mapContainer;
 private:
-    //ros::NodeHandle n_;
 
     HectorDrawings* hector_drawings_;
-
     tf::TransformListener tf_;
-
 };
 
 int main(int argc, char **argv)
@@ -369,12 +324,8 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
 
   HectorMapServer ms(nh);
-  //ros::Timer timer = private_nh.createTimer(ros::Duration(10.0), &OccupancyGridContainer::throttledMapPublishTimerCallback, ms.mapContainer, false);
 
-  //while (ros::ok()){
-    ros::spin();
-  //}
-
+  ros::spin();
 
   return 0;
 }
