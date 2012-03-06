@@ -1,12 +1,15 @@
 <?xml version="1.0"?>
 
 <launch>
+   <arg name="trajectory_source_frame_name" default="/base_link"/>
+   <arg name="trajectory_update_rate" default="4"/>
+   <arg name="trajectory_publish_rate" default="0.25"/>
   
   <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen">
     <param name="target_frame_name" type="string" value="/map" />
-    <param name="source_frame_name" type="string" value="/scanmatcher_frame" />
-    <param name="trajectory_update_rate" type="double" value="4" />
-    <param name="trajectory_publish_rate" type="double" value="0.25" />
+    <param name="source_frame_name" type="string" value="$(arg trajectory_source_frame_name)" />
+    <param name="trajectory_update_rate" type="double" value="$(arg trajectory_update_rate)" />
+    <param name="trajectory_publish_rate" type="double" value="$(arg trajectory_publish_rate)" />
   </node>
 
 
