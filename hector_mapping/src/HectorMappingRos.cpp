@@ -305,7 +305,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 
   cov[0] = static_cast<double>(slamCov(0,0));
   cov[7] = static_cast<double>(slamCov(1,1));
-  cov[21] = static_cast<double>(slamCov(2,2));
+  cov[35] = static_cast<double>(slamCov(2,2));
 
   double xyC = static_cast<double>(slamCov(0,1));
   cov[1] = xyC;
