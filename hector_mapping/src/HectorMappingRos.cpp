@@ -44,7 +44,6 @@ HectorMappingRos::HectorMappingRos()
   , hectorDrawings(0)
   , lastGetMapUpdateIndex(-100)
   , tfB_(0)
-  , transform_thread_(0)
   , map__publish_thread_(0)
 {
   ros::NodeHandle private_nh_("~");
@@ -200,9 +199,6 @@ HectorMappingRos::~HectorMappingRos()
 
   if (tfB_)
     delete tfB_;
-
-  if(transform_thread_)
-    delete transform_thread_;
 
   if(map__publish_thread_)
     delete map__publish_thread_;

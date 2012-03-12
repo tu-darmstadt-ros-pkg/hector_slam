@@ -108,7 +108,6 @@ protected:
 
   tf::Transform map_to_odom_;
 
-  boost::thread* transform_thread_;
   boost::thread* map__publish_thread_;
 
   hectorslam::HectorSlamProcessor* slamProcessor;
