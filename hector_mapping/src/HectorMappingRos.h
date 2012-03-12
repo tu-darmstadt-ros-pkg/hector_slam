@@ -113,6 +113,8 @@ protected:
   hectorslam::HectorSlamProcessor* slamProcessor;
   hectorslam::DataContainer laserScanContainer;
 
+  sensor_msgs::PointCloud laser_point_cloud_;
+
   ros::Time lastMapPublishTime;
 
   std::string p_base_frame_;

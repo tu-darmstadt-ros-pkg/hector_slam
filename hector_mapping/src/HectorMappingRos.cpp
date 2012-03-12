@@ -224,8 +224,6 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   }
   else
   {
-    sensor_msgs::PointCloud pointCloud;
-
     ros::Duration dur (0.5);
 
     if (tf_.waitForTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp,dur))
@@ -234,15 +232,15 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
       tf_.lookupTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp, laserTransform);
 
       //projector_.transformLaserScanToPointCloud(p_base_frame_ ,scan, pointCloud,tf_);
-      projector_.projectLaser(scan, pointCloud,30.0);
+      projector_.projectLaser(scan, laser_point_cloud_,30.0);
 
       if (scan_point_cloud_publisher_.getNumSubscribers() > 0){
-        scan_point_cloud_publisher_.publish(pointCloud);
+        scan_point_cloud_publisher_.publish(laser_point_cloud_);
       }
 
       Eigen::Vector3f startEstimate(Eigen::Vector3f::Zero());
 
-      if(rosPointCloudToDataContainer(pointCloud, laserTransform, laserScanContainer, slamProcessor->getScaleToMap()))
+      if(rosPointCloudToDataContainer(laser_point_cloud_, laserTransform, laserScanContainer, slamProcessor->getScaleToMap()))
       {
         if (p_use_tf_pose_start_estimate_){
 
