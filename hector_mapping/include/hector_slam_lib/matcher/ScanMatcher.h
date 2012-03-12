@@ -71,7 +71,7 @@ public:
 
       Eigen::Vector3f estimate(beginEstimateMap);
 
-      bool notConverged = estimateTransformationLogLh(estimate, gridMapUtil, dataContainer, 1);
+      bool notConverged = estimateTransformationLogLh(estimate, gridMapUtil, dataContainer);
 
       /*
       const Eigen::Matrix2f& hessian (H.block<2,2>(0,0));
@@ -88,13 +88,14 @@ public:
 
 
       int numIter = maxIterations;
-      float invNumIterf = 1.0f/static_cast<float> (numIter);
+
 
       for (int i = 0; i < numIter; ++i) {
 
-        notConverged = estimateTransformationLogLh(estimate, gridMapUtil, dataContainer, 1);
+        notConverged = estimateTransformationLogLh(estimate, gridMapUtil, dataContainer);
 
         if(drawInterface){
+          float invNumIterf = 1.0f/static_cast<float> (numIter);
           drawInterface->setColor(static_cast<float>(i)*invNumIterf,0.0f, 0.0f);
           drawInterface->drawArrow(gridMapUtil.getWorldCoordsPose(estimate));
           //drawInterface->drawArrow(Eigen::Vector3f(0.0f, static_cast<float>(i)*0.05, 0.0f));
@@ -187,9 +188,9 @@ public:
 
 protected:
 
-  bool estimateTransformationLogLh(Eigen::Vector3f& estimate, ConcreteOccGridMapUtil& gridMapUtil, const DataContainer& dataPoints, int pointStepSize)
+  bool estimateTransformationLogLh(Eigen::Vector3f& estimate, ConcreteOccGridMapUtil& gridMapUtil, const DataContainer& dataPoints)
   {
-    gridMapUtil.getCompleteHessianDerivs(estimate, dataPoints, pointStepSize, H, dTr);
+    gridMapUtil.getCompleteHessianDerivs(estimate, dataPoints, H, dTr);
     //std::cout << "\nH\n" << H  << "\n";
 
 

@@ -61,7 +61,7 @@ public:
 
   inline Eigen::Vector2f getWorldCoordsPoint(const Eigen::Vector2f& mapPoint) const { return concreteGridMap->getWorldCoords(mapPoint); };
 
-  void getCompleteHessianDerivs(const Eigen::Vector3f& pose, const DataContainer& dataPoints, int pointStepSize, Eigen::Matrix3f& H, Eigen::Vector3f& dTr)
+  void getCompleteHessianDerivs(const Eigen::Vector3f& pose, const DataContainer& dataPoints, Eigen::Matrix3f& H, Eigen::Vector3f& dTr)
   {
     int size = dataPoints.getSize();
 
@@ -73,7 +73,7 @@ public:
     H = Eigen::Matrix3f::Zero();
     dTr = Eigen::Vector3f::Zero();
 
-    for (int i = 0; i < size; i += pointStepSize) {
+    for (int i = 0; i < size; ++i) {
 
       const Eigen::Vector2f& currPoint (dataPoints.getVecEntry(i));
 
