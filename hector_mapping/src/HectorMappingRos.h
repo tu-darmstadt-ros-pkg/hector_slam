@@ -114,6 +114,8 @@ protected:
   hectorslam::HectorSlamProcessor* slamProcessor;
   hectorslam::DataContainer laserScanContainer;
 
+  ros::Time lastMapPublishTime;
+
   std::string p_base_frame_;
   std::string p_map_frame_;
   std::string p_odom_frame_;
@@ -129,6 +131,7 @@ protected:
   bool p_pub_map_scanmatch_transform_;
   bool p_pub_odometry_;
   bool p_advertise_map_service_;
+  int p_scan_subscriber_queue_size_;
 
   double p_update_factor_free_;
   double p_update_factor_occupied_;
@@ -142,8 +145,6 @@ protected:
   int p_map_multi_res_levels_;
 
   double p_map_pub_period_;
-
-  ros::Time lastMapPublishTime;
 
   bool p_use_tf_scan_transformation_;
   bool p_use_tf_pose_start_estimate_;

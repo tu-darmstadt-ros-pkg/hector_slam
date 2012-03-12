@@ -57,6 +57,7 @@ HectorMappingRos::HectorMappingRos()
   private_nh_.param("pub_map_scanmatch_transform", p_pub_map_scanmatch_transform_,true);
   private_nh_.param("pub_odometry", p_pub_odometry_,false);
   private_nh_.param("advertise_map_service", p_advertise_map_service_,true);
+  private_nh_.param("scan_subscriber_queue_size", p_scan_subscriber_queue_size_, 5);
 
   private_nh_.param("map_resolution", p_map_resolution_, 0.025);
   private_nh_.param("map_size", p_map_size_, 1024);
@@ -155,14 +156,20 @@ HectorMappingRos::HectorMappingRos()
     }
   }
 
-  ROS_INFO("HectorSM p_base_frame_: %s p_map_frame_: %s p_odom_frame_: %s Scan Topic: %s", p_base_frame_.c_str(), p_map_frame_.c_str(), p_odom_frame_.c_str(), p_scan_topic_.c_str());
+  ROS_INFO("HectorSM p_base_frame_: %s", p_base_frame_.c_str());
+  ROS_INFO("HectorSM p_map_frame_: %s", p_map_frame_.c_str());
+  ROS_INFO("HectorSM p_odom_frame_: %s", p_odom_frame_.c_str());
+  ROS_INFO("HectorSM p_scan_topic_: %s", p_scan_topic_.c_str());
   ROS_INFO("HectorSM p_use_tf_scan_transformation_: %s", p_use_tf_scan_transformation_ ? ("true") : ("false"));
   ROS_INFO("HectorSM p_pub_map_odom_transform_: %s", p_pub_map_odom_transform_ ? ("true") : ("false"));
+  ROS_INFO("HectorSM p_scan_subscriber_queue_size_: %d", p_scan_subscriber_queue_size_);
   ROS_INFO("HectorSM p_map_pub_period_: %f", p_map_pub_period_);
-  ROS_INFO("HectorSM p_update_factor_free_: %f p_update_factor_occupied_: %f", p_update_factor_free_, p_update_factor_occupied_);
-  ROS_INFO("HectorSM p_map_update_distance_threshold_: %f p_map_update_angle_threshold_: %f", p_map_update_distance_threshold_, p_map_update_angle_threshold_);
+  ROS_INFO("HectorSM p_update_factor_free_: %f", p_update_factor_free_);
+  ROS_INFO("HectorSM p_update_factor_occupied_: %f", p_update_factor_occupied_);
+  ROS_INFO("HectorSM p_map_update_distance_threshold_: %f ", p_map_update_distance_threshold_);
+  ROS_INFO("HectorSM p_map_update_angle_threshold_: %f", p_map_update_angle_threshold_);
 
-  scanSubscriber_ = node_.subscribe(p_scan_topic_, 50, &HectorMappingRos::scanCallback, this);
+  scanSubscriber_ = node_.subscribe(p_scan_topic_, p_scan_subscriber_queue_size_, &HectorMappingRos::scanCallback, this);
   sysMsgSubscriber_ = node_.subscribe(p_sys_msg_topic_, 2, &HectorMappingRos::sysMsgCallback, this);
 
   poseUpdatePublisher_ = node_.advertise<geometry_msgs::PoseWithCovarianceStamped>(p_pose_update_topic_, 1, false);
