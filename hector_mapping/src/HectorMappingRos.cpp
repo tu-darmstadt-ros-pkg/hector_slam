@@ -313,12 +313,12 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   cov[6] = xyC;
 
   double xaC = static_cast<double>(slamCov(0,2));
-  cov[3] = xaC;
-  cov[18] = xaC;
+  cov[5] = xaC;
+  cov[30] = xaC;
 
   double yaC = static_cast<double>(slamCov(1,2));
-  cov[9] = yaC;
-  cov[19] = yaC;
+  cov[11] = yaC;
+  cov[31] = yaC;
 
   poseUpdatePublisher_.publish(covPose);
   posePublisher_.publish(stampedPose);
