@@ -153,6 +153,10 @@ public:
       return;
     }
 
+    for (size_t i ; i < plugin_vector_.size(); ++i){
+      plugin_vector_[i]->draw(&geotiff_writer_);
+    }
+
     /**
       * No Victims for now, first  agree on a common standard for representation
       */
