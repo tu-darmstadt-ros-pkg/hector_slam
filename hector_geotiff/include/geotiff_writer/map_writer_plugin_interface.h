@@ -31,12 +31,17 @@
 
 #include "map_writer_interface.h"
 
+namespace hector_geotiff{
+
 class MapWriterPluginInterface{
 
 public:
+  //MapWriterPluginInterface(std::string name);
 
   virtual void draw(MapWriterInterface* map_writer_interface) = 0;
 
 };
+
+} //namespace hector_geotiff
 
 #endif
