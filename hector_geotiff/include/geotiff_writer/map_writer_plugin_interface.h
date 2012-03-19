@@ -35,7 +35,7 @@ class MapWriterPluginInterface{
 
 public:
 
-  virtual void draw(map_writer_interface* map_writer_interface) = 0;
+  virtual void draw(MapWriterInterface* map_writer_interface) = 0;
 
 };
 
