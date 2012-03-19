@@ -29,6 +29,8 @@
 #ifndef _GEOTIFFWRITER_H__
 #define _GEOTIFFWRITER_H__
 
+#include "map_writer_interface.h"
+
 #include <Eigen/Geometry>
 
 #include <nav_msgs/OccupancyGrid.h>
@@ -41,7 +43,7 @@
 
 #include <hector_map_tools/HectorMapTools.h>
 
-class GeotiffWriter
+class GeotiffWriter : public MapWriterInterface
 {
   public:
   GeotiffWriter(bool useCheckerboardCacheIn = false);
