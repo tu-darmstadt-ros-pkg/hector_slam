@@ -36,8 +36,8 @@ namespace hector_geotiff{
 class MapWriterPluginInterface{
 
 public:
-  //MapWriterPluginInterface(std::string name);
 
+  virtual void initialize(const std::string& name) = 0;
   virtual void draw(MapWriterInterface* map_writer_interface) = 0;
 
 };
