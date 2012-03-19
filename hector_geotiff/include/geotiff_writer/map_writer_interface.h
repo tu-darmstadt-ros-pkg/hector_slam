@@ -31,11 +31,15 @@
 
 #include <Eigen/Core>
 
+namespace hector_geotiff{
+
 class MapWriterInterface{
 
 public:
 
   virtual void drawVictim(const Eigen::Vector2f& coords, int number) = 0;
 };
+
+}
 
 #endif

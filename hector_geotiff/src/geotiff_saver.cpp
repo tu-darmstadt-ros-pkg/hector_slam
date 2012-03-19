@@ -42,6 +42,7 @@
 
 using namespace std;
 
+namespace hector_geotiff{
 
 /**
  * @brief Map generation node.
@@ -78,9 +79,11 @@ class MapGenerator
     ros::Subscriber map_sub_;
 };
 
+}
+
 #define USAGE "Usage: \n" \
-              "  map_saver -h\n"\
-              "  map_saver [-f <mapname>] [ROS remapping args]"
+              "  geotiff_saver -h\n"\
+              "  geotiff_saver [-f <mapname>] [ROS remapping args]"
 
 int main(int argc, char** argv)
 {
@@ -113,11 +116,10 @@ int main(int argc, char** argv)
 
   //GeotiffWriter geotiff_writer;
   //geotiff_writer.setMapName("test");
-  MapGenerator mg(mapname);
+  hector_geotiff::MapGenerator mg(mapname);
 
   ros::spin();
 
   return 0;
 }
-
 

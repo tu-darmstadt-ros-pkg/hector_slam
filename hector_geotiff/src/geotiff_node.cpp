@@ -29,6 +29,9 @@
 #include <cstdio>
 #include "ros/ros.h"
 #include "ros/console.h"
+#include <pluginlib/class_loader.h>
+
+
 #include "nav_msgs/GetMap.h"
 #include "std_msgs/String.h"
 #include "geometry_msgs/Quaternion.h"
@@ -40,12 +43,13 @@
 #include <hector_map_tools/HectorMapTools.h>
 
 #include <geotiff_writer/geotiff_writer.h>
-//#include <worldmodel_msgs/GetObjectModel.h>
+#include <geotiff_writer/map_writer_plugin_interface.h>
 
 #include <hector_nav_msgs/GetRobotTrajectory.h>
 
 using namespace std;
 
+namespace hector_geotiff{
 
 /**
  * @brief Map generation node.
@@ -73,6 +77,29 @@ public:
     map_service_client_ = n_.serviceClient<nav_msgs::GetMap>("map");
     //object_service_client_ = n_.serviceClient<worldmodel_msgs::GetObjectModel>("worldmodel/get_object_model");
     path_service_client_ = n_.serviceClient<hector_nav_msgs::GetRobotTrajectory>("trajectory");
+
+    /*
+    pluginlib::ClassLoader<hector_geotiff::MapWriterPluginInterface> plugin_loader("hector_geotiff", "hector_geotiff::MapWriterPluginInterface");
+
+
+    try
+    {
+      triangle = poly_loader.createClassInstance("pluginlib_tutorials/regular_triangle");
+      triangle->initialize(10.0);
+
+      square = poly_loader.createClassInstance("pluginlib_tutorials/regular_square");
+      square->initialize(10.0);
+
+      ROS_INFO("Triangle area: %.2f", triangle->area());
+      ROS_INFO("Square area: %.2f", square->area());
+    }
+    catch(pluginlib::PluginlibException& ex)
+    {
+      ROS_ERROR("The plugin failed to load for some reason. Error: %s", ex.what());
+    }
+
+    */
+
 
     ROS_INFO("Geotiff node started");
   }
@@ -221,15 +248,19 @@ public:
   ros::NodeHandle n_;
   ros::NodeHandle pn_;
 
+  std::vector<boost::shared_ptr<hector_geotiff::MapWriterPluginInterface> > plugin_vector_;
+
   unsigned int running_saved_map_num_;
   bool req_object_model_;
 };
+
+}
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "geotiff_node");
 
-  MapGenerator mg;
+  hector_geotiff::MapGenerator mg;
 
   ros::NodeHandle pn_;
   double p_geotiff_save_period = 60.0f;
@@ -240,3 +271,4 @@ int main(int argc, char** argv)
 
   return 0;
 }
+

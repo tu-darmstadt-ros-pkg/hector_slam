@@ -43,6 +43,10 @@
 
 #include <hector_map_tools/HectorMapTools.h>
 
+
+namespace hector_geotiff{
+
+
 class GeotiffWriter : public MapWriterInterface
 {
   public:
@@ -120,5 +124,7 @@ protected:
   int fake_argc_;
   char** fake_argv_;
 };
+
+}
 
 #endif

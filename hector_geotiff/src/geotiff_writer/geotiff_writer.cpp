@@ -36,7 +36,7 @@
 #include <QtCore/QTime>
 #include <QtCore/QTextStream>
 
-
+namespace hector_geotiff{
 
 
 GeotiffWriter::GeotiffWriter(bool useCheckerboardCacheIn)
@@ -583,4 +583,6 @@ void GeotiffWriter::drawCoordSystem(QPainter& painter)
   painter.drawLine(zero_point,y_point);
 
   painter.restore();
+}
+
 }
