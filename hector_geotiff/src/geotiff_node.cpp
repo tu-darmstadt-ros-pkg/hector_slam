@@ -153,7 +153,7 @@ public:
       return;
     }
 
-    for (size_t i ; i < plugin_vector_.size(); ++i){
+    for (size_t i = 0; i < plugin_vector_.size(); ++i){
       plugin_vector_[i]->draw(&geotiff_writer_);
     }
 
