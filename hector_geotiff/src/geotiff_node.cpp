@@ -27,9 +27,11 @@
 //=================================================================================================
 
 #include <cstdio>
-#include "ros/ros.h"
-#include "ros/console.h"
+#include <ros/ros.h>
+#include <ros/console.h>
 #include <pluginlib/class_loader.h>
+
+#include <boost/algorithm/string.hpp>
 
 
 #include "nav_msgs/GetMap.h"
@@ -59,9 +61,9 @@ class MapGenerator
 public:
   MapGenerator()
     : geotiff_writer_(false)
-    , pn_("~")
-    , running_saved_map_num_(0)    
-    , req_object_model_(false)    
+    , pn_("~")    
+    , plugin_loader_(0)
+    , running_saved_map_num_(0)
   {
     pn_.param("map_file_path", p_map_file_path_, std::string("."));
     geotiff_writer_.setMapFilePath(p_map_file_path_);
@@ -78,30 +80,39 @@ public:
     //object_service_client_ = n_.serviceClient<worldmodel_msgs::GetObjectModel>("worldmodel/get_object_model");
     path_service_client_ = n_.serviceClient<hector_nav_msgs::GetRobotTrajectory>("trajectory");
 
-    /*
-    pluginlib::ClassLoader<hector_geotiff::MapWriterPluginInterface> plugin_loader("hector_geotiff", "hector_geotiff::MapWriterPluginInterface");
+    pn_.param("plugins", p_plugin_list_, std::string(""));
 
+    std::vector<std::string> plugin_list;
+    boost::algorithm::split(plugin_list, p_plugin_list_, boost::is_any_of("\t "));
 
-    try
-    {
-      triangle = poly_loader.createClassInstance("pluginlib_tutorials/regular_triangle");
-      triangle->initialize(10.0);
+    //We always have at least one element containing "" in the string list
+    if ((plugin_list.size() > 0) && (plugin_list[0].length() > 0)){
+      plugin_loader_ = new pluginlib::ClassLoader<hector_geotiff::MapWriterPluginInterface>("hector_geotiff", "hector_geotiff::MapWriterPluginInterface");
 
-      square = poly_loader.createClassInstance("pluginlib_tutorials/regular_square");
-      square->initialize(10.0);
-
-      ROS_INFO("Triangle area: %.2f", triangle->area());
-      ROS_INFO("Square area: %.2f", square->area());
+      for (size_t i = 0; i < plugin_list.size(); ++i){
+        try
+        {
+          boost::shared_ptr<hector_geotiff::MapWriterPluginInterface> tmp (plugin_loader_->createClassInstance(plugin_list[i]));
+          tmp->initialize(plugin_loader_->getName(plugin_list[i]));
+          plugin_vector_.push_back(tmp);
+        }
+        catch(pluginlib::PluginlibException& ex)
+        {
+          ROS_ERROR("The plugin failed to load for some reason. Error: %s", ex.what());
+        }
+      }
+    }else{
+      ROS_INFO("No plugins loaded for geotiff node");
     }
-    catch(pluginlib::PluginlibException& ex)
-    {
-      ROS_ERROR("The plugin failed to load for some reason. Error: %s", ex.what());
-    }
-
-    */
-
 
     ROS_INFO("Geotiff node started");
+  }
+
+  ~MapGenerator()
+  {
+    if (plugin_loader_){
+      delete plugin_loader_;
+    }
   }
 
   void writeGeotiff()
@@ -231,9 +242,9 @@ public:
 
   std::string p_map_file_path_;
   std::string p_map_file_base_name_;
+  std::string p_plugin_list_;
   bool p_draw_background_checkerboard_;
   bool p_draw_free_space_grid_;
-
 
   //double p_geotiff_save_period_;
 
@@ -250,8 +261,9 @@ public:
 
   std::vector<boost::shared_ptr<hector_geotiff::MapWriterPluginInterface> > plugin_vector_;
 
+  pluginlib::ClassLoader<hector_geotiff::MapWriterPluginInterface>* plugin_loader_;
+
   unsigned int running_saved_map_num_;
-  bool req_object_model_;
 };
 
 }
