@@ -33,15 +33,22 @@
 #include "nav_msgs/Path.h"
 #include "std_msgs/String.h"
 
-#include "geometry_msgs/Quaternion.h"
+#include <geometry_msgs/Quaternion.h>
+#include <geometry_msgs/PoseStamped.h>
 
 #include "tf/transform_listener.h"
 
 #include <hector_nav_msgs/GetRobotTrajectory.h>
+#include <hector_nav_msgs/GetRecoveryInfo.h>
 
 #include <tf/tf.h>
 
+#include <algorithm>
+#include <Eigen/Core>
+
 using namespace std;
+
+bool comparePoseStampedStamps (const geometry_msgs::PoseStamped& t1, const geometry_msgs::PoseStamped& t2) { return (t1.header.stamp < t2.header.stamp); }
 
 
 /**
@@ -64,6 +71,7 @@ public:
     trajectory_pub_ = nh.advertise<nav_msgs::Path>("trajectory",1, true);
 
     trajectory_provider_service_ = nh.advertiseService("trajectory", &PathContainer::trajectoryProviderCallBack, this);
+    recovery_info_provider_service_ = nh.advertiseService("recovery_info", &PathContainer::recoveryInfoProviderCallBack, this);
 
     last_reset_time_ = ros::Time::now();
 
@@ -85,23 +93,34 @@ public:
     }
   }
 
+  void addCurrentTfPoseToTrajectory()
+  {
+    pose_source_.header.stamp = ros::Time(0);
+
+    geometry_msgs::PoseStamped pose_out;
+
+    tf_.transformPose(p_target_frame_name_, pose_source_, pose_out);
+
+    if (trajectory_.trajectory.poses.size() != 0){
+      //Only add pose to trajectory if it's not already stored
+      if (pose_out.header.stamp != trajectory_.trajectory.poses.back().header.stamp){
+        trajectory_.trajectory.poses.push_back(pose_out);
+      }
+    }else{
+      trajectory_.trajectory.poses.push_back(pose_out);
+    }
+
+    trajectory_.trajectory.header.stamp = pose_out.header.stamp;
+  }
+
   void trajectoryUpdateTimerCallback(const ros::TimerEvent& event)
   {
+
     try{
-      pose_source_.header.stamp = ros::Time::now();
-
-      geometry_msgs::PoseStamped pose_out;
-
-      ros::Duration dur (0.5);
-      tf_.waitForTransform(p_target_frame_name_, pose_source_.header.frame_id, pose_source_.header.stamp, dur);
-      tf_.transformPose(p_target_frame_name_, pose_source_, pose_out);
-
-      trajectory_.trajectory.poses.push_back(pose_out);
-      trajectory_.trajectory.header.stamp = pose_source_.header.stamp;
-    }
-    catch(tf::TransformException e)
-    {      
-      //ROS_ERROR("Transform from %s to %s failed: %s \n", p_target_frame_name_.c_str(), pose_source_.header.frame_id.c_str(), e.what() );
+      addCurrentTfPoseToTrajectory();
+    }catch(tf::TransformException e)
+    {
+      ROS_ERROR("Trajectory Server: Transform from %s to %s failed: %s \n", p_target_frame_name_.c_str(), pose_source_.header.frame_id.c_str(), e.what() );
     }
   }
 
@@ -118,6 +137,65 @@ public:
     return true;
   };
 
+  bool recoveryInfoProviderCallBack(hector_nav_msgs::GetRecoveryInfo::Request  &req,
+                                  hector_nav_msgs::GetRecoveryInfo::Response &res )
+  {
+    const ros::Time req_time = req.request_time;
+
+    geometry_msgs::PoseStamped tmp;
+    tmp.header.stamp = req_time;
+
+    std::vector<geometry_msgs::PoseStamped>& poses = trajectory_.trajectory.poses;
+
+    //Find the robot pose in the saved trajectory
+    std::vector<geometry_msgs::PoseStamped>::iterator it = std::lower_bound(poses.begin(), poses.end(), tmp, comparePoseStampedStamps);
+
+    //If we didn't find the robot pose for the desired time, add the current robot pose to trajectory
+    if (it == poses.end()){
+      addCurrentTfPoseToTrajectory();
+      it = poses.end();
+      --it;
+    }
+
+    std::vector<geometry_msgs::PoseStamped>::iterator it_start = it;
+
+    const geometry_msgs::Point& req_coords ((*it).pose.position);
+
+    double dist_sqr_threshold = req.request_radius * req.request_radius;
+
+    double dist_sqr = 0.0;
+
+    //Iterate backwards till the start of the trajectory is reached or we find a pose that's outside the specified radius
+    while (it != poses.begin() && dist_sqr < dist_sqr_threshold){
+      const geometry_msgs::Point& curr_coords ((*it).pose.position);
+
+      dist_sqr = (req_coords.x - curr_coords.x) * (req_coords.x - curr_coords.x) +
+                 (req_coords.y - curr_coords.y) * (req_coords.y - curr_coords.y);
+
+      --it;
+    }
+
+    if (dist_sqr < dist_sqr_threshold){
+      ROS_INFO("Failed to find trajectory leading out of radius %f", req.request_radius);
+    }
+
+    std::vector<geometry_msgs::PoseStamped>::iterator it_end = it;
+
+    res.req_pose = *it_start;
+    res.radius_entry_pose = *it_end;
+
+    std::vector<geometry_msgs::PoseStamped>& traj_out_poses = res.trajectory_radius_entry_pose_to_req_pose.poses;
+
+    res.trajectory_radius_entry_pose_to_req_pose.poses.clear();
+    res.trajectory_radius_entry_pose_to_req_pose.header = res.req_pose.header;
+
+    for (std::vector<geometry_msgs::PoseStamped>::iterator it_tmp = it_end; it_tmp != it_start; --it){
+      traj_out_poses.push_back(*it);
+    }
+
+    return true;
+  };
+
   //parameters
   std::string p_target_frame_name_;
   std::string p_source_frame_name_;
@@ -128,6 +206,7 @@ public:
   geometry_msgs::PoseStamped pose_source_;
 
   ros::ServiceServer trajectory_provider_service_;
+  ros::ServiceServer recovery_info_provider_service_;
 
   ros::Timer update_trajectory_timer_;
   ros::Timer publish_trajectory_timer_;
