@@ -44,7 +44,6 @@
 #include <tf/tf.h>
 
 #include <algorithm>
-#include <Eigen/Core>
 
 using namespace std;
 
@@ -71,7 +70,7 @@ public:
     trajectory_pub_ = nh.advertise<nav_msgs::Path>("trajectory",1, true);
 
     trajectory_provider_service_ = nh.advertiseService("trajectory", &PathContainer::trajectoryProviderCallBack, this);
-    recovery_info_provider_service_ = nh.advertiseService("recovery_info", &PathContainer::recoveryInfoProviderCallBack, this);
+    recovery_info_provider_service_ = nh.advertiseService("trajectory_recovery_info", &PathContainer::recoveryInfoProviderCallBack, this);
 
     last_reset_time_ = ros::Time::now();
 
@@ -189,8 +188,8 @@ public:
     res.trajectory_radius_entry_pose_to_req_pose.poses.clear();
     res.trajectory_radius_entry_pose_to_req_pose.header = res.req_pose.header;
 
-    for (std::vector<geometry_msgs::PoseStamped>::iterator it_tmp = it_end; it_tmp != it_start; --it){
-      traj_out_poses.push_back(*it);
+    for (std::vector<geometry_msgs::PoseStamped>::iterator it_tmp = it_start; it_tmp != it_end; --it_tmp){
+      traj_out_poses.push_back(*it_tmp);
     }
 
     return true;
