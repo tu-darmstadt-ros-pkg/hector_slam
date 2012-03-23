@@ -176,6 +176,7 @@ public:
 
     if (dist_sqr < dist_sqr_threshold){
       ROS_INFO("Failed to find trajectory leading out of radius %f", req.request_radius);
+      return false;
     }
 
     std::vector<geometry_msgs::PoseStamped>::iterator it_end = it;
