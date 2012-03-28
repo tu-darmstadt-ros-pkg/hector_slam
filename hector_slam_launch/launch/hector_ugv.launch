@@ -17,7 +17,7 @@
   </node>
 
   <group unless="$(optenv REALROBOT false)">
-    <param name="hector_mapping/use_tf_pose_start_estimate" value="true"/>
+    <param name="hector_mapping/use_tf_pose_start_estimate" value="false"/>
   </group>
 
   <param name="hector_mapping/odom_frame" value="nav"/>
