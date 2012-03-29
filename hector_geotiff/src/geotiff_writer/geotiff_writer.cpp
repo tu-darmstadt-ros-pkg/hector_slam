@@ -349,7 +349,7 @@ void GeotiffWriter::drawMap(const nav_msgs::OccupancyGrid& map, bool draw_explor
   }
 }
 
-void GeotiffWriter::drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const QColor& color)
+void GeotiffWriter::drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const Color& color)
 {
   QPainter qPainter(&image);
 
@@ -374,7 +374,7 @@ void GeotiffWriter::drawObjectOfInterest(const Eigen::Vector2f& coords, const st
   qPainter.save();
 
 
-  QBrush tmpBrush(QColor(240,10,10));
+  QBrush tmpBrush(QColor(color.r,color.g,color.b));
   QPen tmpPen(Qt::NoPen);
   qPainter.setBrush(tmpBrush);
   qPainter.setPen(tmpPen);
