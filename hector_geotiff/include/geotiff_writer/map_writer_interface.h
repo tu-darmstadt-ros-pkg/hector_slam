@@ -30,15 +30,17 @@
 #define _MAPWRITERINTERFACE_H__
 
 #include <Eigen/Core>
-#include <QtGui/QColor>
 
 namespace hector_geotiff{
 
 class MapWriterInterface{
-
 public:
+  struct Color {
+    Color(unsigned int r, unsigned int g, unsigned int b) : r(r), g(g), b(b) {}
+    unsigned int r,g,b;
+  };
 
-  virtual void drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const QColor& color) = 0;
+  virtual void drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const Color& color) = 0;
 };
 
 }
