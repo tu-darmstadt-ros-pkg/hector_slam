@@ -30,6 +30,7 @@
 #define _MAPWRITERINTERFACE_H__
 
 #include <Eigen/Core>
+#include <QtGui/QColor>
 
 namespace hector_geotiff{
 
@@ -37,7 +38,7 @@ class MapWriterInterface{
 
 public:
 
-  virtual void drawVictim(const Eigen::Vector2f& coords, int number) = 0;
+  virtual void drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const QColor& color) = 0;
 };
 
 }

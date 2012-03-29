@@ -349,7 +349,7 @@ void GeotiffWriter::drawMap(const nav_msgs::OccupancyGrid& map, bool draw_explor
   }
 }
 
-void GeotiffWriter::drawVictim(const Eigen::Vector2f& coords, int number)
+void GeotiffWriter::drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const QColor& color)
 {
   QPainter qPainter(&image);
 
@@ -363,6 +363,7 @@ void GeotiffWriter::drawVictim(const Eigen::Vector2f& coords, int number)
   Eigen::Vector2f coords_g (world_geo_transformer_.getC2Coords(coords));
 
   qPainter.translate(coords_g[0],coords_g[1]);
+
   qPainter.rotate(90);
 
   qPainter.setRenderHint(QPainter::Antialiasing, true);
@@ -381,8 +382,9 @@ void GeotiffWriter::drawVictim(const Eigen::Vector2f& coords, int number)
   qPainter.drawEllipse(ellipse_shape);
   qPainter.restore();
 
-  QString tmp;
-  tmp.setNum(number);
+
+  QString tmp (txt.c_str());
+  //tmp.setNum(number);
 
   if (tmp.length() < 2){
     qPainter.setFont(map_draw_font_);
