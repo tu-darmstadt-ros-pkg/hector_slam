@@ -132,7 +132,7 @@ public:
       }
 
       //debug drawing
-      if (true){
+      if (false){
 
         float cube_scale = map_ptr_->info.resolution;
         drawing_provider_->setColor(1.0, 0.0, 0.0);
