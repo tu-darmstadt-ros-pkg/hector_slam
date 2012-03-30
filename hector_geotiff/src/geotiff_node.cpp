@@ -80,6 +80,17 @@ public:
     //object_service_client_ = n_.serviceClient<worldmodel_msgs::GetObjectModel>("worldmodel/get_object_model");
     path_service_client_ = n_.serviceClient<hector_nav_msgs::GetRobotTrajectory>("trajectory");
 
+
+    double p_geotiff_save_period = 0.0;
+    pn_.param("geotiff_save_period", p_geotiff_save_period, 0.0);
+
+    if(p_geotiff_save_period > 0.0){
+      //ros::Timer timer = pn_.createTimer(ros::Duration(p_geotiff_save_period), &MapGenerator::timerSaveGeotiffCallback, false);
+      //publish_trajectory_timer_ = private_nh.createTimer(ros::Duration(1.0 / p_trajectory_publish_rate_), &PathContainer::publishTrajectoryTimerCallback, this, false);
+      map_save_timer_ = pn_.createTimer(ros::Duration(p_geotiff_save_period), &MapGenerator::timerSaveGeotiffCallback, this, false );
+    }
+
+
     pn_.param("plugins", p_plugin_list_, std::string(""));
 
     std::vector<std::string> plugin_list;
@@ -267,6 +278,8 @@ public:
 
   pluginlib::ClassLoader<hector_geotiff::MapWriterPluginInterface>* plugin_loader_;
 
+  ros::Timer map_save_timer_;
+
   unsigned int running_saved_map_num_;
 };
 
@@ -278,9 +291,9 @@ int main(int argc, char** argv)
 
   hector_geotiff::MapGenerator mg;
 
-  ros::NodeHandle pn_;
-  double p_geotiff_save_period = 60.0f;
-  pn_.param("geotiff_save_period", p_geotiff_save_period, 60.0);
+  //ros::NodeHandle pn_;
+  //double p_geotiff_save_period = 60.0f;
+  //pn_.param("geotiff_save_period", p_geotiff_save_period, 60.0);
   //ros::Timer timer = pn_.createTimer(ros::Duration(p_geotiff_save_period), &MapGenerator::timerSaveGeotiffCallback, &mg, false);
 
   ros::spin();

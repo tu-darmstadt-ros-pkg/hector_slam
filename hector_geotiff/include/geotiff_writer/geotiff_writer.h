@@ -66,6 +66,7 @@ class GeotiffWriter : public MapWriterInterface
   void drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const Color& color);
   void drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points);
   void drawCoords();
+  std::string getBasePathAndFileName() const;
   void writeGeotiffImage();
 
 

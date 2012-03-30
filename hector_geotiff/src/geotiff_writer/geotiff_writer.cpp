@@ -444,6 +444,11 @@ void GeotiffWriter::drawPath(const Eigen::Vector3f& start, const std::vector<Eig
   qPainter.restore();
 }
 
+std::string GeotiffWriter::getBasePathAndFileName() const
+{
+  return std::string (map_file_path_ +"/" + map_file_name_);
+}
+
 void GeotiffWriter::writeGeotiffImage()
 {
   //Only works with recent Qt versions
