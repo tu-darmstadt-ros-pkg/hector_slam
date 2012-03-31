@@ -1,3 +1,5 @@
+<?xml version="1.0"?>
+
 <launch>
   <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
     <param name="scan_topic" value="laser1/scan" />
@@ -7,6 +9,8 @@
     <param name="use_tf_pose_start_estimate" value="false"/>
 
     <param name="map_pub_period" value="1.0"/>
+
+    <param name="laser_z_min_value" value = "-0.3"/>
 
     <param name="map_resolution" value="0.05"/>
     <param name="map_size" value="1024"/>
