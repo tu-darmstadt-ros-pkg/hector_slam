@@ -16,6 +16,7 @@
     <param name="map_size" value="1024"/>
     <param name="map_start_x" value="0.5"/>
     <param name="map_start_y" value="0.5"/>
+    <param name="map_multi_res_levels" value="1"/>
 
     <remap from="map" to="scanmatcher_map" />
   </node>
