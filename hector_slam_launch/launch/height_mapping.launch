@@ -10,6 +10,7 @@
     <param name="advertise_map_service" value="true"/>
     <param name="use_tf_scan_transformation" value="true"/>
     <param name="use_tf_pose_start_estimate" value="true"/>
+    <param name="pub_map_odom_transform" value="false"/>
     <param name="map_with_known_poses" value="true"/>
 
     <param name="map_pub_period" value="5.0"/>
