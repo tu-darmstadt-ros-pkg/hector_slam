@@ -76,6 +76,7 @@ HectorMappingRos::HectorMappingRos()
 
   private_nh_.param("use_tf_scan_transformation", p_use_tf_scan_transformation_,true);
   private_nh_.param("use_tf_pose_start_estimate", p_use_tf_pose_start_estimate_,false);
+  private_nh_.param("map_with_known_poses", p_map_with_known_poses_, false);
 
   private_nh_.param("base_frame", p_base_frame_, std::string("base_link"));
   private_nh_.param("map_frame", p_map_frame_, std::string("map"));
@@ -265,7 +266,11 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
         }else{
           startEstimate = slamProcessor->getLastScanMatchPose();
         }
-        slamProcessor->update(laserScanContainer, startEstimate);
+        if (p_map_with_known_poses_){
+          slamProcessor->update(laserScanContainer, startEstimate, true);
+        }else{
+          slamProcessor->update(laserScanContainer, startEstimate);
+        }
       }
 
     }else{
