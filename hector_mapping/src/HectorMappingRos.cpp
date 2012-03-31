@@ -168,8 +168,8 @@ HectorMappingRos::HectorMappingRos()
   ROS_INFO("HectorSM p_update_factor_occupied_: %f", p_update_factor_occupied_);
   ROS_INFO("HectorSM p_map_update_distance_threshold_: %f ", p_map_update_distance_threshold_);
   ROS_INFO("HectorSM p_map_update_angle_threshold_: %f", p_map_update_angle_threshold_);
-  ROS_INFO("HectorSM laser_z_min_value: %f", laser_z_min_value);
-  ROS_INFO("HectorSM laser_z_max_value: %f", laser_z_max_value);
+  ROS_INFO("HectorSM p_laser_z_min_value_: %f", p_laser_z_min_value_);
+  ROS_INFO("HectorSM p_laser_z_max_value_: %f", p_laser_z_max_value_);
 
   laser_z_min_value
 
