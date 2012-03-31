@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_height_mapping" output="screen">
+    <param name="scan_topic" value="laser0/scan" />
+    <param name="base_frame" value="base_footprint" />
+    <param name="odom_frame" value="nav" />
+    
+    <param name="output_timing" value="false"/>
+    <param name="use_tf_scan_transformation" value="true"/>
+    <param name="use_tf_pose_start_estimate" value="true"/>
+    <param name="map_with_known_poses" value="true"/>
+
+    <param name="map_pub_period" value="5.0"/>
+
+    <param name="map_resolution" value="0.05"/>
+    <param name="map_size" value="1024"/>
+    <param name="map_start_x" value="0.5"/>
+    <param name="map_start_y" value="0.5"/>
+    
+    <param name="laser_min_dist" value="0.6" />
+    <param name="laser_max_dist" value="3.9" />
+    <param name="laser_z_min_value" value="1.7"/>
+    <param name="laser_z_max_value" value="2.1"/>
+
+    <remap from="map" to="height_map" />
+  </node>
+</launch>
