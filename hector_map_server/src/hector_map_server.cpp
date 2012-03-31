@@ -104,7 +104,7 @@ public:
 
     try{
 
-      tf_->waitForTransform(map_ptr_->header.frame_id,req.point.header.frame_id, req.point.header.stamp, ros::Duration(0.5));
+      tf_->waitForTransform(map_ptr_->header.frame_id,req.point.header.frame_id, req.point.header.stamp, ros::Duration(1.0));
       tf_->lookupTransform(map_ptr_->header.frame_id, req.point.header.frame_id, req.point.header.stamp, stamped_pose);
 
       tf::Point v2_tf;
@@ -170,15 +170,12 @@ public:
       return false;
     }
 
-
-    const geometry_msgs::PoseStamped& ooi_pose (req.ooi_pose);
-
     try{
 
       tf::Stamped<tf::Pose> ooi_pose, transformed_pose, search_position;
       tf::poseStampedMsgToTF(req.ooi_pose, ooi_pose);
 
-      tf_->waitForTransform(map_ptr_->header.frame_id, req.ooi_pose.header.frame_id, req.ooi_pose.header.stamp, ros::Duration(0.5));
+      tf_->waitForTransform(map_ptr_->header.frame_id, req.ooi_pose.header.frame_id, req.ooi_pose.header.stamp, ros::Duration(1.0));
       tf_->transformPose(map_ptr_->header.frame_id, ooi_pose, transformed_pose);
 
       tf::Vector3 direction(-req.distance, 0.0, 0.0);
@@ -186,6 +183,8 @@ public:
       search_position.setOrigin(transformed_pose.getOrigin() + transformed_pose.getBasis() * direction);
 
       tf::poseStampedTFToMsg(search_position, res.search_pose);
+
+      return true;
 
 //      //tf::Point v2_tf;
 //      //tf::pointMsgToTF(req.point.point,v2_tf);
@@ -209,7 +208,7 @@ public:
 //      res.search_pose.pose.position.x = searchPos.x();
 //      res.search_pose.pose.position.y = searchPos.y();
 
-      return true;
+      //return true;
 
 
       //Eigen::Vector2f ooi_pos(v1.x(),v1.y());
@@ -250,12 +249,10 @@ public:
 
       }
       */
-      return true;
+      //return true;
 
-    }    catch(tf::TransformException e)
-    {
-      ROS_ERROR("Transform failed\n");
-
+    }    catch(tf::TransformException e){
+      ROS_ERROR("Transform failed in getSearchPosition service call: %s",e.what());
     }
 
     return false;
