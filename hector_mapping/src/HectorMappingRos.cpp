@@ -329,8 +329,10 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   cov[11] = yaC;
   cov[31] = yaC;
 
-  poseUpdatePublisher_.publish(covPose);
-  posePublisher_.publish(stampedPose);
+  if (!p_map_with_known_poses_)
+    poseUpdatePublisher_.publish(covPose);
+    posePublisher_.publish(stampedPose);
+  }
 
   if(p_pub_odometry_)
   {
