@@ -168,6 +168,10 @@ HectorMappingRos::HectorMappingRos()
   ROS_INFO("HectorSM p_update_factor_occupied_: %f", p_update_factor_occupied_);
   ROS_INFO("HectorSM p_map_update_distance_threshold_: %f ", p_map_update_distance_threshold_);
   ROS_INFO("HectorSM p_map_update_angle_threshold_: %f", p_map_update_angle_threshold_);
+  ROS_INFO("HectorSM laser_z_min_value: %f", laser_z_min_value);
+  ROS_INFO("HectorSM laser_z_max_value: %f", laser_z_max_value);
+
+  laser_z_min_value
 
   scanSubscriber_ = node_.subscribe(p_scan_topic_, p_scan_subscriber_queue_size_, &HectorMappingRos::scanCallback, this);
   sysMsgSubscriber_ = node_.subscribe(p_sys_msg_topic_, 2, &HectorMappingRos::sysMsgCallback, this);
