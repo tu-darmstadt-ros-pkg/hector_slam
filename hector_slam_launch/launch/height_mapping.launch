@@ -14,6 +14,7 @@
     <param name="map_with_known_poses" value="true"/>
 
     <param name="map_pub_period" value="5.0"/>
+    <param name="update_factor_free" value="4.5"/>
 
     <param name="map_resolution" value="0.05"/>
     <param name="map_size" value="1024"/>
@@ -26,6 +27,7 @@
     <param name="laser_z_max_value" value="2.1"/>
 
     <remap from="map" to="height_map" />
+    <remap from="dynamic_map" to="height_map" />
   </node>
   
   <node pkg="hector_geotiff" type="geotiff_node" name="hector_height_geotiff_node" output="screen" launch-prefix="nice -n 15">
