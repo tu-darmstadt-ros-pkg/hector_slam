@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+    
+    <!-- Topic names -->
+    <param name="scan_topic" value="scan" />    
+    
+    <!-- Frame names -->
+    <param name="base_frame" value="base_link" />
+    <param name="odom_frame" value="odom"/>
+    <param name="output_timing" value="false"/>
+    
+    <!-- Tf use -->
+    <param name="use_tf_scan_transformation" value="true"/>
+    <param name="use_tf_pose_start_estimate" value="false"/>
+    <param name="pub_map_odom_transform" value="true"/>
+    <param name="advertise_map_service" value="true"/>
+    
+    <!-- Map size / start point -->
+    <param name="map_resolution" value="0.050"/>
+    <param name="map_size" value="2048"/>
+    <param name="map_start_x" value="0.5"/>
+    <param name="map_start_y" value="0.5" />
+    <param name="map_multi_res_levels" value="2" />
+    
+    <!-- Map update parameters -->
+    <param name="update_factor_free" value="0.4"/>
+    <param name="update_factor_occupied" value="0.9" />    
+    <param name="map_update_distance_thresh" value="0.4"/>
+    <param name="map_update_angle_thresh" value="0.06" />
+    
+    <!-- Debug parameters -->
+    <!--
+      <param name="pub_drawings" value="true"/>
+      <param name="pub_debug_output" value="true"/>
+    -->
+  </node>
+
+  <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen">
+    <param name="target_frame_name" type="string" value="/map" />
+    <param name="source_frame_name" type="string" value="/base_link" />
+    <param name="trajectory_update_rate" type="double" value="4" />
+    <param name="trajectory_publish_rate" type="double" value="0.25" />
+  </node>
+
+  <node pkg="hector_geotiff" type="geotiff_node" name="hector_geotiff_node" output="screen" launch-prefix="nice -n 15">
+    <remap from="map" to="/dynamic_map" />
+    <param name="map_file_path" type="string" value="$(find hector_geotiff)/maps" />
+    <param name="map_file_base_name" type="string" value="hector_slam_map" />
+    <param name="geotiff_save_period" type="double" value="10" />
+    <param name="draw_background_checkerboard" type="bool" value="true" />
+    <param name="draw_free_space_grid" type="bool" value="true" />
+  </node>
+
+</launch>

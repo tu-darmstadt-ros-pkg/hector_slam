@@ -1,0 +1,8 @@
+# Returns the distance to the next obstacle from the origin of frame point.header.frame_id
+# in the direction of the point
+#
+# All units are meters.
+
+---
+nav_msgs/Path trajectory
+
