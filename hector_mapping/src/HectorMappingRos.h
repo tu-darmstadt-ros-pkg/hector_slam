@@ -121,6 +121,10 @@ protected:
   std::string p_map_frame_;
   std::string p_odom_frame_;
 
+  //Parameters related to publishing the scanmatcher pose directly via tf
+  bool p_pub_map_scanmatch_transform_;
+  std::string p_tf_map_scanmatch_transform_frame_name_;
+
   std::string p_scan_topic_;
   std::string p_sys_msg_topic_;
 
@@ -129,7 +133,6 @@ protected:
   bool p_pub_drawings;
   bool p_pub_debug_output_;
   bool p_pub_map_odom_transform_;
-  bool p_pub_map_scanmatch_transform_;
   bool p_pub_odometry_;
   bool p_advertise_map_service_;
   int p_scan_subscriber_queue_size_;

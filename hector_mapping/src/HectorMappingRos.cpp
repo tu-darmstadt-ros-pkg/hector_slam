@@ -53,7 +53,6 @@ HectorMappingRos::HectorMappingRos()
   private_nh_.param("pub_drawings", p_pub_drawings, false);
   private_nh_.param("pub_debug_output", p_pub_debug_output_, false);
   private_nh_.param("pub_map_odom_transform", p_pub_map_odom_transform_,true);
-  private_nh_.param("pub_map_scanmatch_transform", p_pub_map_scanmatch_transform_,true);
   private_nh_.param("pub_odometry", p_pub_odometry_,false);
   private_nh_.param("advertise_map_service", p_advertise_map_service_,true);
   private_nh_.param("scan_subscriber_queue_size", p_scan_subscriber_queue_size_, 5);
@@ -81,6 +80,9 @@ HectorMappingRos::HectorMappingRos()
   private_nh_.param("base_frame", p_base_frame_, std::string("base_link"));
   private_nh_.param("map_frame", p_map_frame_, std::string("map"));
   private_nh_.param("odom_frame", p_odom_frame_, std::string("odom"));
+
+  private_nh_.param("pub_map_scanmatch_transform", p_pub_map_scanmatch_transform_,true);
+  private_nh_.param("tf_map_scanmatch_transform_frame_name", p_tf_map_scanmatch_transform_frame_name_, std::string("scanmatcher_frame"));
 
   private_nh_.param("output_timing", p_timing_output_,false);
 
@@ -375,7 +377,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 
     tf::Transform scanmatcher_to_map (tf::createQuaternionFromRPY(0.0, 0.0, static_cast<double>(slamPose.z())),
                                       tf::Point(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()),0.0));
-    tfB_->sendTransform( tf::StampedTransform(scanmatcher_to_map, last_scan_time_, p_map_frame_, "scanmatcher_frame"));
+    tfB_->sendTransform( tf::StampedTransform(scanmatcher_to_map, last_scan_time_, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
   }
 }
 
