@@ -277,6 +277,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 
     }else{
       ROS_INFO("lookupTransform %s to %s timed out. Could not transform laser scan into base_frame.", p_base_frame_.c_str(), scan.header.frame_id.c_str());
+      return;
     }
   }
 
@@ -284,6 +285,12 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   {
     ros::WallDuration duration = ros::WallTime::now() - startTime;
     ROS_INFO("HectorSLAM Iter took: %f milliseconds", duration.toSec()*1000.0f );
+  }
+
+  //If we're just building a map with known poses, we're finished now. Code below this point publishes the localization results.
+  if (p_map_with_known_poses_)
+  {
+    return;
   }
 
   const Eigen::Vector3f& slamPose(slamProcessor->getLastScanMatchPose());
@@ -327,10 +334,8 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   cov[11] = yaC;
   cov[31] = yaC;
 
-  if (!p_map_with_known_poses_){
-    poseUpdatePublisher_.publish(covPose);
-    posePublisher_.publish(stampedPose);
-  }
+  poseUpdatePublisher_.publish(covPose);
+  posePublisher_.publish(stampedPose);
 
   if(p_pub_odometry_)
   {

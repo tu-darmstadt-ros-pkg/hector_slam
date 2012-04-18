@@ -91,6 +91,7 @@ public:
 
 
       for (int i = 0; i < numIter; ++i) {
+        //std::cout << "\nest:\n" << estimate;
 
         notConverged = estimateTransformationLogLh(estimate, gridMapUtil, dataContainer);
 
@@ -192,6 +193,7 @@ protected:
   {
     gridMapUtil.getCompleteHessianDerivs(estimate, dataPoints, H, dTr);
     //std::cout << "\nH\n" << H  << "\n";
+    //std::cout << "\ndTr\n" << dTr  << "\n";
 
 
     if ((H(0, 0) != 0.0f) && (H(1, 1) != 0.0f)) {
@@ -199,6 +201,8 @@ protected:
 
       //H += Eigen::Matrix3f::Identity() * 1.0f;
       Eigen::Vector3f searchDir (H.inverse() * dTr);
+
+      //std::cout << "\nsearchdir\n" << searchDir  << "\n";
 
       if (searchDir[2] > 0.2f) {
         searchDir[2] = 0.2f;

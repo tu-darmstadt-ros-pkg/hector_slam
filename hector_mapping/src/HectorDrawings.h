@@ -26,6 +26,9 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
+#ifndef HECTOR_DRAWINGS_H__
+#define HECTOR_DRAWINGS_H__
+
 #include "util/DrawInterface.h"
 #include "util/UtilFunctions.h"
 
@@ -164,3 +167,5 @@ public:
 
   int idCounter;
 };
+
+#endif

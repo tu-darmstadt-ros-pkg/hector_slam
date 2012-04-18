@@ -26,6 +26,9 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
+#ifndef HECTOR_DEBUG_INFO_PROVIDER_H__
+#define HECTOR_DEBUG_INFO_PROVIDER_H__
+
 #include "util/HectorDebugInfoInterface.h"
 #include "util/UtilFunctions.h"
 
@@ -87,3 +90,5 @@ public:
   ros::Publisher debugInfoPublisher_;
 
 };
+
+#endif

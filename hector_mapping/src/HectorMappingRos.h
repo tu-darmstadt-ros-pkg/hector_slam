@@ -26,6 +26,9 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
+#ifndef HECTOR_MAPPING_ROS_H__
+#define HECTOR_MAPPING_ROS_H__
+
 #include "ros/ros.h"
 
 #include "sensor_msgs/LaserScan.h"
@@ -159,3 +162,5 @@ protected:
   float p_laser_z_min_value_;
   float p_laser_z_max_value_;
 };
+
+#endif
