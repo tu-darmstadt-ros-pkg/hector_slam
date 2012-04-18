@@ -341,6 +341,9 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     odometryPublisher_.publish(tmp);
   }
 
+  tf::Transform poseTransform;
+  tf::poseMsgToTF(pose, poseTransform);
+
   if (p_pub_map_odom_transform_)
   {
     tf::StampedTransform odom_to_base;
@@ -355,14 +358,12 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
       ROS_ERROR("Transform failed during publishing of map_odom transform: %s",e.what());
       odom_to_base.setIdentity();
     }
-    map_to_odom_ = tf::Transform(tf::createQuaternionFromYaw(static_cast<double>(slamPose.z())), tf::Point(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()), 0.0)) * odom_to_base.inverse();
+    map_to_odom_ = tf::Transform(poseTransform * odom_to_base.inverse());
     tfB_->sendTransform( tf::StampedTransform (map_to_odom_, scan.header.stamp, p_map_frame_, p_odom_frame_));
   }
 
   if (p_pub_map_scanmatch_transform_){
-    tf::Transform scanmatcher_to_map (tf::createQuaternionFromRPY(0.0, 0.0, static_cast<double>(slamPose.z())),
-                                      tf::Point(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()),0.0));
-    tfB_->sendTransform( tf::StampedTransform(scanmatcher_to_map, scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
+    tfB_->sendTransform( tf::StampedTransform(poseTransform, scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
   }
 }
 
@@ -435,7 +436,7 @@ void HectorMappingRos::publishMap(MapPublisherContainer& mapPublisher, const hec
 
 bool HectorMappingRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan& scan, hectorslam::DataContainer& dataContainer, float scaleToMap)
 {
-  unsigned int size = scan.ranges.size();
+  size_t size = scan.ranges.size();
 
   float angle = scan.angle_min;
 
@@ -445,7 +446,7 @@ bool HectorMappingRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan&
 
   float maxRangeForContainer = scan.range_max - 0.1f;
 
-  for (unsigned int i = 0; i < size; ++i)
+  for (size_t i = 0; i < size; ++i)
   {
     float dist = scan.ranges[i];
 
@@ -463,7 +464,7 @@ bool HectorMappingRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan&
 
 bool HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointCloud& pointCloud, const tf::StampedTransform& laserTransform, hectorslam::DataContainer& dataContainer, float scaleToMap)
 {
-  unsigned int size = pointCloud.points.size();
+  size_t size = pointCloud.points.size();
   //ROS_INFO("size: %d", size);
 
   dataContainer.clear();
@@ -471,7 +472,7 @@ bool HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointClou
   tf::Vector3 laserPos (laserTransform.getOrigin());
   dataContainer.setOrigo(Eigen::Vector2f(laserPos.x(), laserPos.y())*scaleToMap);
 
-  for (unsigned int i = 0; i < size; ++i)
+  for (size_t i = 0; i < size; ++i)
   {
 
     const geometry_msgs::Point32& currPoint(pointCloud.points[i]);
