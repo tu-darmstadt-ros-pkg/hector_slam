@@ -82,8 +82,6 @@ public:
 
 protected:
 
-  ros::Time last_scan_time_;
-
   HectorDebugInfoProvider* debugInfoProvider;
   HectorDrawings* hectorDrawings;
 

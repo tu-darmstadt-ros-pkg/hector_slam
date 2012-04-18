@@ -216,8 +216,6 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     hectorDrawings->setTime(scan.header.stamp);
   }
 
-  last_scan_time_ = scan.header.stamp;
-
   ros::WallTime startTime = ros::WallTime::now();
 
   if (!p_use_tf_scan_transformation_)
@@ -343,8 +341,6 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     odometryPublisher_.publish(tmp);
   }
 
-  // tf::Stamped<tf::Pose> odom_to_base;
-
   if (p_pub_map_odom_transform_)
   {
     tf::StampedTransform odom_to_base;
@@ -352,9 +348,6 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     try
     {
       tf_.waitForTransform(p_odom_frame_, p_base_frame_, scan.header.stamp, ros::Duration(0.5));
-//      tf_.transformPose(p_odom_frame_,tf::Stamped<tf::Pose> (btTransform(tf::createQuaternionFromRPY(0.0, 0.0, static_cast<double>(slamPose.z())),
-//                                                                         btVector3(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()), 0.0)).inverse(),
-//                                                             scan.header.stamp, p_base_frame_),odom_to_map);
       tf_.lookupTransform(p_odom_frame_, p_base_frame_, scan.header.stamp, odom_to_base);
     }
     catch(tf::TransformException e)
@@ -362,22 +355,14 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
       ROS_ERROR("Transform failed during publishing of map_odom transform: %s",e.what());
       odom_to_base.setIdentity();
     }
-
-//    map_to_odom_ = tf::Transform(tf::Quaternion( odom_to_map.getRotation() ),
-//                                 tf::Point(      odom_to_map.getOrigin() ) ).inverse();
     map_to_odom_ = tf::Transform(tf::createQuaternionFromYaw(static_cast<double>(slamPose.z())), tf::Point(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()), 0.0)) * odom_to_base.inverse();
-
-    tfB_->sendTransform( tf::StampedTransform (map_to_odom_, last_scan_time_, p_map_frame_, p_odom_frame_));
+    tfB_->sendTransform( tf::StampedTransform (map_to_odom_, scan.header.stamp, p_map_frame_, p_odom_frame_));
   }
 
   if (p_pub_map_scanmatch_transform_){
-    //tf::Stamped<tf::Pose> scanmatcher_to_map (btTransform(tf::createQuaternionFromRPY(0.0, 0.0, static_cast<double>(slamPose.z())),
-    //                                                                         btVector3(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()), 0.0)),
-    //                       scan.header.stamp,"scanmatch_frame");
-
     tf::Transform scanmatcher_to_map (tf::createQuaternionFromRPY(0.0, 0.0, static_cast<double>(slamPose.z())),
                                       tf::Point(static_cast<double>(slamPose.x()), static_cast<double>(slamPose.y()),0.0));
-    tfB_->sendTransform( tf::StampedTransform(scanmatcher_to_map, last_scan_time_, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
+    tfB_->sendTransform( tf::StampedTransform(scanmatcher_to_map, scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
   }
 }
 
@@ -495,7 +480,7 @@ bool HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointClou
 
     if ( (dist_sqr > p_sqr_laser_min_dist_) && (dist_sqr < p_sqr_laser_max_dist_) ){
 
-      if ( (currPoint.x < 0.0f) && (dist_sqr < 0.25f)){
+      if ( (currPoint.x < 0.0f) && (dist_sqr < 0.50f)){
         continue;
       }
 
