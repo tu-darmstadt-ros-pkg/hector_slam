@@ -293,61 +293,19 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     return;
   }
 
-  const Eigen::Vector3f& slamPose(slamProcessor->getLastScanMatchPose());
-  const Eigen::Matrix3f& slamCov(slamProcessor->getLastScanMatchCovariance());
+  poseInfoContainer_.update(slamProcessor->getLastScanMatchPose(), slamProcessor->getLastScanMatchCovariance(), scan.header.stamp, "map");
 
-  std_msgs::Header header;
-  header.stamp = scan.header.stamp;
-  header.seq = scan.header.seq;
-  header.frame_id = "map";
-
-  geometry_msgs::Pose pose;
-  pose.position.x = slamPose.x();
-  pose.position.y = slamPose.y();
-
-  pose.orientation.w = cos(slamPose.z()*0.5f);
-  pose.orientation.z = sin(slamPose.z()*0.5f);
-
-  geometry_msgs::PoseStamped stampedPose;
-  stampedPose.header = header;
-  stampedPose.pose = pose;
-
-  geometry_msgs::PoseWithCovarianceStamped covPose;
-  covPose.header = header;
-  covPose.pose.pose = pose;
-
-  boost::array<double, 36>& cov(covPose.pose.covariance);
-
-  cov[0] = static_cast<double>(slamCov(0,0));
-  cov[7] = static_cast<double>(slamCov(1,1));
-  cov[35] = static_cast<double>(slamCov(2,2));
-
-  double xyC = static_cast<double>(slamCov(0,1));
-  cov[1] = xyC;
-  cov[6] = xyC;
-
-  double xaC = static_cast<double>(slamCov(0,2));
-  cov[5] = xaC;
-  cov[30] = xaC;
-
-  double yaC = static_cast<double>(slamCov(1,2));
-  cov[11] = yaC;
-  cov[31] = yaC;
-
-  poseUpdatePublisher_.publish(covPose);
-  posePublisher_.publish(stampedPose);
+  poseUpdatePublisher_.publish(poseInfoContainer_.getPoseWithCovarianceStamped());
+  posePublisher_.publish(poseInfoContainer_.getPoseStamped());
 
   if(p_pub_odometry_)
   {
     nav_msgs::Odometry tmp;
-    tmp.pose = covPose.pose;
+    tmp.pose = poseInfoContainer_.getPoseWithCovarianceStamped().pose;
 
-    tmp.header = header;
+    tmp.header = poseInfoContainer_.getPoseWithCovarianceStamped().header;
     odometryPublisher_.publish(tmp);
   }
-
-  tf::Transform poseTransform;
-  tf::poseMsgToTF(pose, poseTransform);
 
   if (p_pub_map_odom_transform_)
   {
@@ -363,12 +321,12 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
       ROS_ERROR("Transform failed during publishing of map_odom transform: %s",e.what());
       odom_to_base.setIdentity();
     }
-    map_to_odom_ = tf::Transform(poseTransform * odom_to_base.inverse());
+    map_to_odom_ = tf::Transform(poseInfoContainer_.getTfTransform() * odom_to_base.inverse());
     tfB_->sendTransform( tf::StampedTransform (map_to_odom_, scan.header.stamp, p_map_frame_, p_odom_frame_));
   }
 
   if (p_pub_map_scanmatch_transform_){
-    tfB_->sendTransform( tf::StampedTransform(poseTransform, scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
+    tfB_->sendTransform( tf::StampedTransform(poseInfoContainer_.getTfTransform(), scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
   }
 }
 

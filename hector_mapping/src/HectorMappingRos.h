@@ -47,6 +47,8 @@
 
 #include <boost/thread.hpp>
 
+#include "PoseInfoContainer.h"
+
 
 class HectorDrawings;
 class HectorDebugInfoProvider;
@@ -114,9 +116,15 @@ protected:
   hectorslam::HectorSlamProcessor* slamProcessor;
   hectorslam::DataContainer laserScanContainer;
 
+  PoseInfoContainer poseInfoContainer_;
+
   sensor_msgs::PointCloud laser_point_cloud_;
 
   ros::Time lastMapPublishTime;
+
+
+  //-----------------------------------------------------------
+  // Parameters
 
   std::string p_base_frame_;
   std::string p_map_frame_;
