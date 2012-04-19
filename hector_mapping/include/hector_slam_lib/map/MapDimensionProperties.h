@@ -64,11 +64,7 @@ public:
 
   bool pointOutOfMapBounds(const Eigen::Vector2f& coords) const
   {
-    if ((coords[0] < 0.0f) || (coords[0] > mapLimitsf[0]) || (coords[1] < 0.0f) || (coords[1] > mapLimitsf[1])){
-      return true;
-    }else{
-      return false;
-    }
+    return ((coords[0] < 0.0f) || (coords[0] > mapLimitsf[0]) || (coords[1] < 0.0f) || (coords[1] > mapLimitsf[1]));
   }
 
   void setMapCellDims(const Eigen::Vector2i& newDims)

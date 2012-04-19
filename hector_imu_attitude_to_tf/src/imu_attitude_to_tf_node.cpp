@@ -1,5 +1,5 @@
 //=================================================================================================
-// Copyright (c) 2011, Stefan Kohlbrecher, TU Darmstadt
+// Copyright (c) 2012, Stefan Kohlbrecher, TU Darmstadt
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without
@@ -26,69 +26,54 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
-#ifndef HECTOR_DEBUG_INFO_PROVIDER_H__
-#define HECTOR_DEBUG_INFO_PROVIDER_H__
-
-#include "util/HectorDebugInfoInterface.h"
-#include "util/UtilFunctions.h"
 
 #include "ros/ros.h"
+#include "tf/transform_broadcaster.h"
+#include "sensor_msgs/Imu.h"
 
-#include "hector_mapping/HectorDebugInfo.h"
+std::string p_base_stabilized_frame_;
+std::string p_base_frame_;
+tf::TransformBroadcaster* tfB_;
+tf::StampedTransform transform_;
+tf::Quaternion tmp_;
 
-
-class HectorDebugInfoProvider : public HectorDebugInfoInterface
+void imuMsgCallback(const sensor_msgs::Imu& imu_msg)
 {
-public:
+  tf::quaternionMsgToTF(imu_msg.orientation, tmp_);
 
-  HectorDebugInfoProvider()
-  {
-    ros::NodeHandle nh_;
+  btScalar yaw, pitch, roll;
+  btMatrix3x3(tmp_).getRPY(roll, pitch, yaw);
 
-    debugInfoPublisher_ = nh_.advertise<hector_mapping::HectorDebugInfo>("hector_debug_info", 50, true);
-  };
+  tmp_.setRPY(roll, pitch, 0.0);
 
-  virtual void sendAndResetData()
-  {
-    debugInfoPublisher_.publish(debugInfo);
-    debugInfo.iterData.clear();
-  }
+  transform_.setRotation(tmp_);
 
+  transform_.stamp_ = imu_msg.header.stamp;
 
-  virtual void addHessianMatrix(const Eigen::Matrix3f& hessian)
-  {
-    hector_mapping::HectorIterData iterData;
+  tfB_->sendTransform(transform_);
+}
 
-    for (int i=0; i < 9; ++i){
-      iterData.hessian[i] = static_cast<double>(hessian.data()[i]);
-      iterData.determinant = hessian.determinant();
+int main(int argc, char **argv) {
+  ros::init(argc, argv, ROS_PACKAGE_NAME);
 
-      Eigen::SelfAdjointEigenSolver<Eigen::Matrix3f> eig(hessian);
+  ros::NodeHandle n;
+  ros::NodeHandle pn("~");
 
-      const Eigen::Vector3f& eigValues (eig.eigenvalues());
-      iterData.conditionNum = eigValues[2] / eigValues[0];
+  pn.param("base_stabilized_frame", p_base_stabilized_frame_, std::string("base_stabilized_frame"));
+  pn.param("base_frame", p_base_frame_, std::string("base_frame"));
+  
+  tfB_ = new tf::TransformBroadcaster();
+  transform_.getOrigin().setX(0.0);
+  transform_.getOrigin().setY(0.0);
+  transform_.getOrigin().setZ(0.0);
+  transform_.frame_id_ = p_base_stabilized_frame_;
+  transform_.child_frame_id_ = p_base_frame_;
 
+  ros::Subscriber imu_subscriber = n.subscribe("imu_topic", 10, imuMsgCallback);
 
-      iterData.determinant2d = hessian.block<2,2>(0,0).determinant();
-      Eigen::SelfAdjointEigenSolver<Eigen::Matrix2f> eig2d(hessian.block<2,2>(0,0));
+  ros::spin();
 
-      const Eigen::Vector2f& eigValues2d (eig2d.eigenvalues());
-      iterData.conditionNum2d = eigValues2d[1] / eigValues2d[0];
-    }
+  delete tfB_;
 
-    debugInfo.iterData.push_back(iterData);
-  }
-
-  virtual void addPoseLikelihood(float lh)
-  {
-
-  }
-
-
-  hector_mapping::HectorDebugInfo debugInfo;
-
-  ros::Publisher debugInfoPublisher_;
-
-};
-
-#endif
+  return 0;
+}
