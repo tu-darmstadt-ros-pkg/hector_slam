@@ -14,8 +14,11 @@
     <param name="map_with_known_poses" value="true"/>
 
     <param name="map_pub_period" value="5.0"/>
-    <param name="update_factor_free" value="4.5"/>
-
+    <param name="update_factor_free" value="0.45"/>
+    
+    <param name="map_update_distance_thresh" value="0.0"/>
+    <param name="map_update_angle_thresh" value="0.0"/>
+    
     <param name="map_resolution" value="0.05"/>
     <param name="map_size" value="1024"/>
     <param name="map_start_x" value="0.5"/>
