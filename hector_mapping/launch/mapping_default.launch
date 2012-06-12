@@ -6,6 +6,7 @@
   <arg name="odom_frame" default="nav"/>
   <arg name="pub_map_odom_transform" default="true"/>
   <arg name="scan_subscriber_queue_size" default="5"/>
+  <arg name="scan_topic" default="scan"/>
   
   <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
     
@@ -38,6 +39,7 @@
     <param name="advertise_map_service" value="true"/>
     
     <param name="scan_subscriber_queue_size" value="$(arg scan_subscriber_queue_size)"/>
+    <param name="scan_topic" value="$(arg scan_topic)"/>
     
     <!-- Debug parameters -->
     <!--
