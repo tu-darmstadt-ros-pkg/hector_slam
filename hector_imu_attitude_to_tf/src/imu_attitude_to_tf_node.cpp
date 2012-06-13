@@ -42,7 +42,7 @@ void imuMsgCallback(const sensor_msgs::Imu& imu_msg)
   tf::quaternionMsgToTF(imu_msg.orientation, tmp_);
 
   btScalar yaw, pitch, roll;
-  btMatrix3x3(tmp_).getRPY(roll, pitch, yaw);
+  tf::Matrix3x3(tmp_).getRPY(roll, pitch, yaw);
 
   tmp_.setRPY(roll, pitch, 0.0);
 
