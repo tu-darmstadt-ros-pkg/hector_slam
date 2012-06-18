@@ -99,6 +99,7 @@ protected:
 
   ros::Publisher posePublisher_;
   ros::Publisher poseUpdatePublisher_;
+  ros::Publisher twistUpdatePublisher_;
   ros::Publisher odometryPublisher_;
   ros::Publisher scan_point_cloud_publisher_;
 
@@ -121,6 +122,8 @@ protected:
   sensor_msgs::PointCloud laser_point_cloud_;
 
   ros::Time lastMapPublishTime;
+  ros::Time lastScanTime;
+  Eigen::Vector3f lastSlamPose;
 
 
   //-----------------------------------------------------------
@@ -138,6 +141,7 @@ protected:
   std::string p_sys_msg_topic_;
 
   std::string p_pose_update_topic_;
+  std::string p_twist_update_topic_;
 
   bool p_pub_drawings;
   bool p_pub_debug_output_;

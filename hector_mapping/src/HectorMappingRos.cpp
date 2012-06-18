@@ -31,6 +31,7 @@
 #include "map/GridMap.h"
 
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <geometry_msgs/TwistWithCovarianceStamped.h>
 #include <nav_msgs/Odometry.h>
 
 #include "sensor_msgs/PointCloud2.h"
@@ -72,6 +73,7 @@ HectorMappingRos::HectorMappingRos()
   private_nh_.param("scan_topic", p_scan_topic_, std::string("scan"));
   private_nh_.param("sys_msg_topic", p_sys_msg_topic_, std::string("syscommand"));
   private_nh_.param("pose_update_topic", p_pose_update_topic_, std::string("poseupdate"));
+  private_nh_.param("twist_update_topic", p_twist_update_topic_, std::string("twistupdate"));
 
   private_nh_.param("use_tf_scan_transformation", p_use_tf_scan_transformation_,true);
   private_nh_.param("use_tf_pose_start_estimate", p_use_tf_pose_start_estimate_,false);
@@ -177,6 +179,7 @@ HectorMappingRos::HectorMappingRos()
   sysMsgSubscriber_ = node_.subscribe(p_sys_msg_topic_, 2, &HectorMappingRos::sysMsgCallback, this);
 
   poseUpdatePublisher_ = node_.advertise<geometry_msgs::PoseWithCovarianceStamped>(p_pose_update_topic_, 1, false);
+  twistUpdatePublisher_ = node_.advertise<geometry_msgs::TwistWithCovarianceStamped>(p_twist_update_topic_, 1, false);
   posePublisher_ = node_.advertise<geometry_msgs::PoseStamped>("slam_out_pose", 1, false);
 
   scan_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud>("slam_cloud",1,false);
@@ -298,6 +301,17 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   poseUpdatePublisher_.publish(poseInfoContainer_.getPoseWithCovarianceStamped());
   posePublisher_.publish(poseInfoContainer_.getPoseStamped());
 
+  if (!lastScanTime.isZero()) {
+    double delta_t = (scan.header.stamp - lastScanTime).toSec();
+    geometry_msgs::TwistWithCovarianceStamped covTwist;
+    covTwist.header = header;
+    covTwist.twist.covariance = cov; // assume the covariance for pose and twist to be the same as correlation coefficient is near 1
+    covTwist.twist.twist.linear.x = (slamPose.x() - lastSlamPose.x()) / delta_t;
+    covTwist.twist.twist.linear.y = (slamPose.y() - lastSlamPose.y()) / delta_t;
+    covTwist.twist.twist.angular.z = (fmod(slamPose.z() - lastSlamPose.z() + M_PI, 2*M_PI) - M_PI) / delta_t;
+    twistUpdatePublisher_.publish(covTwist);
+  }
+
   if(p_pub_odometry_)
   {
     nav_msgs::Odometry tmp;
@@ -328,6 +342,9 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   if (p_pub_map_scanmatch_transform_){
     tfB_->sendTransform( tf::StampedTransform(poseInfoContainer_.getTfTransform(), scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
   }
+
+  lastScanTime = scan.header.stamp;
+  lastSlamPose = slamPose;
 }
 
 void HectorMappingRos::sysMsgCallback(const std_msgs::String& string)
@@ -338,6 +355,8 @@ void HectorMappingRos::sysMsgCallback(const std_msgs::String& string)
   {
     ROS_INFO("HectorSM reset");
     slamProcessor->reset();
+    lastScanTime = ros::Time();
+    lastSlamPose.setZero();
   }
 }
 
