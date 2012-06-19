@@ -138,8 +138,10 @@ public:
       ROS_INFO("GeotiffNode: Map service called successfully");
       const nav_msgs::OccupancyGrid& map (srv_map.response.map);
 
-
-      geotiff_writer_.setMapFileName(p_map_file_base_name_);
+      std::string map_file_name = p_map_file_base_name_;
+      std::string mission_name;
+      if (n_.getParamCached("/mission", mission_name) && !mission_name.empty()) map_file_name = map_file_name + "_" + mission_name;
+      geotiff_writer_.setMapFileName(map_file_name);
       bool transformSuccess = geotiff_writer_.setupTransforms(map);
 
       if(!transformSuccess){
