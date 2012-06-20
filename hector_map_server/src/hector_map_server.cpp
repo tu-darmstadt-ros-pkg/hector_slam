@@ -111,7 +111,8 @@ public:
       tf::pointMsgToTF(req.point.point,v2_tf);
 
       tf::Vector3 v1 = stamped_pose * tf::Vector3(0.0, 0.0, 0.0);
-      tf::Vector3 v2 = stamped_pose * (v2_tf.normalized()*4.0f);
+      v2_tf.setZ(0.0);
+      tf::Vector3 v2 = stamped_pose * (v2_tf.normalized()*5.0);
 
       Eigen::Vector2f start(v1.x(),v1.y());
       Eigen::Vector2f end(v2.x(),v2.y());
