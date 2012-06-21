@@ -111,7 +111,8 @@ public:
 
       tf::Vector3 v1 = stamped_pose * tf::Vector3(0.0, 0.0, 0.0);
       tf::Vector3 v2 = stamped_pose * v2_tf;
-      v2_tf = v2_tf / tf::Vector3(v2_tf.x(), v2_tf.y(), 0.0).length() * 5.0f;
+      tf::Vector3 diff = v2 - v1;
+      v2 = v1 + diff / tf::Vector3(diff.x(), diff.y(), 0.0).length() * 5.0f;
 
       Eigen::Vector2f start(v1.x(),v1.y());
       Eigen::Vector2f end(v2.x(),v2.y());
