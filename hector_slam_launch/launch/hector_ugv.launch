@@ -11,6 +11,8 @@
     <param name="map_pub_period" value="1.0"/>
 
     <param name="laser_z_min_value" value = "-0.3"/>
+    
+    <param name="update_factor_free" value="0.3"/>
 
     <param name="map_resolution" value="0.05"/>
     <param name="map_size" value="1024"/>
