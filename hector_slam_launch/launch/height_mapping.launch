@@ -3,7 +3,7 @@
 <launch>
   <node pkg="hector_mapping" type="hector_mapping" name="hector_height_mapping" output="screen">
     <param name="scan_topic" value="laser0/scan" />
-    <param name="base_frame" value="base_footprint" />
+    <param name="base_frame" value="base_stabilized" />
     <param name="odom_frame" value="nav" />
     
     <param name="output_timing" value="false"/>
