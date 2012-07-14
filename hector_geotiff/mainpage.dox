@@ -2,7 +2,7 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b hector_geotiff provides a node that can be used to save RoboCup Rescue compliant GeoTiff images 
+\b hector_geotiff provides a node that can be used to save occupancy grid map, robot trajectory and object of interest data to RoboCup Rescue compliant GeoTiff images 
 
 <!-- 
 Provide an overview of your package.

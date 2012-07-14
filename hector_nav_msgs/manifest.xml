@@ -1,5 +1,5 @@
 <package>
-  <description brief="hector_nav_msgs">
+  <description brief="hector_nav_msgs contains messages and services used in the hector_slam stack.">
 
      hector_nav_msgs contains messages and services used in the hector_slam stack.
 
