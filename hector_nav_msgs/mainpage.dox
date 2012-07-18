@@ -2,7 +2,7 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b hector_nav_msgs is ... 
+\b hector_nav_msgs contains messages and services used in the hector_slam stack.
 
 <!-- 
 Provide an overview of your package.

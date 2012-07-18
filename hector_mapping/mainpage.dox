@@ -2,7 +2,7 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b hector_mapping provides is a scan matching based SLAM system
+\b hector_mapping is a SLAM approach that can be used without odometry as well as on platforms that exhibit roll/pitch motion (of the sensor, the platform or both).
 
 <!-- 
 hector_mapping is a scan matching based SLAM system that consumes

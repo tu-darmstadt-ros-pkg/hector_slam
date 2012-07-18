@@ -2,7 +2,7 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b hector_slam_launch is ... 
+\b hector_slam_launch contains launch files for launching hector_slam with different robot systems/setups/postprocessing scenarios
 
 <!-- 
 Provide an overview of your package.

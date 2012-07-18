@@ -2,7 +2,7 @@
 \mainpage
 \htmlinclude manifest.html
 
-\b hector_map_tools is ... 
+\b hector_map_tools contains some functions related to accessing information from OccupancyGridMap maps.
 
 <!-- 
 Provide an overview of your package.
