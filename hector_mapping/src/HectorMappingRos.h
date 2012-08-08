@@ -31,6 +31,11 @@
 
 #include "ros/ros.h"
 
+#include "tf/transform_listener.h"
+#include "tf/transform_broadcaster.h"
+#include "tf/message_filter.h"
+#include "message_filters/subscriber.h"
+
 #include "sensor_msgs/LaserScan.h"
 #include <std_msgs/String.h>
 
@@ -41,9 +46,6 @@
 
 #include "scan/DataPointContainer.h"
 #include "util/MapLockerInterface.h"
-
-#include "tf/transform_listener.h"
-#include "tf/transform_broadcaster.h"
 
 #include <boost/thread.hpp>
 
@@ -86,7 +88,11 @@ public:
   void publishTransform();
 
   void staticMapCallback(const nav_msgs::OccupancyGrid& map);
+  void initialPoseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg);
 
+  /*
+  void setStaticMapData(const nav_msgs::OccupancyGrid& map);
+  */
 protected:
 
   HectorDebugInfoProvider* debugInfoProvider;
@@ -98,7 +104,10 @@ protected:
 
   ros::Subscriber scanSubscriber_;
   ros::Subscriber sysMsgSubscriber_;
+
   ros::Subscriber mapSubscriber_;
+  message_filters::Subscriber<geometry_msgs::PoseWithCovarianceStamped>* initial_pose_sub_;
+  tf::MessageFilter<geometry_msgs::PoseWithCovarianceStamped>* initial_pose_filter_;
 
   ros::Publisher posePublisher_;
   ros::Publisher poseUpdatePublisher_;
@@ -127,6 +136,9 @@ protected:
   ros::Time lastMapPublishTime;
   ros::Time lastScanTime;
   Eigen::Vector3f lastSlamPose;
+
+  bool initial_pose_set_;
+  Eigen::Vector3f initial_pose_;
 
 
   //-----------------------------------------------------------
