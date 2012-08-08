@@ -85,6 +85,8 @@ public:
   void publishMapLoop(double p_map_pub_period_);
   void publishTransform();
 
+  void staticMapCallback(const nav_msgs::OccupancyGrid& map);
+
 protected:
 
   HectorDebugInfoProvider* debugInfoProvider;
@@ -96,6 +98,7 @@ protected:
 
   ros::Subscriber scanSubscriber_;
   ros::Subscriber sysMsgSubscriber_;
+  ros::Subscriber mapSubscriber_;
 
   ros::Publisher posePublisher_;
   ros::Publisher poseUpdatePublisher_;

@@ -45,14 +45,16 @@ class MapRepMultiMap : public MapRepresentationInterface
 {
 
 public:
-  MapRepMultiMap(float mapResolution, int mapSize, unsigned int numDepth, const Eigen::Vector2f& startCoords, DrawInterface* drawInterfaceIn, HectorDebugInfoInterface* debugInterfaceIn)
+  MapRepMultiMap(float mapResolution, int mapSizeX, int mapSizeY, unsigned int numDepth, const Eigen::Vector2f& startCoords, DrawInterface* drawInterfaceIn, HectorDebugInfoInterface* debugInterfaceIn)
   {
     //unsigned int numDepth = 3;
-    Eigen::Vector2i resolution(mapSize, mapSize);
+    Eigen::Vector2i resolution(mapSizeX, mapSizeY);
 
-    float totalMapSize = mapResolution * static_cast<float>(mapSize);
-    float mid_offset_x = totalMapSize * startCoords.x();
-    float mid_offset_y = totalMapSize * startCoords.y();
+    float totalMapSizeX = mapResolution * static_cast<float>(mapSizeX);
+    float mid_offset_x = totalMapSizeX * startCoords.x();
+
+    float totalMapSizeY = mapResolution * static_cast<float>(mapSizeY);
+    float mid_offset_y = totalMapSizeY * startCoords.y();
 
     for (unsigned int i = 0; i < numDepth; ++i){
       std::cout << "HectorSM map lvl " << i << ": cellLength: " << mapResolution << " res x:" << resolution.x() << " res y: " << resolution.y() << "\n";
