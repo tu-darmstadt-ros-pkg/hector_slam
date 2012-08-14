@@ -71,7 +71,8 @@ public:
 
       Eigen::Vector3f estimate(beginEstimateMap);
 
-      bool notConverged = estimateTransformationLogLh(estimate, gridMapUtil, dataContainer);
+      estimateTransformationLogLh(estimate, gridMapUtil, dataContainer);
+      //bool notConverged = estimateTransformationLogLh(estimate, gridMapUtil, dataContainer);
 
       /*
       const Eigen::Matrix2f& hessian (H.block<2,2>(0,0));
@@ -93,7 +94,8 @@ public:
       for (int i = 0; i < numIter; ++i) {
         //std::cout << "\nest:\n" << estimate;
 
-        notConverged = estimateTransformationLogLh(estimate, gridMapUtil, dataContainer);
+        estimateTransformationLogLh(estimate, gridMapUtil, dataContainer);
+        //notConverged = estimateTransformationLogLh(estimate, gridMapUtil, dataContainer);
 
         if(drawInterface){
           float invNumIterf = 1.0f/static_cast<float> (numIter);

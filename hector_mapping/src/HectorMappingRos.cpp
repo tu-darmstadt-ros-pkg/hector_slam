@@ -45,6 +45,7 @@ HectorMappingRos::HectorMappingRos()
   , lastGetMapUpdateIndex(-100)
   , tfB_(0)
   , map__publish_thread_(0)
+  , initial_pose_set_(false)
 {
   ros::NodeHandle private_nh_("~");
 
@@ -118,7 +119,7 @@ HectorMappingRos::HectorMappingRos()
     odometryPublisher_ = node_.advertise<nav_msgs::Odometry>("scanmatch_odom", 50);
   }
 
-  slamProcessor = new hectorslam::HectorSlamProcessor(static_cast<float>(p_map_resolution_), p_map_size_, Eigen::Vector2f(p_map_start_x_, p_map_start_y_), p_map_multi_res_levels_, hectorDrawings, debugInfoProvider);
+  slamProcessor = new hectorslam::HectorSlamProcessor(static_cast<float>(p_map_resolution_), p_map_size_, p_map_size_, Eigen::Vector2f(p_map_start_x_, p_map_start_y_), p_map_multi_res_levels_, hectorDrawings, debugInfoProvider);
   slamProcessor->setUpdateFactorFree(p_update_factor_free_);
   slamProcessor->setUpdateFactorOccupied(p_update_factor_occupied_);
   slamProcessor->setMapUpdateMinDistDiff(p_map_update_distance_threshold_);
@@ -184,6 +185,18 @@ HectorMappingRos::HectorMappingRos()
   tfB_ = new tf::TransformBroadcaster();
   ROS_ASSERT(tfB_);
 
+  /*
+  bool p_use_static_map_ = false;
+
+  if (p_use_static_map_){
+    mapSubscriber_ = node_.subscribe(mapTopic_, 1, &HectorMappingRos::staticMapCallback, this);
+  }
+  */
+
+  initial_pose_sub_ = new message_filters::Subscriber<geometry_msgs::PoseWithCovarianceStamped>(node_, "initialpose", 2);
+  initial_pose_filter_ = new tf::MessageFilter<geometry_msgs::PoseWithCovarianceStamped>(*initial_pose_sub_, tf_, "map", 2);
+  initial_pose_filter_->registerCallback(boost::bind(&HectorMappingRos::initialPoseCallback, this, _1));
+
 
   map__publish_thread_ = new boost::thread(boost::bind(&HectorMappingRos::publishMapLoop, this, p_map_pub_period_));
 
@@ -245,7 +258,10 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 
       if(rosPointCloudToDataContainer(laser_point_cloud_, laserTransform, laserScanContainer, slamProcessor->getScaleToMap()))
       {
-        if (p_use_tf_pose_start_estimate_){
+        if (initial_pose_set_){
+          initial_pose_set_ = false;
+          startEstimate = initial_pose_;
+        }else if (p_use_tf_pose_start_estimate_){
 
           try
           {
@@ -268,6 +284,8 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
         }else{
           startEstimate = slamProcessor->getLastScanMatchPose();
         }
+
+
         if (p_map_with_known_poses_){
           slamProcessor->update(laserScanContainer, startEstimate, true);
         }else{
@@ -480,6 +498,21 @@ void HectorMappingRos::setServiceGetMapData(nav_msgs::GetMap::Response& map_, co
   map_.map.data.resize(map_.map.info.width * map_.map.info.height);
 }
 
+/*
+void HectorMappingRos::setStaticMapData(const nav_msgs::OccupancyGrid& map)
+{
+  float cell_length = map.info.resolution;
+  Eigen::Vector2f mapOrigin (map.info.origin.position.x + cell_length*0.5f,
+                             map.info.origin.position.y + cell_length*0.5f);
+
+  int map_size_x = map.info.width;
+  int map_size_y = map.info.height;
+
+  slamProcessor = new hectorslam::HectorSlamProcessor(cell_length, map_size_x, map_size_y, Eigen::Vector2f(0.0f, 0.0f), 1, hectorDrawings, debugInfoProvider);
+}
+*/
+
+
 void HectorMappingRos::publishMapLoop(double map_pub_period)
 {
   ros::Rate r(1.0 / map_pub_period);
@@ -498,6 +531,21 @@ void HectorMappingRos::publishMapLoop(double map_pub_period)
 
     r.sleep();
   }
+}
+
+void HectorMappingRos::staticMapCallback(const nav_msgs::OccupancyGrid& map)
+{
+
+}
+
+void HectorMappingRos::initialPoseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg)
+{
+  initial_pose_set_ = true;
+
+  tf::Pose pose;
+  tf::poseMsgToTF(msg->pose.pose, pose);
+  initial_pose_ = Eigen::Vector3f(msg->pose.pose.position.x, msg->pose.pose.position.y, tf::getYaw(pose.getRotation()));
+  ROS_INFO("Setting initial pose with world coords x: %f y: %f yaw: %f", initial_pose_[0], initial_pose_[1], initial_pose_[2]);
 }
 
 

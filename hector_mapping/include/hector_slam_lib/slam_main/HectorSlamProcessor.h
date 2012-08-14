@@ -51,11 +51,11 @@ class HectorSlamProcessor
 {
 public:
 
-  HectorSlamProcessor(float mapResolution, int mapSize , const Eigen::Vector2f& startCoords, int multi_res_size, DrawInterface* drawInterfaceIn = 0, HectorDebugInfoInterface* debugInterfaceIn = 0)
+  HectorSlamProcessor(float mapResolution, int mapSizeX, int mapSizeY , const Eigen::Vector2f& startCoords, int multi_res_size, DrawInterface* drawInterfaceIn = 0, HectorDebugInfoInterface* debugInterfaceIn = 0)
     : drawInterface(drawInterfaceIn)
     , debugInterface(debugInterfaceIn)
   {
-    mapRep = new MapRepMultiMap(mapResolution, mapSize, multi_res_size, startCoords, drawInterfaceIn, debugInterfaceIn);
+    mapRep = new MapRepMultiMap(mapResolution, mapSizeX, mapSizeY, multi_res_size, startCoords, drawInterfaceIn, debugInterfaceIn);
 
     this->reset();
 
