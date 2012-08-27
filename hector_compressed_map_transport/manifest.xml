@@ -12,7 +12,6 @@
   <depend package = "nav_msgs" />
   <depend package = "cv_bridge" />
   <depend package = "opencv2" />
-  <depend package = "image_transport" />
   <depend package = "eigen" />
   <depend package = "hector_map_tools" />
   <depend package = "sensor_msgs" />

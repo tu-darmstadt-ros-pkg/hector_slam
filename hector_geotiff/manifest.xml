@@ -16,7 +16,7 @@
   <depend package="hector_nav_msgs"/>
   <depend package="pluginlib"/>
 
-  <rosdep name="qt4"/>
+  <rosdep name="libqt4-dev"/>
 
   <export>
     <cpp cflags="-I${prefix}/include" />

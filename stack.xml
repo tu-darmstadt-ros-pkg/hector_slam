@@ -10,4 +10,7 @@
   <depend stack="ros_comm" /> <!-- rosconsole, std_msgs, roscpp, message_filters -->
   <depend stack="common_msgs" /> <!-- visualization_msgs, geometry_msgs -->
   <depend stack="laser_pipeline" /> <!-- laser_geometry -->
+  <depend stack="image_common" /> <!-- for image_transport, used by map_to_image node. Consider removal in future versions-->
+  <depend stack="hector_common" /> <!-- hector_marker_drawing -->
+  <depend stack="vision_opencv" /> <!-- cv_bridge -->
 </stack>
