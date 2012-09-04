@@ -3,7 +3,7 @@
   <author>Maintained by Stefan Kohlbrecher, Johannes Meyer</author>
   <license>BSD</license>  
   <review status="unreviewed" notes=""/>
-  <url>http://code.google.com/p/tu-darmstadt-ros-pkg/wiki/hector_slam</url>
+  <url>http://ros.org/wiki/hector_slam</url>
   <depend stack="ros" />
   <depend stack="common_msgs" /> <!-- nav_msgs -->
   <depend stack="geometry" /> <!-- tf -->
