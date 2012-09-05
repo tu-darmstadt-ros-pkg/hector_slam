@@ -26,6 +26,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
+#include <ros/console.h>
 #include "geotiff_writer/geotiff_writer.h"
 
 #include <QtGui/QPainter>

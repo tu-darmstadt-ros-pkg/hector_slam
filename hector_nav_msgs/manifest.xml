@@ -10,6 +10,7 @@
   <url>http://ros.org/wiki/hector_nav_msgs</url>
 
   <depend package="nav_msgs" />
+  <depend package="geometry_msgs" />
 
 </package>
 
