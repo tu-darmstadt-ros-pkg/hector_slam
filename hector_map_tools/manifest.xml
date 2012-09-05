@@ -10,6 +10,8 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/hector_map_tools</url>
   <depend package="nav_msgs"/>
+
+  <rosdep name="eigen"/>
   
   <export>
   <cpp cflags="`pkg-config --cflags eigen3` -I${prefix}/include" />

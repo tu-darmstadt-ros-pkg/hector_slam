@@ -16,6 +16,8 @@
   <depend package = "sensor_msgs" />
   <depend package = "geometry_msgs" />
 
+  <rosdep name="eigen" />
+
 </package>
 
 
