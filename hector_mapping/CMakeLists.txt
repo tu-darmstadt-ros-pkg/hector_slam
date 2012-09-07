@@ -25,4 +25,4 @@ rosbuild_genmsg()
 include_directories(include/hector_slam_lib)
 
 rosbuild_add_executable(hector_mapping src/HectorDebugInfoProvider.h src/HectorDrawings.h src/HectorMappingRos.h src/HectorMappingRos.cpp src/main.cpp src/PoseInfoContainer.cpp src/PoseInfoContainer.h)
-
+rosbuild_link_boost(hector_mapping thread signals)
