@@ -1,0 +1,11 @@
+# Returns the path travelled to get to req_pose (pose determined by request_time) 
+# up to request_radius away from req_pose.
+#
+
+time request_time
+float64 request_radius 
+---
+nav_msgs/Path trajectory_radius_entry_pose_to_req_pose
+geometry_msgs/PoseStamped radius_entry_pose
+geometry_msgs/PoseStamped req_pose
+

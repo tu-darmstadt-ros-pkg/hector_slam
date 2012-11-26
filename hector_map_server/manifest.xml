@@ -1,0 +1,19 @@
+<package>
+  <description brief="hector_map_server provides a service for retrieving the map, as well as for raycasting based obstacle queries (finds next obstacle in the map, given start and endpoint in any tf coordinate frame).">
+
+     hector_map_server provides a service for retrieving the map, as well as for raycasting based obstacle queries (finds next obstacle in the map, given start and endpoint in any tf coordinate frame).
+
+  </description>
+  <author>stefan</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hector_map_server</url>
+  <depend package="nav_msgs"/>
+  <depend package="hector_map_tools"/>
+  <depend package="hector_marker_drawing"/>
+  <depend package="hector_nav_msgs"/>
+  <depend package="tf"/>
+
+</package>
+
+

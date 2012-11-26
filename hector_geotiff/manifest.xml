@@ -1,0 +1,26 @@
+<package>
+  <description brief="     hector_geotiff provides a node that can be used to save occupancy grid map, robot trajectory and object of interest data to RoboCup Rescue compliant GeoTiff images">
+
+     hector_geotiff provides a node that can be used to save occupancy grid map, robot trajectory and object of interest data to RoboCup Rescue compliant GeoTiff images 
+
+  </description>
+  <author>Stefan Kohlbrecher</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hector_geotiff</url>
+  <depend package="nav_msgs"/>
+  <depend package="std_msgs"/>
+  <depend package="roscpp"/>
+  <depend package="hector_map_tools"/>
+  <depend package="hector_nav_msgs"/>
+  <depend package="pluginlib"/>
+
+  <rosdep name="libqt4-dev"/>
+  <rosdep name="eigen"/>
+
+  <export>
+    <cpp cflags="-I${prefix}/include" />
+  </export>
+</package>
+
+

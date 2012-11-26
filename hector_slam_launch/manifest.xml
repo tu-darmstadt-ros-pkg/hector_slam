@@ -1,0 +1,18 @@
+<package>
+  <description brief="hector_slam_launch contains launch files for launching hector_slam with different robot systems/setups/postprocessing scenarios">
+
+     hector_slam_launch contains launch files for launching hector_slam with different robot systems/setups/postprocessing scenarios
+
+  </description>
+  <author>Stefan Kohlbrecher</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hector_slam_launch</url>
+
+  <depend package="hector_mapping" />
+  <depend package="hector_map_server" />
+  <depend package="hector_trajectory_server" />
+  <depend package="hector_geotiff" />
+
+</package>
+

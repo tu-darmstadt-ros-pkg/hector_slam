@@ -1,0 +1,18 @@
+/**
+\mainpage
+\htmlinclude manifest.html
+
+\b hector_trajectory_server keeps track of tf trajectories extracted from tf data and makes this data accessible via a service and topic
+
+<!-- 
+-->
+
+
+\section codeapi Code API
+
+<!--
+N/A for the moment
+-->
+
+
+*/

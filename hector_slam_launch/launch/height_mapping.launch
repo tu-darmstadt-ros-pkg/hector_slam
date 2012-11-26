@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_height_mapping" output="screen">
+    <param name="scan_topic" value="laser0/scan" />
+    <param name="base_frame" value="base_stabilized" />
+    <param name="odom_frame" value="nav" />
+    
+    <param name="output_timing" value="false"/>
+    <param name="advertise_map_service" value="true"/>
+    <param name="use_tf_scan_transformation" value="true"/>
+    <param name="use_tf_pose_start_estimate" value="true"/>
+    <param name="pub_map_odom_transform" value="false"/>
+    <param name="map_with_known_poses" value="true"/>
+
+    <param name="map_pub_period" value="5.0"/>
+    <param name="update_factor_free" value="0.45"/>
+    
+    <param name="map_update_distance_thresh" value="0.0"/>
+    <param name="map_update_angle_thresh" value="0.0"/>
+    
+    <param name="map_resolution" value="0.05"/>
+    <param name="map_size" value="1024"/>
+    <param name="map_start_x" value="0.5"/>
+    <param name="map_start_y" value="0.5"/>
+    
+    <param name="laser_min_dist" value="0.6" />
+    <param name="laser_max_dist" value="3.9" />
+    <param name="laser_z_min_value" value="1.7"/>
+    <param name="laser_z_max_value" value="2.1"/>
+
+    <remap from="map" to="height_map" />
+    <remap from="dynamic_map" to="height_map" />
+  </node>
+  
+  <node pkg="hector_geotiff" type="geotiff_node" name="hector_height_geotiff_node" output="screen" launch-prefix="nice -n 15">
+    <remap from="map" to="height_map" />
+    <param name="map_file_path" type="string" value="$(find hector_geotiff)/maps" />
+    <param name="map_file_base_name" type="string" value="RRL_2012_HectorDarmstadt_2m" />
+    <param name="geotiff_save_period" type="double" value="55" />
+    <param name="draw_background_checkerboard" type="bool" value="true" />
+    <param name="draw_free_space_grid" type="bool" value="true" />
+  </node>
+</launch>

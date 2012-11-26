@@ -1,0 +1,18 @@
+<package>
+  <description brief="hector_trajectory_server keeps track of tf trajectories extracted from tf data and makes this data accessible via a service and topic">
+ 
+     hector_trajectory_server keeps track of tf trajectories extracted from tf data and makes this data accessible via a service and topic
+
+  </description>
+  <author>Stefan Kohlbrecher</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hector_path_saver</url>
+  <depend package="hector_nav_msgs"/>
+  <depend package="nav_msgs"/>
+  <depend package="hector_map_tools"/>
+  <depend package="tf"/>
+
+</package>
+
+

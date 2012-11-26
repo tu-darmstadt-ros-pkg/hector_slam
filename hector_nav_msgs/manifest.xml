@@ -1,0 +1,17 @@
+<package>
+  <description brief="hector_nav_msgs contains messages and services used in the hector_slam stack.">
+
+     hector_nav_msgs contains messages and services used in the hector_slam stack.
+
+  </description>
+  <author>Stefan Kohlbrecher</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hector_nav_msgs</url>
+
+  <depend package="nav_msgs" />
+  <depend package="geometry_msgs" />
+
+</package>
+
+

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+    <param name="scan_topic" value="laser1/scan" />
+    <param name="base_frame" value="base_stabilized" />
+    <param name="output_timing" value="false"/>
+    <param name="use_tf_scan_transformation" value="true"/>
+    <param name="use_tf_pose_start_estimate" value="false"/>
+
+    <param name="map_pub_period" value="1.0"/>
+
+    <param name="laser_z_min_value" value = "-0.3"/>
+    
+    <param name="update_factor_free" value="0.3"/>
+
+    <param name="map_resolution" value="0.05"/>
+    <param name="map_size" value="1024"/>
+    <param name="map_start_x" value="0.5"/>
+    <param name="map_start_y" value="0.5"/>
+    <param name="map_multi_res_levels" value="1"/>
+
+    <remap from="map" to="scanmatcher_map" />
+  </node>
+
+  <group unless="$(optenv REALROBOT false)">
+    <param name="hector_mapping/use_tf_pose_start_estimate" value="false"/>
+  </group>
+
+  <param name="hector_mapping/odom_frame" value="nav"/>
+  <param name="hector_mapping/pub_map_odom_transform" value="false"/>
+  <node pkg="tf" type="static_transform_publisher" name="map_nav_broadcaster" args="0 0 0 0 0 0 map nav 100" />
+</launch>

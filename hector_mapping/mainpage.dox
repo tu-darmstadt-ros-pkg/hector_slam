@@ -1,0 +1,23 @@
+/**
+\mainpage
+\htmlinclude manifest.html
+
+\b hector_mapping is a SLAM approach that can be used without odometry as well as on platforms that exhibit roll/pitch motion (of the sensor, the platform or both).
+
+<!-- 
+hector_mapping is a scan matching based SLAM system that consumes
+low computational resources as well as memory. It allows to build accurate
+2D maps of the environment without available odometry data and with
+6DOF movement of the LIDAR platform, if IMU data is available.
+The system works best with high scan rate LIDARs like the Hokuyo UTM-30LX.
+-->
+
+
+\section codeapi Code API
+
+<!--
+N/A for the moment
+-->
+
+
+*/
