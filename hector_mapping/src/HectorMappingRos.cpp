@@ -39,6 +39,10 @@
 #include "HectorDebugInfoProvider.h"
 #include "HectorMapMutex.h"
 
+#ifndef TF_SCALAR_H
+  typedef btScalar tfScalar;
+#endif
+
 HectorMappingRos::HectorMappingRos()
   : debugInfoProvider(0)
   , hectorDrawings(0)
