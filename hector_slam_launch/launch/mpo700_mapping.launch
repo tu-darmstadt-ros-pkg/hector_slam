@@ -26,5 +26,7 @@
     <param name="draw_background_checkerboard" type="bool" value="true" />
     <param name="draw_free_space_grid" type="bool" value="true" />
   </node>
+  
+  <node pkg="topic_tools" type="throttle" name="map_throttle" args="messages map 0.015 map_thottled" />
 
 </launch>

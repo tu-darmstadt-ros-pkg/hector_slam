@@ -8,14 +8,15 @@
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/hector_compressed_map_transport</url>
-  <depend package = "image_transport" />
-  <depend package = "nav_msgs" />
-  <depend package = "cv_bridge" />
-  <depend package = "opencv2" />
-  <depend package = "eigen" />
-  <depend package = "hector_map_tools" />
-  <depend package = "sensor_msgs" />
-  <depend package = "geometry_msgs" />
+  <depend package="image_transport" />
+  <depend package="nav_msgs" />
+  <depend package="cv_bridge" />
+  <depend package="opencv2" />
+  <depend package="hector_map_tools" />
+  <depend package="sensor_msgs" />
+  <depend package="geometry_msgs" />
+
+  <rosdep name="eigen" />
 
 </package>
 

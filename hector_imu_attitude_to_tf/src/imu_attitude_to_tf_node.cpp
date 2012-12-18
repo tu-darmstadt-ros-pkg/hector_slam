@@ -37,12 +37,17 @@ tf::TransformBroadcaster* tfB_;
 tf::StampedTransform transform_;
 tf::Quaternion tmp_;
 
+#ifndef TF_MATRIX3x3_H
+  typedef btScalar tfScalar;
+  namespace tf { typedef btMatrix3x3 Matrix3x3; }
+#endif
+
 void imuMsgCallback(const sensor_msgs::Imu& imu_msg)
 {
   tf::quaternionMsgToTF(imu_msg.orientation, tmp_);
 
-  btScalar yaw, pitch, roll;
-  btMatrix3x3(tmp_).getRPY(roll, pitch, yaw);
+  tfScalar yaw, pitch, roll;
+  tf::Matrix3x3(tmp_).getRPY(roll, pitch, yaw);
 
   tmp_.setRPY(roll, pitch, 0.0);
 
