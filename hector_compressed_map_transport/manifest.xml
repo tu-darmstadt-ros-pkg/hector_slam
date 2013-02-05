@@ -11,12 +11,12 @@
   <depend package="image_transport" />
   <depend package="nav_msgs" />
   <depend package="cv_bridge" />
-  <depend package="opencv2" />
   <depend package="hector_map_tools" />
   <depend package="sensor_msgs" />
   <depend package="geometry_msgs" />
 
   <rosdep name="eigen" />
+  <rosdep name="opencv2" />
 
 </package>
 

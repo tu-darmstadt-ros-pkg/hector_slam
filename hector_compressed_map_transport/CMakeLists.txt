@@ -23,4 +23,9 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package(Eigen REQUIRED)
 include_directories(${Eigen_INCLUDE_DIRS})
 
+# find OpenCV
+find_package(OpenCV REQUIRED)
+
 rosbuild_add_executable(map_to_image_node src/map_to_image_node.cpp)
+target_link_libraries(map_to_image_node ${OpenCV_LIBRARIES})
+
