@@ -60,11 +60,12 @@ public:
     std::string service_name = "map";
     map_service_ = nh.advertiseService(service_name, &OccupancyGridContainer::mapServiceCallback, this);
 
+    ros::NodeHandle pnh("~");
     std::string lookup_service_name = "get_distance_to_obstacle";
-    dist_lookup_service_ = nh.advertiseService(lookup_service_name, &OccupancyGridContainer::lookupServiceCallback, this);
+    dist_lookup_service_ = pnh.advertiseService(lookup_service_name, &OccupancyGridContainer::lookupServiceCallback, this);
 
     std::string get_search_pos_service_name = "get_search_position";
-    get_search_pos_service_ = nh.advertiseService(get_search_pos_service_name, &OccupancyGridContainer::getSearchPosServiceCallback, this);
+    get_search_pos_service_ = pnh.advertiseService(get_search_pos_service_name, &OccupancyGridContainer::getSearchPosServiceCallback, this);
 
     map_sub_ = nh.subscribe("map", 1, &OccupancyGridContainer::mapCallback, this);
   }
