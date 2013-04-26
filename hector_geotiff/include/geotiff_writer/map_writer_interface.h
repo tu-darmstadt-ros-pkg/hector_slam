@@ -29,6 +29,7 @@
 #ifndef _MAPWRITERINTERFACE_H__
 #define _MAPWRITERINTERFACE_H__
 
+#include <vector>
 #include <Eigen/Core>
 
 namespace hector_geotiff{
@@ -42,6 +43,7 @@ public:
 
   virtual std::string getBasePathAndFileName() const = 0;
   virtual void drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const Color& color) = 0;
+  virtual void drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points) = 0;
 };
 
 }

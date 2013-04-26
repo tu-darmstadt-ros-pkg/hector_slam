@@ -1,0 +1,16 @@
+<package>
+  <description brief="hector_trajectory_geotiff_plugins">
+
+     hector_trajectory_geotiff_plugins
+
+  </description>
+  <author>Gregor Gebhardt</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hector_trajectory_geotiff_plugins</url>
+
+  <depend package="hector_geotiff"/>
+
+</package>
+
+

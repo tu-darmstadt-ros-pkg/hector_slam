@@ -203,6 +203,7 @@ public:
     }
     */
 
+    /*
     hector_nav_msgs::GetRobotTrajectory srv_path;
 
     if (path_service_client_.call(srv_path))
@@ -232,7 +233,7 @@ public:
     {
       ROS_ERROR("Failed to call path service");
     }
-
+    */
 
 
     geotiff_writer_.writeGeotiffImage();
