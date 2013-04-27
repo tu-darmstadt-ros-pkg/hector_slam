@@ -139,8 +139,13 @@ public:
       const nav_msgs::OccupancyGrid& map (srv_map.response.map);
 
       std::string map_file_name = p_map_file_base_name_;
+      std::string competition_name;
+      std::string team_name;
       std::string mission_name;
-      if (n_.getParamCached("/mission", mission_name) && !mission_name.empty()) map_file_name = map_file_name + "_" + mission_name;
+      if (n_.getParamCached("/competition", competition_name) && !competition_name.empty()) map_file_name = map_file_name + "_" + competition_name;
+      if (n_.getParamCached("/team", team_name)               && !team_name.empty())        map_file_name = map_file_name + "_" + team_name;
+      if (n_.getParamCached("/mission", mission_name)         && !mission_name.empty())     map_file_name = map_file_name + "_" + mission_name;
+      if (map_file_name.substr(0, 1) == "_") map_file_name = map_file_name.substr(1);
       geotiff_writer_.setMapFileName(map_file_name);
       bool transformSuccess = geotiff_writer_.setupTransforms(map);
 
