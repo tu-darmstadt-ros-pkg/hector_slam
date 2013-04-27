@@ -1,0 +1,7 @@
+<library path="lib/libhector_geotiff_plugins">
+  <class name="hector_geotiff_plugins/TrajectoryMapWriter" type="hector_geotiff_plugins::TrajectoryMapWriter" base_class_type="hector_geotiff::MapWriterPluginInterface">
+    <description>
+      This is a MapWriter plugin that draws the robot's trajectory in the map.
+    </description>
+  </class>
+</library>
