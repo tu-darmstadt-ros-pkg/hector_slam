@@ -10,6 +10,11 @@
   <url>http://ros.org/wiki/hector_trajectory_geotiff_plugins</url>
 
   <depend package="hector_geotiff"/>
+  <depend package="hector_nav_msgs"/>
+
+  <export>
+    <hector_geotiff plugin="${prefix}/hector_geotiff_plugins.xml" />
+  </export>
 
 </package>
 

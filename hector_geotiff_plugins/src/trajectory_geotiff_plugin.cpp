@@ -35,7 +35,7 @@
 #include <pluginlib/class_loader.h>
 #include <fstream>
 
-namespace hector_trajectory_geotiff_plugins
+namespace hector_geotiff_plugins
 {
 
 using namespace hector_geotiff;
@@ -72,8 +72,6 @@ void TrajectoryMapWriter::initialize(const std::string& name)
   std::string service_name_;
 
   plugin_nh.param("service_name", service_name_, std::string("trajectory"));
-  plugin_nh.param("draw_all_objects", draw_all_objects_, false);
-  plugin_nh.param("class_id", class_id_, std::string());
 
   service_client_ = nh_.serviceClient<hector_nav_msgs::GetRobotTrajectory>(service_name_);
 
@@ -116,4 +114,4 @@ void TrajectoryMapWriter::draw(MapWriterInterface *interface)
 
 //register this planner as a MapWriterPluginInterface plugin
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_DECLARE_CLASS(hector_trajectory_geotiff_plugins, TrajectoryMapWriter, hector_trajectory_geotiff_plugins::TrajectoryMapWriter, hector_geotiff::MapWriterPluginInterface)
+PLUGINLIB_DECLARE_CLASS(hector_geotiff_plugins, TrajectoryMapWriter, hector_geotiff_plugins::TrajectoryMapWriter, hector_geotiff::MapWriterPluginInterface)
