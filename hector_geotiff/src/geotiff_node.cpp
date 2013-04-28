@@ -69,7 +69,7 @@ public:
     geotiff_writer_.setMapFilePath(p_map_file_path_);
     geotiff_writer_.setUseUtcTimeSuffix(true);
 
-    pn_.param("map_file_base_name", p_map_file_base_name_, std::string("GeoTiffMap"));
+    pn_.param("map_file_base_name", p_map_file_base_name_, std::string());
 
     pn_.param("draw_background_checkerboard", p_draw_background_checkerboard_, true);
     pn_.param("draw_free_space_grid", p_draw_free_space_grid_, true);
@@ -142,10 +142,13 @@ public:
       std::string competition_name;
       std::string team_name;
       std::string mission_name;
+      std::string postfix;
       if (n_.getParamCached("/competition", competition_name) && !competition_name.empty()) map_file_name = map_file_name + "_" + competition_name;
       if (n_.getParamCached("/team", team_name)               && !team_name.empty())        map_file_name = map_file_name + "_" + team_name;
       if (n_.getParamCached("/mission", mission_name)         && !mission_name.empty())     map_file_name = map_file_name + "_" + mission_name;
+      if (pn_.getParamCached("map_file_postfix", postfix)     && !postfix.empty())          map_file_name = map_file_name + "_" + postfix;
       if (map_file_name.substr(0, 1) == "_") map_file_name = map_file_name.substr(1);
+      if (map_file_name.empty()) map_file_name = "GeoTiffMap";
       geotiff_writer_.setMapFileName(map_file_name);
       bool transformSuccess = geotiff_writer_.setupTransforms(map);
 
