@@ -1,13 +1,6 @@
 <?xml version="1.0"?>
 
 <launch>
-  <group if="$(optenv REALROBOT 0)">
-    <node pkg="hokuyo_node" type="hokuyo_node" name="hokuyo_node" output="screen">
-      <param name="min_ang" value=" -2.2689" />
-      <param name="max_ang" value="  2.2689" />
-    </node>
-  </group>
-
   <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
     <param name="base_frame" value="base_footprint" />
     <param name="odom_frame" value="nav"/>
