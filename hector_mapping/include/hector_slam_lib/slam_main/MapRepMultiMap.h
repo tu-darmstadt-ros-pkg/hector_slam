@@ -119,9 +119,7 @@ public:
 
     Eigen::Vector3f tmp(beginEstimateWorld);
 
-    size_t index = size - 1;
-
-    for (size_t i = 0; i < size; ++i){
+    for (int index = size - 1; index >= 0; --index){
       //std::cout << " m " << i;
       if (index == 0){
         tmp  = (mapContainer[index].matchData(tmp, dataContainer, covMatrix, 5));
