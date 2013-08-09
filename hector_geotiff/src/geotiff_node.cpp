@@ -44,8 +44,8 @@
 
 #include <hector_map_tools/HectorMapTools.h>
 
-#include <geotiff_writer/geotiff_writer.h>
-#include <geotiff_writer/map_writer_plugin_interface.h>
+#include <hector_geotiff/geotiff_writer.h>
+#include <hector_geotiff/map_writer_plugin_interface.h>
 
 #include <hector_nav_msgs/GetRobotTrajectory.h>
 

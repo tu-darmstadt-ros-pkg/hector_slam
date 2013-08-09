@@ -26,8 +26,8 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
-#include <geotiff_writer/map_writer_interface.h>
-#include <geotiff_writer/map_writer_plugin_interface.h>
+#include <hector_geotiff/map_writer_interface.h>
+#include <hector_geotiff/map_writer_plugin_interface.h>
 
 #include <ros/ros.h>
 #include <hector_nav_msgs/GetRobotTrajectory.h>
