@@ -38,7 +38,7 @@
 
 #include <hector_map_tools/HectorMapTools.h>
 
-#include <geotiff_writer/geotiff_writer.h>
+#include <hector_geotiff/geotiff_writer.h>
 
 using namespace std;
 

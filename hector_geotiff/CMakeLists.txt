@@ -55,7 +55,7 @@ include(${QT_USE_FILE})
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include include/hector_geotiff
+  INCLUDE_DIRS include
   LIBRARIES geotiff_writer
   CATKIN_DEPENDS hector_map_tools hector_nav_msgs nav_msgs pluginlib roscpp std_msgs
   DEPENDS Eigen QT
