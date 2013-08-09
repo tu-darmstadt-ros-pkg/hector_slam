@@ -103,7 +103,7 @@ public:
       for (size_t i = 0; i < plugin_list.size(); ++i){
         try
         {
-          boost::shared_ptr<hector_geotiff::MapWriterPluginInterface> tmp (plugin_loader_->createClassInstance(plugin_list[i]));
+          boost::shared_ptr<hector_geotiff::MapWriterPluginInterface> tmp (plugin_loader_->createInstance(plugin_list[i]));
           tmp->initialize(plugin_loader_->getName(plugin_list[i]));
           plugin_vector_.push_back(tmp);
         }
