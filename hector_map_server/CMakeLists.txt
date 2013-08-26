@@ -76,7 +76,7 @@ add_executable(hector_map_server src/hector_map_server.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(hector_map_server_node hector_map_server_generate_messages_cpp)
+add_dependencies(hector_map_server ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(hector_map_server

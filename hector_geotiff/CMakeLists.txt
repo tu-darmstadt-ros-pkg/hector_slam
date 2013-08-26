@@ -72,20 +72,17 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a cpp library
-add_library(geotiff_writer
-  src/geotiff_writer/geotiff_writer.cpp
-)
-target_link_libraries(geotiff_writer
-  ${catkin_LIBRARIES}
-  ${QT_LIBRARIES}
-)
+add_library(geotiff_writer src/geotiff_writer/geotiff_writer.cpp)
+target_link_libraries(geotiff_writer ${catkin_LIBRARIES} ${QT_LIBRARIES})
+add_dependencies(geotiff_writer ${catkin_EXPORTED_TARGETS})
 
 add_executable(geotiff_saver src/geotiff_saver.cpp)
 target_link_libraries(geotiff_saver geotiff_writer)
+add_dependencies(geotiff_saver ${catkin_EXPORTED_TARGETS})
 
 add_executable(geotiff_node src/geotiff_node.cpp)
 target_link_libraries(geotiff_node geotiff_writer)
+add_dependencies(geotiff_node ${catkin_EXPORTED_TARGETS})
 
 #############
 ## Install ##

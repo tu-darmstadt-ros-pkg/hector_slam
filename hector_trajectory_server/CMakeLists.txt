@@ -76,7 +76,7 @@ add_executable(hector_trajectory_server src/hector_trajectory_server.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(hector_trajectory_server_node hector_trajectory_server_generate_messages_cpp)
+add_dependencies(hector_trajectory_server ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(hector_trajectory_server
