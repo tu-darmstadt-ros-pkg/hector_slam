@@ -118,6 +118,10 @@ install(TARGETS imu_attitude_to_tf_node
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
 
+install(DIRECTORY launch/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch/
+)
+
 #############
 ## Testing ##
 #############
