@@ -198,7 +198,7 @@ HectorMappingRos::HectorMappingRos()
   */
 
   initial_pose_sub_ = new message_filters::Subscriber<geometry_msgs::PoseWithCovarianceStamped>(node_, "initialpose", 2);
-  initial_pose_filter_ = new tf::MessageFilter<geometry_msgs::PoseWithCovarianceStamped>(*initial_pose_sub_, tf_, "map", 2);
+  initial_pose_filter_ = new tf::MessageFilter<geometry_msgs::PoseWithCovarianceStamped>(*initial_pose_sub_, tf_, p_map_frame_, 2);
   initial_pose_filter_->registerCallback(boost::bind(&HectorMappingRos::initialPoseCallback, this, _1));
 
 
@@ -315,7 +315,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     return;
   }
 
-  poseInfoContainer_.update(slamProcessor->getLastScanMatchPose(), slamProcessor->getLastScanMatchCovariance(), scan.header.stamp, "map");
+  poseInfoContainer_.update(slamProcessor->getLastScanMatchPose(), slamProcessor->getLastScanMatchCovariance(), scan.header.stamp, p_map_frame_);
 
   poseUpdatePublisher_.publish(poseInfoContainer_.getPoseWithCovarianceStamped());
   posePublisher_.publish(poseInfoContainer_.getPoseStamped());
