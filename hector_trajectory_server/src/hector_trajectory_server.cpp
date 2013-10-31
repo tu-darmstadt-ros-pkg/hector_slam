@@ -119,7 +119,7 @@ public:
       addCurrentTfPoseToTrajectory();
     }catch(tf::TransformException e)
     {
-      ROS_ERROR("Trajectory Server: Transform from %s to %s failed: %s \n", p_target_frame_name_.c_str(), pose_source_.header.frame_id.c_str(), e.what() );
+      ROS_WARN("Trajectory Server: Transform from %s to %s failed: %s \n", p_target_frame_name_.c_str(), pose_source_.header.frame_id.c_str(), e.what() );
     }
   }
 
