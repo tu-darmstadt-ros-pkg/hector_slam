@@ -348,7 +348,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   }
 
   if (p_pub_map_scanmatch_transform_){
-    tfB_->sendTransform( tf::StampedTransform(poseInfoContainer_.getTfTransform(), scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
+    tfB_->sendTransform( tf::StampedTransform(poseInfoContainer_.getTfTransform(), scan.header.stamp, p_tf_map_scanmatch_transform_frame_name_, p_base_frame_));
   }
 }
 
