@@ -65,6 +65,8 @@ public:
     private_nh.param("trajectory_update_rate", p_trajectory_update_rate_, 4.0);
     private_nh.param("trajectory_publish_rate", p_trajectory_publish_rate_, 0.25);
 
+    waitForTf();
+
     ros::NodeHandle nh;
     sys_cmd_sub_ = nh.subscribe("syscommand", 1, &PathContainer::sysCmdCallback, this);
     trajectory_pub_ = nh.advertise<nav_msgs::Path>("trajectory",1, true);
@@ -82,6 +84,30 @@ public:
 
     trajectory_.trajectory.header.frame_id = p_target_frame_name_;
   }
+
+  void waitForTf()
+  {
+    ros::WallTime start = ros::WallTime::now();
+    ROS_INFO("Waiting for tf transform data between frames %s and %s to become available", p_target_frame_name_.c_str(), p_source_frame_name_.c_str() );
+
+    bool transform_successful = false;
+
+    while (!transform_successful){
+
+      std::string error_string;
+      transform_successful = tf_.waitForTransform(p_target_frame_name_, p_source_frame_name_, ros::Time(0), ros::Duration(10.0), ros::Duration(0.05), &error_string);
+
+      ros::WallTime now = ros::WallTime::now();
+
+      if ((now-start).toSec() > 20.0 && !transform_successful){
+        ROS_WARN("No transform between frames %s and %s available after %f seconds of waiting.", p_target_frame_name_.c_str(), p_source_frame_name_.c_str(), (now-start).toSec());
+      }
+    }
+
+    ros::WallTime end = ros::WallTime::now();
+    ROS_INFO("Finished waiting for tf, waited %f seconds", (end-start).toSec());
+  }
+
 
   void sysCmdCallback(const std_msgs::String& sys_cmd)
   {
@@ -223,8 +249,6 @@ public:
   ros::Time last_reset_time_;
   ros::Time last_pose_save_time_;
 };
-
-
 
 int main(int argc, char** argv)
 {
