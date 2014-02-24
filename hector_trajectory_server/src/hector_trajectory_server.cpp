@@ -100,7 +100,7 @@ public:
       ros::WallTime now = ros::WallTime::now();
 
       if ((now-start).toSec() > 20.0 && !transform_successful){
-        ROS_WARN("No transform between frames %s and %s available after %f seconds of waiting.", p_target_frame_name_.c_str(), p_source_frame_name_.c_str(), (now-start).toSec());
+        ROS_WARN_ONCE("No transform between frames %s and %s available after %f seconds of waiting. This warning only prints once.", p_target_frame_name_.c_str(), p_source_frame_name_.c_str(), (now-start).toSec());
       }
     }
 
