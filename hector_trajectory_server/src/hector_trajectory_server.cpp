@@ -93,15 +93,17 @@ public:
     bool transform_successful = false;
 
     while (!transform_successful){
-
-      std::string error_string;
-      transform_successful = tf_.waitForTransform(p_target_frame_name_, p_source_frame_name_, ros::Time(0), ros::Duration(10.0), ros::Duration(0.05), &error_string);
+      transform_successful = tf_.canTransform(p_target_frame_name_, p_source_frame_name_, ros::Time());
+      if (transform_successful) break;
 
       ros::WallTime now = ros::WallTime::now();
 
-      if ((now-start).toSec() > 20.0 && !transform_successful){
+      if ((now-start).toSec() > 20.0){
         ROS_WARN_ONCE("No transform between frames %s and %s available after %f seconds of waiting. This warning only prints once.", p_target_frame_name_.c_str(), p_source_frame_name_.c_str(), (now-start).toSec());
       }
+      
+      if (!ros::ok()) return;
+      ros::WallDuration(1.0).sleep();
     }
 
     ros::WallTime end = ros::WallTime::now();
