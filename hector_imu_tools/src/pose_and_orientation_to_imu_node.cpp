@@ -31,6 +31,7 @@
 #include "tf/transform_broadcaster.h"
 #include <sensor_msgs/Imu.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <nav_msgs/Odometry.h>
 
 std::string p_base_stabilized_frame_;
 std::string p_base_frame_;
@@ -40,9 +41,13 @@ tf::Quaternion tmp_;
 
 sensor_msgs::ImuConstPtr last_imu_msg_;
 sensor_msgs::Imu fused_imu_msg_;
+nav_msgs::Odometry odom_msg_;
 geometry_msgs::PoseStampedConstPtr last_pose_msg_;
 
 ros::Publisher fused_imu_publisher_;
+ros::Publisher odometry_publisher_;
+
+size_t callback_count_;
 
 #ifndef TF_MATRIX3x3_H
 typedef btScalar tfScalar;
@@ -51,6 +56,8 @@ namespace tf { typedef btMatrix3x3 Matrix3x3; }
 
 void imuMsgCallback(const sensor_msgs::Imu::ConstPtr& imu_msg)
 {
+  callback_count_++;
+
   tf::quaternionMsgToTF(imu_msg->orientation, tmp_);
 
   tfScalar imu_yaw, imu_pitch, imu_roll;
@@ -78,6 +85,18 @@ void imuMsgCallback(const sensor_msgs::Imu::ConstPtr& imu_msg)
 
   fused_imu_publisher_.publish(fused_imu_msg_);
 
+  //If no pose message received, yaw is set to 0.
+  //@TODO: Check for timestamp of pose and disable sending if too old
+  if (last_pose_msg_ != 0){
+    if ( (callback_count_ % 5) == 0){
+      odom_msg_.header.stamp = imu_msg->header.stamp;
+      odom_msg_.pose.pose.orientation = fused_imu_msg_.orientation;
+      odom_msg_.pose.pose.position = last_pose_msg_->pose.position;
+
+      odometry_publisher_.publish(odom_msg_);
+    }
+  }
+
 }
 
 void poseMsgCallback(const geometry_msgs::PoseStamped::ConstPtr& pose_msg)
@@ -95,11 +114,15 @@ int main(int argc, char **argv) {
   pn.param("base_frame", p_base_frame_, std::string("base_link"));
 
   fused_imu_msg_.header.frame_id = p_base_stabilized_frame_;
+  odom_msg_.header.frame_id = "map";
 
   fused_imu_publisher_ = n.advertise<sensor_msgs::Imu>("/fused_imu",1,false);
+  odometry_publisher_ = n.advertise<nav_msgs::Odometry>("/state", 1, false);
 
   ros::Subscriber imu_subscriber = n.subscribe("/imu", 10, imuMsgCallback);
   ros::Subscriber pose_subscriber = n.subscribe("/pose", 10, poseMsgCallback);
+
+  callback_count_ = 0;
 
   ros::spin();
 
