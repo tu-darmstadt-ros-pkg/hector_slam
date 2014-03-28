@@ -45,37 +45,39 @@ geometry_msgs::PoseStampedConstPtr last_pose_msg_;
 ros::Publisher fused_imu_publisher_;
 
 #ifndef TF_MATRIX3x3_H
-  typedef btScalar tfScalar;
-  namespace tf { typedef btMatrix3x3 Matrix3x3; }
+typedef btScalar tfScalar;
+namespace tf { typedef btMatrix3x3 Matrix3x3; }
 #endif
 
 void imuMsgCallback(const sensor_msgs::Imu::ConstPtr& imu_msg)
 {
-  //last_imu_msg_ = imu_msg;
+  tf::quaternionMsgToTF(imu_msg->orientation, tmp_);
+
+  tfScalar imu_yaw, imu_pitch, imu_roll;
+  tf::Matrix3x3(tmp_).getRPY(imu_roll, imu_pitch, imu_yaw);
+
+  tfScalar pose_yaw, pose_pitch, pose_roll;
 
   if (last_pose_msg_ != 0){
-    tf::quaternionMsgToTF(imu_msg->orientation, tmp_);
-
-    tfScalar imu_yaw, imu_pitch, imu_roll;
-    tf::Matrix3x3(tmp_).getRPY(imu_roll, imu_pitch, imu_yaw);
-
     tf::quaternionMsgToTF(last_pose_msg_->pose.orientation, tmp_);
 
-    tfScalar pose_yaw, pose_pitch, pose_roll;
     tf::Matrix3x3(tmp_).getRPY(pose_roll, pose_pitch, pose_yaw);
-
-    tf::Quaternion tmp;
-    tmp.setRPY(imu_roll, imu_pitch, pose_yaw);
-
-    fused_imu_msg_.header.stamp = imu_msg->header.stamp;
-
-    fused_imu_msg_.orientation.x = tmp.getX();
-    fused_imu_msg_.orientation.y = tmp.getY();
-    fused_imu_msg_.orientation.z = tmp.getZ();
-    fused_imu_msg_.orientation.w = tmp.getW();
-
-    fused_imu_publisher_.publish(fused_imu_msg_);
+  }else{
+    pose_yaw = 0.0;
   }
+
+  tf::Quaternion tmp;
+  tmp.setRPY(imu_roll, imu_pitch, pose_yaw);
+
+  fused_imu_msg_.header.stamp = imu_msg->header.stamp;
+
+  fused_imu_msg_.orientation.x = tmp.getX();
+  fused_imu_msg_.orientation.y = tmp.getY();
+  fused_imu_msg_.orientation.z = tmp.getZ();
+  fused_imu_msg_.orientation.w = tmp.getW();
+
+  fused_imu_publisher_.publish(fused_imu_msg_);
+
 }
 
 void poseMsgCallback(const geometry_msgs::PoseStamped::ConstPtr& pose_msg)
