@@ -2,6 +2,9 @@
 Changelog for package hector_geotiff_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.2 (2014-03-30)
+------------------
+
 0.3.1 (2013-10-09)
 ------------------
 * readded PLUGINLIB_DECLARE_CLASS macro for fuerte compatibility
