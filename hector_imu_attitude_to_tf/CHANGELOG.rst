@@ -2,6 +2,9 @@
 Changelog for package hector_imu_attitude_to_tf
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.2 (2014-03-30)
+------------------
+
 0.3.1 (2013-10-09)
 ------------------
 * added missing install rule for launch files
