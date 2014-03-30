@@ -33,10 +33,17 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Odometry.h>
 
+std::string p_map_frame_;
+std::string p_base_footprint_frame_;
 std::string p_base_stabilized_frame_;
 std::string p_base_frame_;
 tf::TransformBroadcaster* tfB_;
 tf::StampedTransform transform_;
+
+tf::Quaternion robot_pose_quaternion_;
+tf::Point robot_pose_position_;
+tf::Transform robot_pose_transform_;
+
 tf::Quaternion tmp_;
 
 sensor_msgs::ImuConstPtr last_imu_msg_;
@@ -62,6 +69,17 @@ void imuMsgCallback(const sensor_msgs::Imu::ConstPtr& imu_msg)
 
   tfScalar imu_yaw, imu_pitch, imu_roll;
   tf::Matrix3x3(tmp_).getRPY(imu_roll, imu_pitch, imu_yaw);
+
+  tf::Transform transform;
+  transform.setIdentity();
+  tf::Quaternion quat;
+
+  quat.setRPY(imu_roll, imu_pitch, 0.0);
+
+  if (true){
+    transform.setRotation(quat);
+    tfB_->sendTransform(tf::StampedTransform(transform, imu_msg->header.stamp, p_base_stabilized_frame_, p_base_frame_));
+  }
 
   tfScalar pose_yaw, pose_pitch, pose_roll;
 
@@ -102,6 +120,24 @@ void imuMsgCallback(const sensor_msgs::Imu::ConstPtr& imu_msg)
 void poseMsgCallback(const geometry_msgs::PoseStamped::ConstPtr& pose_msg)
 {
   last_pose_msg_ = pose_msg;
+
+  std::vector<tf::StampedTransform> transforms;
+  transforms.resize(2);
+
+  tf::quaternionMsgToTF(pose_msg->pose.orientation, robot_pose_quaternion_);
+  tf::pointMsgToTF(pose_msg->pose.position, robot_pose_position_);
+
+  robot_pose_transform_.setRotation(robot_pose_quaternion_);
+  robot_pose_transform_.setOrigin(robot_pose_position_);
+
+  tf::Transform height_transform;
+  height_transform.setIdentity();
+  height_transform.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
+
+  transforms[0] = tf::StampedTransform(robot_pose_transform_, pose_msg->header.stamp, p_map_frame_, p_base_footprint_frame_);
+  transforms[1] = tf::StampedTransform(height_transform, pose_msg->header.stamp, p_base_footprint_frame_, p_base_stabilized_frame_);
+
+  tfB_->sendTransform(transforms);
 }
 
 int main(int argc, char **argv) {
@@ -110,11 +146,15 @@ int main(int argc, char **argv) {
   ros::NodeHandle n;
   ros::NodeHandle pn("~");
 
+  pn.param("map_frame", p_map_frame_, std::string("map"));
+  pn.param("base_footprint_frame", p_base_footprint_frame_, std::string("base_footprint"));
   pn.param("base_stabilized_frame", p_base_stabilized_frame_, std::string("base_stabilized"));
   pn.param("base_frame", p_base_frame_, std::string("base_link"));
 
   fused_imu_msg_.header.frame_id = p_base_stabilized_frame_;
   odom_msg_.header.frame_id = "map";
+
+  tfB_ = new tf::TransformBroadcaster();
 
   fused_imu_publisher_ = n.advertise<sensor_msgs::Imu>("/fused_imu",1,false);
   odometry_publisher_ = n.advertise<nav_msgs::Odometry>("/state", 1, false);
@@ -125,6 +165,8 @@ int main(int argc, char **argv) {
   callback_count_ = 0;
 
   ros::spin();
+
+  delete tfB_;
 
   return 0;
 }
