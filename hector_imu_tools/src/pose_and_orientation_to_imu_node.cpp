@@ -45,6 +45,7 @@ tf::Point robot_pose_position_;
 tf::Transform robot_pose_transform_;
 
 tf::Quaternion tmp_;
+tf::Quaternion orientation_quaternion_;
 
 sensor_msgs::ImuConstPtr last_imu_msg_;
 sensor_msgs::Imu fused_imu_msg_;
@@ -91,15 +92,14 @@ void imuMsgCallback(const sensor_msgs::Imu::ConstPtr& imu_msg)
     pose_yaw = 0.0;
   }
 
-  tf::Quaternion tmp;
-  tmp.setRPY(imu_roll, imu_pitch, pose_yaw);
+  orientation_quaternion_.setRPY(imu_roll, imu_pitch, pose_yaw);
 
   fused_imu_msg_.header.stamp = imu_msg->header.stamp;
 
-  fused_imu_msg_.orientation.x = tmp.getX();
-  fused_imu_msg_.orientation.y = tmp.getY();
-  fused_imu_msg_.orientation.z = tmp.getZ();
-  fused_imu_msg_.orientation.w = tmp.getW();
+  fused_imu_msg_.orientation.x = orientation_quaternion_.getX();
+  fused_imu_msg_.orientation.y = orientation_quaternion_.getY();
+  fused_imu_msg_.orientation.z = orientation_quaternion_.getZ();
+  fused_imu_msg_.orientation.w = orientation_quaternion_.getW();
 
   fused_imu_publisher_.publish(fused_imu_msg_);
 
@@ -119,7 +119,6 @@ void imuMsgCallback(const sensor_msgs::Imu::ConstPtr& imu_msg)
 
 void poseMsgCallback(const geometry_msgs::PoseStamped::ConstPtr& pose_msg)
 {
-  last_pose_msg_ = pose_msg;
 
   std::vector<tf::StampedTransform> transforms;
   transforms.resize(2);
@@ -138,6 +137,25 @@ void poseMsgCallback(const geometry_msgs::PoseStamped::ConstPtr& pose_msg)
   transforms[1] = tf::StampedTransform(height_transform, pose_msg->header.stamp, p_base_footprint_frame_, p_base_stabilized_frame_);
 
   tfB_->sendTransform(transforms);
+
+  // Perform simple estimation of vehicle altitude based on orientation
+  if (last_pose_msg_){
+    tf::Vector3 plane_normal = tf::Matrix3x3(orientation_quaternion_) * tf::Vector3(0.0, 0.0, 1.0);
+
+    tf::Vector3 last_position;
+    tf::pointMsgToTF(last_pose_msg_->pose.position, last_position);
+
+    double height_difference =
+        (-plane_normal.getX() * (robot_pose_position_.getX() - last_position.getX())
+         -plane_normal.getY() * (robot_pose_position_.getY() - last_position.getY())
+         +plane_normal.getZ() * last_position.getZ()) / last_position.getZ();
+
+  }
+
+
+
+  last_pose_msg_ = pose_msg;
+
 }
 
 int main(int argc, char **argv) {
