@@ -6,4 +6,6 @@
 geometry_msgs/PointStamped point
 ---
 float32 distance
+geometry_msgs/PointStamped end_point
+
 

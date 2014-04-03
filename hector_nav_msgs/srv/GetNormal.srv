@@ -1,0 +1,5 @@
+geometry_msgs/PointStamped point
+---
+geometry_msgs/Vector3 normal
+float32 yaw
+

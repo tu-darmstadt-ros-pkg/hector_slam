@@ -33,6 +33,7 @@ add_service_files(
   GetRecoveryInfo.srv
   GetRobotTrajectory.srv
   GetSearchPosition.srv
+  GetNormal.srv
 )
 
 ## Generate added messages and services with any dependencies listed here
