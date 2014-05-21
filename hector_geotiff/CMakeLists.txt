@@ -4,15 +4,17 @@ project(hector_geotiff)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS hector_map_tools hector_nav_msgs nav_msgs pluginlib roscpp std_msgs)
+find_package(catkin REQUIRED COMPONENTS cmake_modules hector_map_tools hector_nav_msgs nav_msgs pluginlib roscpp std_msgs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+
+find_package(Qt4 4.6 COMPONENTS QtCore QtGui REQUIRED)
+
 find_package(Eigen REQUIRED)
 include_directories(${Eigen_INCLUDE_DIRS})
 add_definitions(${Eigen_DEFINITIONS})
 
-find_package(Qt4 4.6 COMPONENTS QtCore QtGui REQUIRED)
 include(${QT_USE_FILE})
 
 
