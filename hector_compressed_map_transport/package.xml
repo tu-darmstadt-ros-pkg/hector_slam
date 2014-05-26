@@ -52,7 +52,6 @@
   <run_depend>hector_map_tools</run_depend>
   <run_depend>image_transport</run_depend>
   <run_depend>nav_msgs</run_depend>
-  <run_depend>opencv2</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>eigen</run_depend>
 
