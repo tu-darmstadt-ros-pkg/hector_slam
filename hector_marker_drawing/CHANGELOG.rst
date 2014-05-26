@@ -2,6 +2,10 @@
 Changelog for package hector_marker_drawing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.2 (2014-05-21)
+------------------
+* Fixed ROS Indigo CMake issues with Eigen
+
 0.3.2 (2014-03-30)
 ------------------
 

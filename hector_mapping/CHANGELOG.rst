@@ -2,6 +2,10 @@
 Changelog for package hector_mapping
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.3 (2014-05-21)
+------------------
+* Fixed ROS Indigo CMake issues with Eigen
+
 0.3.2 (2014-03-30)
 ------------------
 

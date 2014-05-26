@@ -4,7 +4,7 @@ project(hector_mapping)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp nav_msgs visualization_msgs tf message_filters laser_geometry tf_conversions message_generation)
+find_package(catkin REQUIRED COMPONENTS cmake_modules roscpp nav_msgs visualization_msgs tf message_filters laser_geometry tf_conversions message_generation)
 
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS thread signals)
