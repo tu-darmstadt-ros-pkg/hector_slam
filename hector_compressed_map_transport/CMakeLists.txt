@@ -4,7 +4,7 @@ project(hector_compressed_map_transport)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS cv_bridge geometry_msgs hector_map_tools image_transport nav_msgs sensor_msgs)
+find_package(catkin REQUIRED COMPONENTS cmake_modules cv_bridge geometry_msgs hector_map_tools image_transport nav_msgs sensor_msgs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)

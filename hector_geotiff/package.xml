@@ -38,6 +38,7 @@
   <!-- Use test_depend for packages you need only for testing: -->
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>cmake_modules</build_depend>
   <build_depend>hector_map_tools</build_depend>
   <build_depend>hector_nav_msgs</build_depend>
   <build_depend>nav_msgs</build_depend>
