@@ -2,6 +2,12 @@
 Changelog for package hector_compressed_map_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.3 (2014-06-15)
+------------------
+* fixed cmake find for eigen in indigo
+* fixed libopencv-dev rosdep key
+* Contributors: Alexander Stumpf, Johannes Meyer
+
 0.3.2 (2014-03-30)
 ------------------
 

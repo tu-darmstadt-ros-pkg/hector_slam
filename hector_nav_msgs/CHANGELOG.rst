@@ -2,6 +2,11 @@
 Changelog for package hector_nav_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.3 (2014-06-15)
+------------------
+* added GetNormal service, that returns normal and orientation of an occupied cell
+* Contributors: Dorothea Koert
+
 0.3.2 (2014-03-30)
 ------------------
 

@@ -2,6 +2,9 @@
 Changelog for package hector_trajectory_server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.3 (2014-06-15)
+------------------
+
 0.3.2 (2014-03-30)
 ------------------
 * wait based on WallTime and check ros::ok() in waitForTf()

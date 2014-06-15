@@ -2,6 +2,9 @@
 Changelog for package hector_slam_launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.3 (2014-06-15)
+------------------
+
 0.3.2 (2014-03-30)
 ------------------
 * Add arguments to launch files for specifying geotiff file path

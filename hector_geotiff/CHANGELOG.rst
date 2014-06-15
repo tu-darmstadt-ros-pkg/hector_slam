@@ -2,6 +2,12 @@
 Changelog for package hector_geotiff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.3 (2014-06-15)
+------------------
+* fixed cmake find for eigen in indigo
+* added launchfile to restart geotiff node
+* Contributors: Alexander Stumpf
+
 0.3.2 (2014-03-30)
 ------------------
 * Add TrajectoryMapWriter to geotiff_mapper.launch per default
