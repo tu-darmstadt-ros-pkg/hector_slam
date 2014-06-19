@@ -285,6 +285,7 @@ public:
   std::string p_map_file_path_;
   std::string p_map_file_base_name_;
   std::string p_plugin_list_;
+  std::string p_plugin_name_list_;
   bool p_draw_background_checkerboard_;
   bool p_draw_free_space_grid_;
 
