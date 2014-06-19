@@ -92,9 +92,21 @@ public:
 
 
     pn_.param("plugins", p_plugin_list_, std::string(""));
+    pn_.param("plugin_names", p_plugin_name_list_, std::string(""));
 
     std::vector<std::string> plugin_list;
+    std::vector<std::string> plugin_name_list;
     boost::algorithm::split(plugin_list, p_plugin_list_, boost::is_any_of("\t "));
+    boost::algorithm::split(plugin_name_list,p_plugin_name_list_, boost::is_any_of("\t "));
+    bool plugin_names_provided = false;
+    if ((plugin_name_list.size() > 0) && (plugin_list[0].length() > 0)) {
+      if (plugin_name_list.size() != plugin_list.size()) {
+        ROS_ERROR("If you provide names for the plugin nodes, you must provide a name for each one.");
+      }
+      else {
+        plugin_names_provided = true;
+      }
+    }
 
     //We always have at least one element containing "" in the string list
     if ((plugin_list.size() > 0) && (plugin_list[0].length() > 0)){
@@ -104,7 +116,11 @@ public:
         try
         {
           boost::shared_ptr<hector_geotiff::MapWriterPluginInterface> tmp (plugin_loader_->createInstance(plugin_list[i]));
-          tmp->initialize(plugin_loader_->getName(plugin_list[i]));
+          if (plugin_names_provided) {
+            tmp->initialize(plugin_name_list[i]);
+          } else {
+            tmp->initialize(plugin_loader_->getName(plugin_list[i]));
+          }
           plugin_vector_.push_back(tmp);
         }
         catch(pluginlib::PluginlibException& ex)
