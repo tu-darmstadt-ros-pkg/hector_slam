@@ -1,5 +1,4 @@
 geometry_msgs/PointStamped point
-geometry_msgs/PointStamped point_on_correct_side
 ---
 geometry_msgs/Vector3 normal
 float32 yaw
