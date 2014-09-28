@@ -114,6 +114,7 @@ protected:
   ros::Publisher twistUpdatePublisher_;
   ros::Publisher odometryPublisher_;
   ros::Publisher scan_point_cloud_publisher_;
+  ros::Publisher timing_publisher_;
 
   std::vector<MapPublisherContainer> mapPubContainer;
 

@@ -14,6 +14,10 @@ find_package(Eigen REQUIRED)
 include_directories(${EIGEN_INCLUDE_DIRS})
 add_definitions(${EIGEN_DEFINITIONS})
 
+find_package(hector_timing QUIET)
+if(USE_HECTOR_TIMING)
+  include_directories(${hector_timing_INCLUDE_DIRS})
+endif()
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -63,6 +67,17 @@ catkin_package(
 ## Build ##
 ###########
 
+## Set some compiler flags
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g")
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+message(STATUS "CMAKE_BUILD_TYPE:               ${CMAKE_BUILD_TYPE}")
+message(STATUS "CMAKE_CXX_FLAGS_RELEASE:        ${CMAKE_CXX_FLAGS_RELEASE}")
+message(STATUS "CMAKE_CXX_FLAGS_RELWITHDEBINFO: ${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+message(STATUS "CMAKE_CXX_FLAGS_MINSIZEREL:     ${CMAKE_CXX_FLAGS_MINSIZEREL}")
+message(STATUS "CMAKE_CXX_FLAGS_DEBUG:          ${CMAKE_CXX_FLAGS_DEBUG}")
+
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(include include/hector_slam_lib)
@@ -94,6 +109,7 @@ add_dependencies(hector_mapping hector_mapping_generate_messages_cpp)
 target_link_libraries(hector_mapping
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
+  ${hector_timing_LIBRARIES}
 )
 
 #############

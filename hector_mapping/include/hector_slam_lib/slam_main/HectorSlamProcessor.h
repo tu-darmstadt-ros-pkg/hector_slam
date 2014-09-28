@@ -42,6 +42,9 @@
 #include "MapRepresentationInterface.h"
 #include "MapRepMultiMap.h"
 
+#ifdef USE_HECTOR_TIMING
+  #include <hector_diagnostics/timing.h>
+#endif
 
 #include <float.h>
 
@@ -75,6 +78,9 @@ public:
     Eigen::Vector3f newPoseEstimateWorld;
 
     if (!map_without_matching){
+#ifdef USE_HECTOR_TIMING
+        hector_diagnostics::TimingSection section("scan matching");
+#endif
         newPoseEstimateWorld = (mapRep->matchData(poseHintWorld, dataContainer, lastScanMatchCov));
     }else{
         newPoseEstimateWorld = poseHintWorld;
@@ -87,6 +93,9 @@ public:
     //std::cout << "\n1";
     //std::cout << "\n" << lastScanMatchPose << "\n";
     if(util::poseDifferenceLargerThan(newPoseEstimateWorld, lastMapUpdatePose, paramMinDistanceDiffForMapUpdate, paramMinAngleDiffForMapUpdate) || map_without_matching){
+#ifdef USE_HECTOR_TIMING
+      hector_diagnostics::TimingSection section("map update");
+#endif
 
       mapRep->updateByScan(dataContainer, newPoseEstimateWorld);
 

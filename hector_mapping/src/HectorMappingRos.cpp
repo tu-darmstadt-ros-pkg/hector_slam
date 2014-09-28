@@ -39,6 +39,10 @@
 #include "HectorDebugInfoProvider.h"
 #include "HectorMapMutex.h"
 
+#ifdef USE_HECTOR_TIMING
+  #include <hector_diagnostics/timing.h>
+#endif
+
 #ifndef TF_SCALAR_H
   typedef btScalar tfScalar;
 #endif
@@ -186,6 +190,10 @@ HectorMappingRos::HectorMappingRos()
 
   scan_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud>("slam_cloud",1,false);
 
+#ifdef USE_HECTOR_TIMING
+  timing_publisher_ = private_nh_.advertise<hector_diagnostics::TimingInfo>("timing", 1, false);
+#endif
+
   tfB_ = new tf::TransformBroadcaster();
   ROS_ASSERT(tfB_);
 
@@ -237,13 +245,24 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 
   if (!p_use_tf_scan_transformation_)
   {
+#ifdef USE_HECTOR_TIMING
+    hector_diagnostics::TimingSection section1("scan transformation");
+#endif
+
     if (rosLaserScanToDataContainer(scan, laserScanContainer,slamProcessor->getScaleToMap()))
     {
+#ifdef USE_HECTOR_TIMING
+      section1.toc();
+#endif
       slamProcessor->update(laserScanContainer,slamProcessor->getLastScanMatchPose());
     }
   }
   else
   {
+#ifdef USE_HECTOR_TIMING
+    hector_diagnostics::TimingSection section1("scan transformation");
+#endif
+
     ros::Duration dur (0.5);
 
     if (tf_.waitForTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp,dur))
@@ -289,6 +308,9 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
           startEstimate = slamProcessor->getLastScanMatchPose();
         }
 
+#ifdef USE_HECTOR_TIMING
+      section1.toc();
+#endif
 
         if (p_map_with_known_poses_){
           slamProcessor->update(laserScanContainer, startEstimate, true);
@@ -350,6 +372,11 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   if (p_pub_map_scanmatch_transform_){
     tfB_->sendTransform( tf::StampedTransform(poseInfoContainer_.getTfTransform(), scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
   }
+
+  // publish timing information
+#ifdef USE_HECTOR_TIMING
+  timing_publisher_.publish(hector_diagnostics::TimingAggregator::Instance()->update(scan.header.stamp));
+#endif
 }
 
 void HectorMappingRos::sysMsgCallback(const std_msgs::String& string)
@@ -374,6 +401,10 @@ bool HectorMappingRos::mapCallback(nav_msgs::GetMap::Request  &req,
 void HectorMappingRos::publishMap(MapPublisherContainer& mapPublisher, const hectorslam::GridMap& gridMap, ros::Time timestamp, MapLockerInterface* mapMutex)
 {
   nav_msgs::GetMap::Response& map_ (mapPublisher.map_);
+
+#ifdef USE_HECTOR_TIMING
+  hector_diagnostics::TimingSection section("map publish");
+#endif
 
   //only update map if it changed
   if (lastGetMapUpdateIndex != gridMap.getUpdateIndex())
