@@ -192,7 +192,7 @@ public:
       }
 
       if (end_offset != -1){
-        Eigen::Vector2i end_coords(end_offset % sizeY, end_offset / sizeY);
+        Eigen::Vector2i end_coords(end_offset % sizeX, end_offset / sizeX);
 
         int distMap = ((beginMap - end_coords).cast<float>()).norm();
 
