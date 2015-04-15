@@ -1,4 +1,4 @@
-//=================================================================================================
+#//=================================================================================================
 // Copyright (c) 2011, Stefan Kohlbrecher, TU Darmstadt
 // All rights reserved.
 
@@ -245,11 +245,19 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   else
   {
     ros::Duration dur (0.5);
+    //dur.sleep();
 
     if (tf_.waitForTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp,dur))
     {
       tf::StampedTransform laserTransform;
-      tf_.lookupTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp, laserTransform);
+      try{
+        tf_.lookupTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp, laserTransform);
+      }catch(tf::TransformException e)
+          {
+            ROS_ERROR("Transform failed: %s\n", e.what());            
+            return;
+          }
+
 
       //projector_.transformLaserScanToPointCloud(p_base_frame_ ,scan, pointCloud,tf_);
       projector_.projectLaser(scan, laser_point_cloud_,30.0);
@@ -281,7 +289,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
           }
           catch(tf::TransformException e)
           {
-            ROS_ERROR("Transform from %s to %s failed\n", p_map_frame_.c_str(), p_base_frame_.c_str());
+            ROS_ERROR("Transform from %s to %s failed: %s\n", p_map_frame_.c_str(), p_base_frame_.c_str(),  e.what());
             startEstimate = slamProcessor->getLastScanMatchPose();
           }
 
