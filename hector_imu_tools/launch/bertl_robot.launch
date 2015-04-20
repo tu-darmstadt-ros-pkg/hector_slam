@@ -5,6 +5,6 @@
     <remap from="/imu" to="/imu_quat" />
     <remap from="/fused_imu" to="/imu_in" />
     <remap from="/pose" to="/slam_out_pose" />
-    <remap from="/state" to="/state_imu" />
+    <!--<remap from="/state" to="/state_imu" />-->
   </node>
 </launch>
