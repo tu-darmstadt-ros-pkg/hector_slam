@@ -5,14 +5,19 @@
     <arg name="namespace_2" default="hector2" />
 
   <node pkg="hector_geotiff" type="geotiff_node" name="hector_geotiff_merged_map" output="screen" launch-prefix="nice -n 15">
-    <remap from="map" to="/merged_map" />
+    <remap from="map" to="/merged_map_serive" />
     <param name="map_file_path" type="string" value="$(find hector_geotiff)/maps/merged_maps" />
     <param name="map_file_base_name" type="string" value="hector_merged_map" />
     <param name="geotiff_save_period" type="double" value="5" />
     <param name="draw_background_checkerboard" type="bool" value="true" />
-    <param name="draw_free_space_grid" type="bool" value="true" />
+    <param name="draw_free_space_grid" type="bool" value="true" />   
+    <param name="service_name" type="string" value="object_merger/get_object_model" />
 
-    <param name="plugins" type="string" value="hector_geotiff_plugins/TrajectoryMapWriter hector_geotiff_plugins/TrajectoryMapWriter" />
+    <param name="plugins" type="string" value="hector_geotiff_plugins/TrajectoryMapWriter hector_geotiff_plugins/TrajectoryMapWriter hector_worldmodel_geotiff_plugins/QRCodeMapWriter hector_worldmodel_geotiff_plugins/VictimMapWriter" />
+    <param name="VictimMapWriter/draw_all_objects" value="false" />
+    <param name="VictimMapWriter/class_id" value="victim" />
+    <param name="QRCodeMapWriter/draw_all_objects" value="true" />
+    <param name="QRCodeMapWriter/class_id" value="qrcode" />
     <param name="plugin_names" type="string" value="$(arg namespace_1)_trajectory_plugin $(arg namespace_2)_trajectory_plugin" />
     <param name="$(arg namespace_1)_trajectory_plugin/service_name" type="string" value="$(arg namespace_1)/trajectory_service" />
     <param name="$(arg namespace_2)_trajectory_plugin/service_name" type="string" value="$(arg namespace_2)/trajectory_service" />
