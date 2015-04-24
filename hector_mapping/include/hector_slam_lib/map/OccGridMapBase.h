@@ -217,10 +217,10 @@ public:
   {
     ConcreteCellType& cell (this->getCell(offset));
 
-    if (cell.updateIndex < currMarkFreeIndex) {
+    //if (cell.updateIndex < currMarkFreeIndex) {
       concreteGridFunctions.updateSetFree(cell);
       cell.updateIndex = currMarkFreeIndex;
-    }
+    //}
   }
 
   inline void bresenhamCellOcc(unsigned int offset)
@@ -230,9 +230,9 @@ public:
     if (cell.updateIndex < currMarkOccIndex) {
 
       //if this cell has been updated as free in the current iteration, revert this
-      if (cell.updateIndex == currMarkFreeIndex) {
-        concreteGridFunctions.updateUnsetFree(cell);
-      }
+      //if (cell.updateIndex == currMarkFreeIndex) {
+      //  concreteGridFunctions.updateUnsetFree(cell);
+      //}
 
       concreteGridFunctions.updateSetOccupied(cell);
       //std::cout << " setOcc " << "\n";
