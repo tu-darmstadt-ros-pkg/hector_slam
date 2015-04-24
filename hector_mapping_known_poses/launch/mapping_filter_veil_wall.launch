@@ -7,7 +7,7 @@
   <arg name="scan_topic" default="/laser1/scan"/>
   <arg name="map_size" default="2048"/>
   
-  <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+  <node pkg="hector_mapping_known_poses" type="hector_mapping" name="hector_mapping" output="screen">
     
     <!-- Frame names -->
     <param name="map_frame" value="map" />
@@ -40,6 +40,7 @@
     
     <param name="scan_subscriber_queue_size" value="$(arg scan_subscriber_queue_size)"/>
     <param name="scan_topic" value="$(arg scan_topic)"/>
+    <remap from="map" to="dynamic_update_map"/>
     
     <!-- Debug parameters -->
     <!--

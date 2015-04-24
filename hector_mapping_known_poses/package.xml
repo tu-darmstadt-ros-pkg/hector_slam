@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>hector_mapping</name>
+  <name>hector_mapping_known_poses</name>
   <version>0.3.3</version>
   <description>
     hector_mapping is a SLAM approach that can be used without odometry as well as on platforms that exhibit roll/pitch motion (of the sensor, the platform or both).
