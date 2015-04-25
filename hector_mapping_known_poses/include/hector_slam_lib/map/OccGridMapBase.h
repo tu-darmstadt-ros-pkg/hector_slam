@@ -149,19 +149,40 @@ public:
 
     float moving_avg_dist = dataContainer.getVecEntry(0).norm();
 
-    int num_samples = 10;
+    int   const N_SAMPLES = 15;
+    int   const MIN_COUNT_DIST_JUMPS = 4;
+    int   const MIN_COUNT_SIGN_SWITCHES = 1;
+    float const DIST_JUMP_THRESHOLD = 0.25;
+    float const TOLERANCE_TO_MAX_DIST = 0.3;
 
-    for (int i = num_samples; i < (numValidElems); ++i) {
+    for (int i = N_SAMPLES; i < (numValidElems - N_SAMPLES); ++i) {
 
-      float dist = dataContainer.getVecEntry(i).norm();
-
-      moving_avg_dist += 0.1 * dist;
+      float const dist = dataContainer.getVecEntry(i).norm() * 0.05;
 
       float min = std::numeric_limits<float>::max();
       float max = 0.0f, mean = 0.0f;
 
-      for (int j = 0; j < num_samples; ++j){
-        float it_dist = dataContainer.getVecEntry(i-j).norm();
+      float it_dist_previous = dataContainer.getVecEntry(i - N_SAMPLES).norm()  * 0.05;
+      int count_switches = 0;
+
+      float max_dist = it_dist_previous;
+      int count_sign_switches = 0;
+      int prev_sign = 0;
+      for (int j = -N_SAMPLES; j < N_SAMPLES; ++j)
+      {
+        float it_dist = dataContainer.getVecEntry(i+j).norm()  * 0.05;
+
+        if(std::abs(it_dist - it_dist_previous) > DIST_JUMP_THRESHOLD)
+        {
+          count_switches++;
+          int sign = (it_dist - it_dist_previous > 0) ? 1 : -1;
+          if(prev_sign * sign == -1)
+            count_sign_switches++;
+          prev_sign = sign;
+          it_dist_previous = it_dist;
+        }
+
+        max_dist = std::max(max_dist, it_dist_previous);
 
         if (it_dist < min)
           min = it_dist;
@@ -169,16 +190,15 @@ public:
         if (it_dist > max)
           max = it_dist;
 
-        mean += dataContainer.getVecEntry(i-j).norm() / num_samples;
+        mean += dataContainer.getVecEntry(i-j).norm() / N_SAMPLES;
 
       }
 
-      bool update = false;
-
-      if (std::abs(min-max) > 0.6){
-        if (mean - dist < -0.2)
-          update = true;
-      }
+      bool update = count_switches > MIN_COUNT_DIST_JUMPS && count_sign_switches > MIN_COUNT_SIGN_SWITCHES && dist > max_dist - TOLERANCE_TO_MAX_DIST;
+//      if (std::abs(min-max) > 0.9){
+//        if (mean - dist < -0.2)
+//          update = true;
+//      }
 
 
 
