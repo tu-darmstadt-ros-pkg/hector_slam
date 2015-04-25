@@ -139,10 +139,48 @@ public:
     //Get number of valid beams in current scan
     int numValidElems = dataContainer.getSize();
 
+    if (numValidElems < 1)
+      return;
+
     //std::cout << "\n maxD: " << maxDist << " num: " << numValidElems << "\n";
 
     //Iterate over all valid laser beams
-    for (int i = 0; i < numValidElems; ++i) {
+    float prior_dist = 10000.0;
+
+    float moving_avg_dist = dataContainer.getVecEntry(0).norm();
+
+    int num_samples = 10;
+
+    for (int i = num_samples; i < (numValidElems); ++i) {
+
+      float dist = dataContainer.getVecEntry(i).norm();
+
+      moving_avg_dist += 0.1 * dist;
+
+      float min = std::numeric_limits<float>::max();
+      float max = 0.0f, mean = 0.0f;
+
+      for (int j = 0; j < num_samples; ++j){
+        float it_dist = dataContainer.getVecEntry(i-j).norm();
+
+        if (it_dist < min)
+          min = it_dist;
+
+        if (it_dist > max)
+          max = it_dist;
+
+        mean += dataContainer.getVecEntry(i-j).norm() / num_samples;
+
+      }
+
+      bool update = false;
+
+      if (std::abs(min-max) > 0.3){
+        if (mean - dist < -0.1)
+          update = true;
+      }
+
+
 
       //Get map coordinates of current beam endpoint
       Eigen::Vector2f scanEndMapf(poseTransform * (dataContainer.getVecEntry(i)));
@@ -156,8 +194,12 @@ public:
 
       //Update map using a bresenham variant for drawing a line from beam start to beam endpoint in map coordinates
       if (scanBeginMapi != scanEndMapi){
-        updateLineBresenhami(scanBeginMapi, scanEndMapi);
+        if (update){
+          updateLineBresenhami(scanBeginMapi, scanEndMapi);
+        }
       }
+
+      prior_dist = dist;
     }
 
     //Tell the map that it has been updated
@@ -217,10 +259,10 @@ public:
   {
     ConcreteCellType& cell (this->getCell(offset));
 
-    //if (cell.updateIndex < currMarkFreeIndex) {
+    if (cell.updateIndex < currMarkFreeIndex) {
       concreteGridFunctions.updateSetFree(cell);
       cell.updateIndex = currMarkFreeIndex;
-    //}
+    }
   }
 
   inline void bresenhamCellOcc(unsigned int offset)
@@ -230,9 +272,9 @@ public:
     if (cell.updateIndex < currMarkOccIndex) {
 
       //if this cell has been updated as free in the current iteration, revert this
-      //if (cell.updateIndex == currMarkFreeIndex) {
-      //  concreteGridFunctions.updateUnsetFree(cell);
-      //}
+      if (cell.updateIndex == currMarkFreeIndex) {
+        concreteGridFunctions.updateUnsetFree(cell);
+      }
 
       concreteGridFunctions.updateSetOccupied(cell);
       //std::cout << " setOcc " << "\n";

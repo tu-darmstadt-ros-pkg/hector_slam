@@ -4,7 +4,7 @@
   <arg name="tf_map_scanmatch_transform_frame_name" default="scanmatcher_frame"/>
   <arg name="pub_map_odom_transform" default="false"/>
   <arg name="scan_subscriber_queue_size" default="5"/>
-  <arg name="scan_topic" default="/laser1/scan"/>
+  <arg name="scan_topic" default="/scan_filtered"/>
   <arg name="map_size" default="1024"/>
   
   <node pkg="hector_mapping_known_poses" type="hector_mapping_known_poses" name="hector_mapping_known_poses" output="screen">
@@ -55,6 +55,13 @@
     -->
     <param name="tf_map_scanmatch_transform_frame_name" value="$(arg tf_map_scanmatch_transform_frame_name)" />
   </node>
+  
+  <node pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="laser_filter">
+      <remap from="scan" to="/laser1/scan" />
+      <rosparam command="load" file="$(find hector_mapping_known_poses)/config/veil_filter.yaml" />
+  </node>
+
+  
     
   <!--<node pkg="tf" type="static_transform_publisher" name="map_nav_broadcaster" args="0 0 0 0 0 0 map nav 100"/>-->
 </launch>
