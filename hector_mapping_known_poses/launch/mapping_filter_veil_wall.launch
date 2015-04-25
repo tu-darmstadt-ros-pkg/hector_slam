@@ -40,7 +40,12 @@
     
     <param name="scan_subscriber_queue_size" value="$(arg scan_subscriber_queue_size)"/>
     <param name="scan_topic" value="$(arg scan_topic)"/>
+    
     <remap from="map" to="dynamic_update_map"/>
+    <remap from="poseupdate" to="poseupdate_dyn_mapping" />
+    <remap from="map_metadata" to="map_metadata_dyn_mapping" />
+    <remap from="slam_cloud" to="slam_cloud_dyn_mapping" />
+    <remap from="slam_out_pose" to="slam_out_pose_dyn_mapping" />
     
     <!-- Debug parameters -->
     <!--
