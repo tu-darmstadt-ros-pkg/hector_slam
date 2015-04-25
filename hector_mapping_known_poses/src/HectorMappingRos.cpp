@@ -47,7 +47,7 @@ HectorMappingRos::HectorMappingRos()
   : debugInfoProvider(0)
   , hectorDrawings(0)
   , lastGetMapUpdateIndex(-100)
-  , tfB_(0)
+  //, tfB_(0)
   , map__publish_thread_(0)
   , initial_pose_set_(false)
 {
@@ -186,8 +186,8 @@ HectorMappingRos::HectorMappingRos()
 
   scan_point_cloud_publisher_ = node_.advertise<sensor_msgs::PointCloud>("slam_cloud",1,false);
 
-  tfB_ = new tf::TransformBroadcaster();
-  ROS_ASSERT(tfB_);
+  //tfB_ = new tf::TransformBroadcaster();
+  //ROS_ASSERT(tfB_);
 
   /*
   bool p_use_static_map_ = false;
@@ -219,8 +219,8 @@ HectorMappingRos::~HectorMappingRos()
   if (debugInfoProvider)
     delete debugInfoProvider;
 
-  if (tfB_)
-    delete tfB_;
+  //if (tfB_)
+  //  delete tfB_;
 
   if(map__publish_thread_)
     delete map__publish_thread_;
@@ -344,11 +344,11 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
       odom_to_base.setIdentity();
     }
     map_to_odom_ = tf::Transform(poseInfoContainer_.getTfTransform() * odom_to_base.inverse());
-    tfB_->sendTransform( tf::StampedTransform (map_to_odom_, scan.header.stamp, p_map_frame_, p_odom_frame_));
+    //tfB_->sendTransform( tf::StampedTransform (map_to_odom_, scan.header.stamp, p_map_frame_, p_odom_frame_));
   }
 
   if (p_pub_map_scanmatch_transform_){
-    tfB_->sendTransform( tf::StampedTransform(poseInfoContainer_.getTfTransform(), scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
+    //tfB_->sendTransform( tf::StampedTransform(poseInfoContainer_.getTfTransform(), scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
   }
 }
 

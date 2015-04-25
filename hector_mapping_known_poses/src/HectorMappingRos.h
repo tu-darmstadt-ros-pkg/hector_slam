@@ -118,7 +118,7 @@ protected:
   std::vector<MapPublisherContainer> mapPubContainer;
 
   tf::TransformListener tf_;
-  tf::TransformBroadcaster* tfB_;
+  //tf::TransformBroadcaster* tfB_;
 
   laser_geometry::LaserProjection projector_;
 
