@@ -175,8 +175,8 @@ public:
 
       bool update = false;
 
-      if (std::abs(min-max) > 0.3){
-        if (mean - dist < -0.1)
+      if (std::abs(min-max) > 0.6){
+        if (mean - dist < -0.2)
           update = true;
       }
 
