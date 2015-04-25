@@ -34,6 +34,9 @@
 #include "../scan/DataPointContainer.h"
 #include "../util/UtilFunctions.h"
 
+#include <cv_bridge/cv_bridge.h>
+#include <opencv2/imgproc/imgproc.hpp>
+
 #include <Eigen/Geometry>
 
 namespace hectorslam {
@@ -149,36 +152,70 @@ public:
 
     float moving_avg_dist = dataContainer.getVecEntry(0).norm();
 
-    int num_samples = 10;
+    int num_samples = 15;
 
-    for (int i = num_samples; i < (numValidElems); ++i) {
+    std::vector<cv::Point> points;
+
+    for (int i = num_samples; i < (numValidElems - num_samples); ++i) {
 
       float dist = dataContainer.getVecEntry(i).norm();
+
 
       moving_avg_dist += 0.1 * dist;
 
       float min = std::numeric_limits<float>::max();
       float max = 0.0f, mean = 0.0f;
 
-      for (int j = 0; j < num_samples; ++j){
-        float it_dist = dataContainer.getVecEntry(i-j).norm();
-
-        if (it_dist < min)
-          min = it_dist;
-
-        if (it_dist > max)
-          max = it_dist;
-
-        mean += dataContainer.getVecEntry(i-j).norm() / num_samples;
-
+      for(int j = -num_samples+1; j < num_samples; ++j){
+        const Eigen::Vector2f& curr_point = dataContainer.getVecEntry(i+j);
+        points.push_back(cv::Point(curr_point.x(), curr_point.y()));
+        mean += dataContainer.getVecEntry(i+j).norm() / (2 * num_samples - 1);
       }
+
+      cv::RotatedRect rect = cv::minAreaRect(points);
+      cv::Size2f& size= rect.size;
 
       bool update = false;
 
-      if (std::abs(min-max) > 0.6){
-        if (mean - dist < -0.2)
-          update = true;
+      float width_thresh = 0.5;
+      float height_tresh = 0.5;
+
+      /*
+      if (size.width > width_thresh && size.height > height_tresh)
+      {
+        update = true;
       }
+      */
+
+      if (size.area() > 0.64 && size.height > 0.8 && size.width > 0.8)
+      {
+        if (dist > mean)
+          update=true;
+      }
+
+      //size.area();
+
+
+
+
+//      for (int j = 0; j < num_samples; ++j){
+//        float it_dist = dataContainer.getVecEntry(i-j).norm();
+
+//        if (it_dist < min)
+//          min = it_dist;
+
+//        if (it_dist > max)
+//          max = it_dist;
+
+//        mean += dataContainer.getVecEntry(i-j).norm() / num_samples;
+
+//      }
+
+
+//      if (std::abs(min-max) > 0.6){
+//        if (mean - dist < -0.2)
+//          update = true;
+//      }
 
 
 
@@ -199,7 +236,8 @@ public:
         }
       }
 
-      prior_dist = dist;
+
+
     }
 
     //Tell the map that it has been updated
