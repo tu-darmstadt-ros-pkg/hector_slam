@@ -153,7 +153,7 @@ public:
     int   const MIN_COUNT_DIST_JUMPS = 4;
     int   const MIN_COUNT_SIGN_SWITCHES = 1;
     float const DIST_JUMP_THRESHOLD = 0.25;
-    float const TOLERANCE_TO_MAX_DIST = 0.3;
+    float const TOLERANCE_TO_MAX_DIST = 0.6;
 
     for (int i = N_SAMPLES; i < (numValidElems - N_SAMPLES); ++i) {
 
@@ -194,7 +194,7 @@ public:
 
       }
 
-      bool update = count_switches > MIN_COUNT_DIST_JUMPS && count_sign_switches > MIN_COUNT_SIGN_SWITCHES && dist > max_dist - TOLERANCE_TO_MAX_DIST;
+      bool update = !(count_switches > MIN_COUNT_DIST_JUMPS && count_sign_switches > MIN_COUNT_SIGN_SWITCHES) || (dist > max_dist - TOLERANCE_TO_MAX_DIST);
 //      if (std::abs(min-max) > 0.9){
 //        if (mean - dist < -0.2)
 //          update = true;
@@ -214,9 +214,9 @@ public:
 
       //Update map using a bresenham variant for drawing a line from beam start to beam endpoint in map coordinates
       if (scanBeginMapi != scanEndMapi){
-        if (update){
+        //if (update){
           updateLineBresenhami(scanBeginMapi, scanEndMapi);
-        }
+        //}
       }
 
       prior_dist = dist;
@@ -279,10 +279,10 @@ public:
   {
     ConcreteCellType& cell (this->getCell(offset));
 
-    if (cell.updateIndex < currMarkFreeIndex) {
+    //if (cell.updateIndex < currMarkFreeIndex) {
       concreteGridFunctions.updateSetFree(cell);
       cell.updateIndex = currMarkFreeIndex;
-    }
+    //}
   }
 
   inline void bresenhamCellOcc(unsigned int offset)
@@ -292,9 +292,9 @@ public:
     if (cell.updateIndex < currMarkOccIndex) {
 
       //if this cell has been updated as free in the current iteration, revert this
-      if (cell.updateIndex == currMarkFreeIndex) {
-        concreteGridFunctions.updateUnsetFree(cell);
-      }
+      //if (cell.updateIndex == currMarkFreeIndex) {
+      //  concreteGridFunctions.updateUnsetFree(cell);
+      //}
 
       concreteGridFunctions.updateSetOccupied(cell);
       //std::cout << " setOcc " << "\n";
@@ -306,7 +306,7 @@ public:
 
     this->bresenhamCellFree(offset);
 
-    unsigned int end = abs_da-1;
+    unsigned int end = std::max<int>((int)(abs_da-9),0);
 
     for(unsigned int i = 0; i < end; ++i){
       offset += offset_a;
