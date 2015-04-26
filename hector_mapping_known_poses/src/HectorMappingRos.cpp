@@ -291,7 +291,10 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 
 
         if (p_map_with_known_poses_){
-          slamProcessor->update(laserScanContainer, startEstimate, true);
+          Eigen::Vector2f current_location(startEstimate.x(), startEstimate.y());
+
+          if (current_location.norm() < 5.0)
+            slamProcessor->update(laserScanContainer, startEstimate, true);
         }else{
           slamProcessor->update(laserScanContainer, startEstimate);
         }
