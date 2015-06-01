@@ -87,7 +87,7 @@ public:
 
   void waitForTf()
   {
-    ros::WallTime start = ros::WallTime::now();
+    ros::Time start = ros::Time::now();
     ROS_INFO("Waiting for tf transform data between frames %s and %s to become available", p_target_frame_name_.c_str(), p_source_frame_name_.c_str() );
 
     bool transform_successful = false;
@@ -96,7 +96,7 @@ public:
       transform_successful = tf_.canTransform(p_target_frame_name_, p_source_frame_name_, ros::Time());
       if (transform_successful) break;
 
-      ros::WallTime now = ros::WallTime::now();
+      ros::Time now = ros::Time::now();
 
       if ((now-start).toSec() > 20.0){
         ROS_WARN_ONCE("No transform between frames %s and %s available after %f seconds of waiting. This warning only prints once.", p_target_frame_name_.c_str(), p_source_frame_name_.c_str(), (now-start).toSec());
@@ -106,7 +106,7 @@ public:
       ros::WallDuration(1.0).sleep();
     }
 
-    ros::WallTime end = ros::WallTime::now();
+    ros::Time end = ros::Time::now();
     ROS_INFO("Finished waiting for tf, waited %f seconds", (end-start).toSec());
   }
 
