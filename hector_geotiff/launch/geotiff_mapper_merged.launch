@@ -16,8 +16,10 @@
     <param name="plugins" type="string" value="hector_geotiff_plugins/TrajectoryMapWriter hector_geotiff_plugins/TrajectoryMapWriter hector_worldmodel_geotiff_plugins/QRCodeMapWriter hector_worldmodel_geotiff_plugins/VictimMapWriter" />
     <param name="VictimMapWriter/draw_all_objects" value="false" />
     <param name="VictimMapWriter/class_id" value="victim" />
+    <param name="VictimMapWriter/service_name" type="string" value="/object_merger/get_object_model" />
     <param name="QRCodeMapWriter/draw_all_objects" value="true" />
     <param name="QRCodeMapWriter/class_id" value="qrcode" />
+    <param name="QRCodeMapWriter/service_name" type="string" value="/object_merger/get_object_model" />
     <param name="plugin_names" type="string" value="$(arg namespace_1)_trajectory_plugin $(arg namespace_2)_trajectory_plugin" />
     <param name="$(arg namespace_1)_trajectory_plugin/service_name" type="string" value="$(arg namespace_1)/trajectory_service" />
     <param name="$(arg namespace_2)_trajectory_plugin/service_name" type="string" value="$(arg namespace_2)/trajectory_service" />
