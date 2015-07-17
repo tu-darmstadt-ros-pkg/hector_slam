@@ -28,7 +28,7 @@
     <param name="hector1_trajectory_plugin/path_color_r" type="int" value="120" />
     <param name="hector1_trajectory_plugin/path_color_g" type="int" value="0" />
     <param name="hector1_trajectory_plugin/path_color_b" type="int" value="240" />
-    <param name="hector2_trajectory_plugin/service_name" type="string" value="/hector2/trajectory_service
+    <param name="hector2_trajectory_plugin/service_name" type="string" value="/trajectory_transformer/trajectory_service
 " />
 <param name="hector2_trajectory_plugin/path_color_r" type="int" value="0" />
 <param name="hector2_trajectory_plugin/path_color_g" type="int" value="255" />
