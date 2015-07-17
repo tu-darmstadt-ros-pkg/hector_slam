@@ -43,7 +43,13 @@ public:
 
   virtual std::string getBasePathAndFileName() const = 0;
   virtual void drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const Color& color) = 0;
-  virtual void drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points) = 0;
+  //virtual void drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points) = 0;
+
+  inline virtual void drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points){
+      drawPath(start, points, 120,0,240);
+  }
+  virtual void drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points, int color_r, int color_g, int color_b) = 0;
+
 };
 
 }
