@@ -403,7 +403,7 @@ void GeotiffWriter::drawObjectOfInterest(const Eigen::Vector2f& coords, const st
   qPainter.drawText(ellipse_shape,Qt::AlignCenter , tmp);
 }
 
-void GeotiffWriter::drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points)
+void GeotiffWriter::drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points,int color_r, int color_g, int color_b)
 {
   QPainter qPainter(&image);
 
@@ -426,7 +426,7 @@ void GeotiffWriter::drawPath(const Eigen::Vector3f& start, const std::vector<Eig
   }
 
   QPen pen(qPainter.pen());
-  pen.setColor(QColor(120,0,240));
+  pen.setColor(QColor(color_r, color_g, color_b));
   pen.setWidth(3);
 
   qPainter.setPen(pen);

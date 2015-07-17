@@ -64,7 +64,10 @@ class GeotiffWriter : public MapWriterInterface
   void drawBackgroundCheckerboard();
   void drawMap(const nav_msgs::OccupancyGrid& map, bool draw_explored_space_grid = true);
   void drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const Color& color);
-  void drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points);
+  inline virtual void drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points){
+      drawPath(start, points, 120,0,240);
+  }
+  void drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points, int color_r, int color_g, int color_b);
   void drawCoords();
   std::string getBasePathAndFileName() const;
   void writeGeotiffImage();
