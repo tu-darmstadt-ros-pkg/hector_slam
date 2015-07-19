@@ -14,14 +14,19 @@
     <param name="draw_free_space_grid" type="bool" value="true" />   
     <param name="service_name" type="string" value="/object_merger/get_object_model" />
 
-    <param name="plugins" type="string" value="hector_geotiff_plugins/TrajectoryMapWriter hector_geotiff_plugins/TrajectoryMapWriter hector_worldmodel_geotiff_plugins/QRCodeMapWriter hector_worldmodel_geotiff_plugins/VictimMapWriter" />
-    <param name="plugin_names" type="string" value="hector1_trajectory_plugin hector2_trajectory_plugin qrcode_plugin victim_plugin" />
+    <param name="plugins" type="string" value="hector_barrel_geotiff_plugin/BarrelMapWriter hector_geotiff_plugins/TrajectoryMapWriter hector_geotiff_plugins/TrajectoryMapWriter hector_worldmodel_geotiff_plugins/QRCodeMapWriter hector_worldmodel_geotiff_plugins/VictimMapWriter" />
+    <param name="plugin_names" type="string" value="barrel_plugin hector1_trajectory_plugin hector2_trajectory_plugin qrcode_plugin victim_plugin" />
     <param name="victim_plugin/draw_all_objects" value="false" />
     <param name="victim_plugin/class_id" value="victim" />
     <param name="victim_plugin/service_name" type="string" value="/object_merger/get_object_model" />
     <param name="qrcode_plugin/draw_all_objects" value="true" />
     <param name="qrcode_plugin/class_id" value="qrcode" />
     <param name="qrcode_plugin/service_name" type="string" value="/object_merger/get_object_model" />
+
+    <param name="barrel_plugin/pkg_path" value="$(find hector_barrel_geotiff_plugin)" />
+    <param name="barrel_plugin/barrel_threshold" value="0.8" /> 
+    <param name="barrel_plugin/draw_all_objects" value="true" />
+    <param name="barrel_plugin/class_id" value="barrel" />
     
     <param name="hector1_trajectory_plugin/service_name" type="string" value="/hector1/trajectory_service
 " />
