@@ -149,10 +149,10 @@ public:
 
     float moving_avg_dist = dataContainer.getVecEntry(0).norm();
 
-    int   const N_SAMPLES = 20;
-    int   const MIN_COUNT_DIST_JUMPS = 5;
-    int   const MIN_COUNT_SIGN_SWITCHES = 3;
-    float const DIST_JUMP_THRESHOLD = 0.5;
+    int   const N_SAMPLES = 15;
+    int   const MIN_COUNT_DIST_JUMPS = 3;
+    int   const MIN_COUNT_SIGN_SWITCHES = 2;
+    float const DIST_JUMP_THRESHOLD = 0.25;
     float const TOLERANCE_TO_MAX_DIST = 0.3;
 
     for (int i = N_SAMPLES; i < (numValidElems - N_SAMPLES); ++i) {
