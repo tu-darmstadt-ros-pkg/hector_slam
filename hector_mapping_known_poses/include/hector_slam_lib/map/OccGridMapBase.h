@@ -149,10 +149,10 @@ public:
 
     float moving_avg_dist = dataContainer.getVecEntry(0).norm();
 
-    int   const N_SAMPLES = 15;
-    int   const MIN_COUNT_DIST_JUMPS = 4;
-    int   const MIN_COUNT_SIGN_SWITCHES = 1;
-    float const DIST_JUMP_THRESHOLD = 0.25;
+    int   const N_SAMPLES = 20;
+    int   const MIN_COUNT_DIST_JUMPS = 5;
+    int   const MIN_COUNT_SIGN_SWITCHES = 3;
+    float const DIST_JUMP_THRESHOLD = 0.5;
     float const TOLERANCE_TO_MAX_DIST = 0.3;
 
     for (int i = N_SAMPLES; i < (numValidElems - N_SAMPLES); ++i) {
@@ -203,7 +203,32 @@ public:
 
 
       //Get map coordinates of current beam endpoint
+
+      float laser_end_dist      = dataContainer.getVecEntry(i).norm();
+      float clearing_end_dist   = (min + 0.4f) * 20.0f;
+
+      float end_dist = std::min(laser_end_dist, clearing_end_dist);
+
+      Eigen::Vector2f scanEndMapf(poseTransform * (dataContainer.getVecEntry(i).normalized() * end_dist));
+
+      /*
+
+      if (default_end_dist < short_end_dist){
+        scanEndMapf = poseTransform * (dataContainer.getVecEntry(i)) * default_end_dist;
+      }else{
+
+
+        scanEndMapf = poseTransform * (dataContainer.getVecEntry(i)) * default_end_dist;
+      }
+      */
+
+
+      /*
       Eigen::Vector2f scanEndMapf(poseTransform * (dataContainer.getVecEntry(i)));
+
+      Eigen::Vector2f scanEndMapf(poseTransform * (dataContainer.getVecEntry(i).normalized() * (min + 0.4)*20.0));
+      */
+
       //std::cout << "\ns\n" << scanEndMapf << "\n";
 
       //add 0.5 to beam endpoint vector for following integer cast (to round, not truncate)
@@ -271,7 +296,7 @@ public:
     }
 
     unsigned int endOffset = endMap.y() * this->sizeX + endMap.x();
-    this->bresenhamCellOcc(endOffset);
+    //this->bresenhamCellOcc(endOffset);
 
   }
 
