@@ -27,6 +27,8 @@
     <param name="barrel_plugin/barrel_threshold" value="0.8" /> 
     <param name="barrel_plugin/draw_all_objects" value="true" />
     <param name="barrel_plugin/class_id" value="barrel" />
+    <param name="barrel_plugin/service_name" type="string" value="/object_merger/get_object_model" />
+
     
     <param name="hector1_trajectory_plugin/service_name" type="string" value="/hector1/trajectory_service
 " />
