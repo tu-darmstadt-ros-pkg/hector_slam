@@ -113,7 +113,8 @@ public:
 
   void sysCmdCallback(const std_msgs::String& sys_cmd)
   {
-    if (sys_cmd.data == "reset"){
+    if (sys_cmd.data == "reset")
+    {
       last_reset_time_ = ros::Time::now();
       trajectory_.trajectory.poses.clear();
       trajectory_.trajectory.header.stamp = ros::Time::now();
@@ -159,10 +160,14 @@ public:
   bool trajectoryProviderCallBack(hector_nav_msgs::GetRobotTrajectory::Request  &req,
                                   hector_nav_msgs::GetRobotTrajectory::Response &res )
   {
-    res = trajectory_;
-
+    res = getTrajectory();
     return true;
-  };
+  }
+
+  inline const hector_nav_msgs::GetRobotTrajectoryResponse getTrajectory() const
+  {
+    return trajectory_;
+  }
 
   bool recoveryInfoProviderCallBack(hector_nav_msgs::GetRecoveryInfo::Request  &req,
                                   hector_nav_msgs::GetRecoveryInfo::Response &res )
@@ -172,10 +177,18 @@ public:
     geometry_msgs::PoseStamped tmp;
     tmp.header.stamp = req_time;
 
-    std::vector<geometry_msgs::PoseStamped>& poses = trajectory_.trajectory.poses;
+    std::vector<geometry_msgs::PoseStamped> const & poses = trajectory_.trajectory.poses;
+
+    if(poses.size() == 0)
+    {
+        ROS_WARN("Failed to find trajectory leading out of radius %f"
+                 " because no poses, i.e. no inverse trajectory, exists.", req.request_radius);
+        return false;
+    }
 
     //Find the robot pose in the saved trajectory
-    std::vector<geometry_msgs::PoseStamped>::iterator it = std::lower_bound(poses.begin(), poses.end(), tmp, comparePoseStampedStamps);
+    std::vector<geometry_msgs::PoseStamped>::const_iterator it
+            = std::lower_bound(poses.begin(), poses.end(), tmp, comparePoseStampedStamps);
 
     //If we didn't find the robot pose for the desired time, add the current robot pose to trajectory
     if (it == poses.end()){
@@ -184,7 +197,7 @@ public:
       --it;
     }
 
-    std::vector<geometry_msgs::PoseStamped>::iterator it_start = it;
+    std::vector<geometry_msgs::PoseStamped>::const_iterator it_start = it;
 
     const geometry_msgs::Point& req_coords ((*it).pose.position);
 
@@ -207,7 +220,7 @@ public:
       return false;
     }
 
-    std::vector<geometry_msgs::PoseStamped>::iterator it_end = it;
+    std::vector<geometry_msgs::PoseStamped>::const_iterator it_end = it;
 
     res.req_pose = *it_start;
     res.radius_entry_pose = *it_end;
@@ -217,12 +230,12 @@ public:
     res.trajectory_radius_entry_pose_to_req_pose.poses.clear();
     res.trajectory_radius_entry_pose_to_req_pose.header = res.req_pose.header;
 
-    for (std::vector<geometry_msgs::PoseStamped>::iterator it_tmp = it_start; it_tmp != it_end; --it_tmp){
+    for (std::vector<geometry_msgs::PoseStamped>::const_iterator it_tmp = it_start; it_tmp != it_end; --it_tmp){
       traj_out_poses.push_back(*it_tmp);
     }
 
     return true;
-  };
+  }
 
   //parameters
   std::string p_target_frame_name_;
