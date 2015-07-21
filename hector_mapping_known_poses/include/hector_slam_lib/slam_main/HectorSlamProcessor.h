@@ -42,6 +42,9 @@
 #include "MapRepresentationInterface.h"
 #include "MapRepMultiMap.h"
 
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+
 
 #include <float.h>
 
@@ -66,6 +69,11 @@ public:
   ~HectorSlamProcessor()
   {
     delete mapRep;
+  }
+
+  void update(const pcl::PointCloud<pcl::PointXYZ>& cloud)
+  {
+    mapRep->updateByCloud(cloud);
   }
 
   void update(const DataContainer& dataContainer, const Eigen::Vector3f& poseHintWorld, bool map_without_matching = false)

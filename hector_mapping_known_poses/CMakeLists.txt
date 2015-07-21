@@ -100,6 +100,7 @@ add_dependencies(hector_mapping_known_poses hector_mapping_generate_messages_cpp
 target_link_libraries(hector_mapping_known_poses
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
+  ${PCL_LIBRARIES}
 )
 
 #############

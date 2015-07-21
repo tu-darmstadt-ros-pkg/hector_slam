@@ -131,6 +131,11 @@ public:
     return tmp;
   }
 
+  virtual void updateByCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud)
+  {
+    mapContainer[0].updateByCloud(cloud);
+  }
+
   virtual void updateByScan(const DataContainer& dataContainer, const Eigen::Vector3f& robotPoseWorld)
   {
     unsigned int size = mapContainer.size();

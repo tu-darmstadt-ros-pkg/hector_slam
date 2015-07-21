@@ -56,6 +56,7 @@ public:
   virtual Eigen::Vector3f matchData(const Eigen::Vector3f& beginEstimateWorld, const DataContainer& dataContainer, Eigen::Matrix3f& covMatrix) = 0;
 
   virtual void updateByScan(const DataContainer& dataContainer, const Eigen::Vector3f& robotPoseWorld) = 0;
+  virtual void updateByCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud) = 0;
 
   virtual void setUpdateFactorFree(float free_factor) = 0;
   virtual void setUpdateFactorOccupied(float occupied_factor) = 0;

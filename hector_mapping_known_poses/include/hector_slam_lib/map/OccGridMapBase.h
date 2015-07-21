@@ -36,6 +36,9 @@
 
 #include <Eigen/Geometry>
 
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+
 namespace hectorslam {
 
 template<typename ConcreteCellType, typename ConcreteGridFunctions>
@@ -111,6 +114,27 @@ public:
   void setUpdateOccupiedFactor(float factor)
   {
     concreteGridFunctions.setUpdateOccupiedFactor(factor);
+  }
+
+  void updateByCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud)
+  {
+
+    size_t size = cloud.size();
+
+    for (size_t i = 0; i < size; ++i)
+    {
+      const pcl::PointXYZ& point = cloud[i];
+
+      Eigen::Vector2f point_map_f (this->getMapCoords(Eigen::Vector2f(point.x, point.y)));
+
+      Eigen::Vector2i point_map_i (static_cast<int>(point_map_f.x() + 0.5), static_cast<int>(point_map_f.y() + 0.5));
+
+
+      ConcreteCellType& cell (this->getCell(point_map_i.x(), point_map_i.y()));
+
+      concreteGridFunctions.updateSetFree(cell);
+
+    }
   }
 
   /**

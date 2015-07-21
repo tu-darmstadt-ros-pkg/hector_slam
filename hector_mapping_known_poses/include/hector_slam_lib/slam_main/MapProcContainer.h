@@ -100,6 +100,22 @@ public:
     return scanMatcher->matchData(beginEstimateWorld, *gridMapUtil, dataContainer, covMatrix, maxIterations);
   }
 
+  void updateByCloud(const pcl::PointCloud<pcl::PointXYZ>& cloud)
+  {
+    if (mapMutex)
+    {
+      mapMutex->lockMap();
+    }
+
+    gridMap->updateByCloud(cloud);
+
+    if (mapMutex)
+    {
+      mapMutex->unlockMap();
+    }
+  }
+
+
   void updateByScan(const DataContainer& dataContainer, const Eigen::Vector3f& robotPoseWorld)
   {
     if (mapMutex)

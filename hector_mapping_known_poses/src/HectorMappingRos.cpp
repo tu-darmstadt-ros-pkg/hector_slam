@@ -38,6 +38,8 @@
 #include "HectorDrawings.h"
 #include "HectorDebugInfoProvider.h"
 #include "HectorMapMutex.h"
+#include <pcl/ros/conversions.h>
+#include <pcl_conversions/pcl_conversions.h>
 
 #ifndef TF_SCALAR_H
   typedef btScalar tfScalar;
@@ -229,8 +231,12 @@ HectorMappingRos::~HectorMappingRos()
 
 void HectorMappingRos::cloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud)
 {
-  boost::shared_ptr<pcl::PointCloud<PointT> > pc_ (new pcl::PointCloud<PointT>());
+  boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ> > pc_ (new pcl::PointCloud<pcl::PointXYZ>());
   pcl::fromROSMsg(*cloud, *pc_);
+
+  slamProcessor->update(*pc_);
+
+
 }
 
 void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
