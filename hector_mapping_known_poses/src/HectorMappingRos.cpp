@@ -178,6 +178,7 @@ HectorMappingRos::HectorMappingRos()
   ROS_INFO("HectorSM p_laser_z_min_value_: %f", p_laser_z_min_value_);
   ROS_INFO("HectorSM p_laser_z_max_value_: %f", p_laser_z_max_value_);
 
+  cloudSubscriber_ = node_.subscribe("cloud", 5, &HectorMappingRos::cloudCallback, this);
   scanSubscriber_ = node_.subscribe(p_scan_topic_, p_scan_subscriber_queue_size_, &HectorMappingRos::scanCallback, this);
   sysMsgSubscriber_ = node_.subscribe(p_sys_msg_topic_, 2, &HectorMappingRos::sysMsgCallback, this);
 
@@ -224,6 +225,12 @@ HectorMappingRos::~HectorMappingRos()
 
   if(map__publish_thread_)
     delete map__publish_thread_;
+}
+
+void HectorMappingRos::cloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud)
+{
+  boost::shared_ptr<pcl::PointCloud<PointT> > pc_ (new pcl::PointCloud<PointT>());
+  pcl::fromROSMsg(*cloud, *pc_);
 }
 
 void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)

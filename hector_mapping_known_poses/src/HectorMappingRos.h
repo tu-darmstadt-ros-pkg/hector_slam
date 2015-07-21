@@ -70,7 +70,7 @@ public:
   HectorMappingRos();
   ~HectorMappingRos();
 
-
+  void cloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud);
   void scanCallback(const sensor_msgs::LaserScan& scan);
   void sysMsgCallback(const std_msgs::String& string);
 
@@ -102,6 +102,7 @@ protected:
 
   ros::NodeHandle node_;
 
+  ros::Subscriber cloudSubscriber_;
   ros::Subscriber scanSubscriber_;
   ros::Subscriber sysMsgSubscriber_;
 

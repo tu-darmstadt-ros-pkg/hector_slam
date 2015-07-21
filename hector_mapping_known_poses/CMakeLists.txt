@@ -14,6 +14,12 @@ find_package(Eigen REQUIRED)
 include_directories(${EIGEN_INCLUDE_DIRS})
 add_definitions(${EIGEN_DEFINITIONS})
 
+find_package(PCL REQUIRED)
+include_directories(
+  include
+  ${PCL_INCLUDE_DIRS}
+)
+
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
