@@ -149,7 +149,7 @@ public:
 
     float moving_avg_dist = dataContainer.getVecEntry(0).norm();
 
-    int   const N_SAMPLES = 15;
+    int   const N_SAMPLES = 25;
     int   const MIN_COUNT_DIST_JUMPS = 2;
     int   const MIN_COUNT_SIGN_SWITCHES = 2;
     float const DIST_JUMP_THRESHOLD = 0.25;
@@ -205,7 +205,7 @@ public:
       //Get map coordinates of current beam endpoint
 
       float laser_end_dist      = dataContainer.getVecEntry(i).norm();
-      float clearing_end_dist   = (min + 0.36f) * 20.0f;
+      float clearing_end_dist   = (min + 0.42f) * 20.0f;
 
       float end_dist = std::min(laser_end_dist, clearing_end_dist);
 
