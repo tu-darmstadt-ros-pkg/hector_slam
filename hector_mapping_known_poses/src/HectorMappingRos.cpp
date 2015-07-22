@@ -41,6 +41,9 @@
 #include <pcl/ros/conversions.h>
 #include <pcl_conversions/pcl_conversions.h>
 
+#include <dynamic_reconfigure/server.h>
+#include <hector_mapping_known_poses/HectorMappingRosConfig.h>
+
 #ifndef TF_SCALAR_H
   typedef btScalar tfScalar;
 #endif
@@ -107,6 +110,9 @@ HectorMappingRos::HectorMappingRos()
 
   private_nh_.param("laser_z_max_value", tmp, 1.0);
   p_laser_z_max_value_ = static_cast<float>(tmp);
+
+  reconfigureServer.reset(new HectorMappingRosReconfigure(private_nh_));
+  reconfigureServer->setCallback(boost::bind(&HectorMappingRos::configCallback,this, _1, _2));
 
   if (p_pub_drawings)
   {
@@ -227,6 +233,11 @@ HectorMappingRos::~HectorMappingRos()
 
   if(map__publish_thread_)
     delete map__publish_thread_;
+}
+
+void HectorMappingRos::configCallback(hector_mapping_known_poses::HectorMappingRosConfig &config, uint32_t level) {
+    ROS_INFO(config.p_pub_drawings ? "Active pub drawing" : "Inactive pub drawing");
+    //p_pub_drawings = config.p_pub_drawings;
 }
 
 void HectorMappingRos::cloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud)

@@ -51,6 +51,8 @@
 
 #include "PoseInfoContainer.h"
 
+#include <dynamic_reconfigure/server.h>
+#include <hector_mapping_known_poses/HectorMappingRosConfig.h>
 
 class HectorDrawings;
 class HectorDebugInfoProvider;
@@ -70,6 +72,7 @@ public:
   HectorMappingRos();
   ~HectorMappingRos();
 
+  void configCallback(hector_mapping_known_poses::HectorMappingRosConfig &config, uint32_t level);
   void cloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud);
   void scanCallback(const sensor_msgs::LaserScan& scan);
   void sysMsgCallback(const std_msgs::String& string);
@@ -94,6 +97,9 @@ public:
   void setStaticMapData(const nav_msgs::OccupancyGrid& map);
   */
 protected:
+
+  typedef dynamic_reconfigure::Server<hector_mapping_known_poses::HectorMappingRosConfig> HectorMappingRosReconfigure;
+  boost::shared_ptr<HectorMappingRosReconfigure> reconfigureServer;
 
   HectorDebugInfoProvider* debugInfoProvider;
   HectorDrawings* hectorDrawings;
