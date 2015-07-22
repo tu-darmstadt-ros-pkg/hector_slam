@@ -205,7 +205,7 @@ public:
       //Get map coordinates of current beam endpoint
 
       float laser_end_dist      = dataContainer.getVecEntry(i).norm();
-      float clearing_end_dist   = (min + 0.3f) * 20.0f;
+      float clearing_end_dist   = (min + 0.36f) * 20.0f;
 
       float end_dist = std::min(laser_end_dist, clearing_end_dist);
 
