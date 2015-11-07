@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>hector_compressed_map_transport</name>
-  <version>0.3.3</version>
+  <version>0.3.4</version>
   <description>
     hector_compressed_map_transport provides means for transporting compressed map data through the use of image_transport.
   </description>

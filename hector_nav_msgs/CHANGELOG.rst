@@ -2,6 +2,12 @@
 Changelog for package hector_nav_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.4 (2015-11-07)
+------------------
+* hector_nav_msgs: removed yaw member from GetNormal response
+  yaw is implicitly given by the normal vector
+* Contributors: Dorothea Koert
+
 0.3.3 (2014-06-15)
 ------------------
 * added GetNormal service, that returns normal and orientation of an occupied cell

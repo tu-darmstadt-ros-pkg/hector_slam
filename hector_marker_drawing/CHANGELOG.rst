@@ -2,6 +2,9 @@
 Changelog for package hector_marker_drawing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.4 (2015-11-07)
+------------------
+
 0.3.3 (2014-06-15)
 ------------------
 * fixed cmake find for eigen in indigo

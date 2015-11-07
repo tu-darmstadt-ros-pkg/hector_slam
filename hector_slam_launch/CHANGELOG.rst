@@ -2,6 +2,12 @@
 Changelog for package hector_slam_launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.4 (2015-11-07)
+------------------
+* Removes trailing spaces and fixes indents
+* "rviz_cfg" directory in the repository version.
+* Contributors: YuK_Ota, dani-carbonell
+
 0.3.3 (2014-06-15)
 ------------------
 

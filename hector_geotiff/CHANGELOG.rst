@@ -2,6 +2,11 @@
 Changelog for package hector_geotiff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.4 (2015-11-07)
+------------------
+* Removes trailing spaces and fixes indents
+* Contributors: YuK_Ota
+
 0.3.3 (2014-06-15)
 ------------------
 * fixed cmake find for eigen in indigo
