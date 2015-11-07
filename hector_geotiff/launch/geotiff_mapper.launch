@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 
 <launch>
-   <arg name="trajectory_source_frame_name" default="/base_link"/>
-   <arg name="trajectory_update_rate" default="4"/>
-   <arg name="trajectory_publish_rate" default="0.25"/>
-   <arg name="map_file_path" default="$(find hector_geotiff)/maps"/>
-   <arg name="map_file_base_name" default="hector_slam_map"/>
-  
+  <arg name="trajectory_source_frame_name" default="/base_link"/>
+  <arg name="trajectory_update_rate" default="4"/>
+  <arg name="trajectory_publish_rate" default="0.25"/>
+  <arg name="map_file_path" default="$(find hector_geotiff)/maps"/>
+  <arg name="map_file_base_name" default="hector_slam_map"/>
+
   <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen">
     <param name="target_frame_name" type="string" value="/map" />
     <param name="source_frame_name" type="string" value="$(arg trajectory_source_frame_name)" />
