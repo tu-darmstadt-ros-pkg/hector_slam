@@ -34,6 +34,7 @@
 #include <nav_msgs/Odometry.h>
 
 #include "sensor_msgs/PointCloud2.h"
+#include <sensor_msgs/point_cloud_conversion.h>
 
 #include "HectorDrawings.h"
 #include "HectorDebugInfoProvider.h"
@@ -178,7 +179,9 @@ HectorMappingRos::HectorMappingRos()
   ROS_INFO("HectorSM p_laser_z_min_value_: %f", p_laser_z_min_value_);
   ROS_INFO("HectorSM p_laser_z_max_value_: %f", p_laser_z_max_value_);
 
-  scanSubscriber_ = node_.subscribe(p_scan_topic_, p_scan_subscriber_queue_size_, &HectorMappingRos::scanCallback, this);
+  scanSubscriber_  = node_.subscribe(p_scan_topic_, p_scan_subscriber_queue_size_, &HectorMappingRos::scanCallback, this);
+  cloudSubscriber_ = node_.subscribe("scan_cloud_filtered", p_scan_subscriber_queue_size_, &HectorMappingRos::cloudCallback, this);
+
   sysMsgSubscriber_ = node_.subscribe(p_sys_msg_topic_, 2, &HectorMappingRos::sysMsgCallback, this);
 
   poseUpdatePublisher_ = node_.advertise<geometry_msgs::PoseWithCovarianceStamped>(p_pose_update_topic_, 1, false);
@@ -228,16 +231,30 @@ HectorMappingRos::~HectorMappingRos()
 
 void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 {
+  projector_.projectLaser(scan, laser_point_cloud_,30.0);
+  this->processData();
+}
+
+void HectorMappingRos::cloudCallback(const sensor_msgs::PointCloud2 &scan_cloud)
+{
+  sensor_msgs::convertPointCloud2ToPointCloud(scan_cloud, laser_point_cloud_);
+  this->processData();
+}
+
+void HectorMappingRos::processData()
+{
   if (hectorDrawings)
   {
-    hectorDrawings->setTime(scan.header.stamp);
+    hectorDrawings->setTime(laser_point_cloud_.header.stamp);
   }
 
   ros::WallTime startTime = ros::WallTime::now();
 
   if (!p_use_tf_scan_transformation_)
   {
-    if (rosLaserScanToDataContainer(scan, laserScanContainer,slamProcessor->getScaleToMap()))
+    tf::StampedTransform laserTransform;
+    laserTransform.setIdentity();
+    if (rosPointCloudToDataContainer(laser_point_cloud_, laserTransform, laserScanContainer,slamProcessor->getScaleToMap()))
     {
       slamProcessor->update(laserScanContainer,slamProcessor->getLastScanMatchPose());
     }
@@ -246,13 +263,13 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   {
     ros::Duration dur (0.5);
 
-    if (tf_.waitForTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp,dur))
+    if (tf_.waitForTransform(p_base_frame_,laser_point_cloud_.header.frame_id, laser_point_cloud_.header.stamp,dur))
     {
       tf::StampedTransform laserTransform;
-      tf_.lookupTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp, laserTransform);
+      tf_.lookupTransform(p_base_frame_,laser_point_cloud_.header.frame_id, laser_point_cloud_.header.stamp, laserTransform);
 
       //projector_.transformLaserScanToPointCloud(p_base_frame_ ,scan, pointCloud,tf_);
-      projector_.projectLaser(scan, laser_point_cloud_,30.0);
+
 
       if (scan_point_cloud_publisher_.getNumSubscribers() > 0){
         scan_point_cloud_publisher_.publish(laser_point_cloud_);
@@ -271,8 +288,8 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
           {
             tf::StampedTransform stamped_pose;
 
-            tf_.waitForTransform(p_map_frame_,p_base_frame_, scan.header.stamp, ros::Duration(0.5));
-            tf_.lookupTransform(p_map_frame_, p_base_frame_,  scan.header.stamp, stamped_pose);
+            tf_.waitForTransform(p_map_frame_,p_base_frame_, laser_point_cloud_.header.stamp, ros::Duration(0.5));
+            tf_.lookupTransform(p_map_frame_, p_base_frame_,  laser_point_cloud_.header.stamp, stamped_pose);
 
             tfScalar yaw, pitch, roll;
             stamped_pose.getBasis().getEulerYPR(yaw, pitch, roll);
@@ -298,7 +315,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
       }
 
     }else{
-      ROS_INFO("lookupTransform %s to %s timed out. Could not transform laser scan into base_frame.", p_base_frame_.c_str(), scan.header.frame_id.c_str());
+      ROS_INFO("lookupTransform %s to %s timed out. Could not transform laser scan into base_frame.", p_base_frame_.c_str(), laser_point_cloud_.header.frame_id.c_str());
       return;
     }
   }
@@ -315,7 +332,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     return;
   }
 
-  poseInfoContainer_.update(slamProcessor->getLastScanMatchPose(), slamProcessor->getLastScanMatchCovariance(), scan.header.stamp, p_map_frame_);
+  poseInfoContainer_.update(slamProcessor->getLastScanMatchPose(), slamProcessor->getLastScanMatchCovariance(), laser_point_cloud_.header.stamp, p_map_frame_);
 
   poseUpdatePublisher_.publish(poseInfoContainer_.getPoseWithCovarianceStamped());
   posePublisher_.publish(poseInfoContainer_.getPoseStamped());
@@ -335,8 +352,8 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 
     try
     {
-      tf_.waitForTransform(p_odom_frame_, p_base_frame_, scan.header.stamp, ros::Duration(0.5));
-      tf_.lookupTransform(p_odom_frame_, p_base_frame_, scan.header.stamp, odom_to_base);
+      tf_.waitForTransform(p_odom_frame_, p_base_frame_, laser_point_cloud_.header.stamp, ros::Duration(0.5));
+      tf_.lookupTransform(p_odom_frame_, p_base_frame_, laser_point_cloud_.header.stamp, odom_to_base);
     }
     catch(tf::TransformException e)
     {
@@ -344,11 +361,11 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
       odom_to_base.setIdentity();
     }
     map_to_odom_ = tf::Transform(poseInfoContainer_.getTfTransform() * odom_to_base.inverse());
-    tfB_->sendTransform( tf::StampedTransform (map_to_odom_, scan.header.stamp, p_map_frame_, p_odom_frame_));
+    tfB_->sendTransform( tf::StampedTransform (map_to_odom_, laser_point_cloud_.header.stamp, p_map_frame_, p_odom_frame_));
   }
 
   if (p_pub_map_scanmatch_transform_){
-    tfB_->sendTransform( tf::StampedTransform(poseInfoContainer_.getTfTransform(), scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
+    tfB_->sendTransform( tf::StampedTransform(poseInfoContainer_.getTfTransform(), laser_point_cloud_.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
   }
 }
 
