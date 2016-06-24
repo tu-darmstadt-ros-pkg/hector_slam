@@ -2,6 +2,9 @@
 Changelog for package hector_imu_attitude_to_tf
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.5 (2016-06-24)
+------------------
+
 0.3.4 (2015-11-07)
 ------------------
 * hector_imu_attitude_to_tf: fixed default values of the base_frame and base_stabilized_frame parameters (fix #20)

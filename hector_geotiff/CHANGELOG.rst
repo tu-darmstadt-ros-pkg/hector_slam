@@ -2,6 +2,12 @@
 Changelog for package hector_geotiff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.5 (2016-06-24)
+------------------
+* Use the FindEigen3.cmake module provided by Eigen
+* hector_geotiff/hector_geotiff_plugins: added possibility to specify Color of robot path in the geotiff file in order to allow multiple color robot paths
+* Contributors: Dorothea Koert, Johannes Meyer
+
 0.3.4 (2015-11-07)
 ------------------
 * Removes trailing spaces and fixes indents

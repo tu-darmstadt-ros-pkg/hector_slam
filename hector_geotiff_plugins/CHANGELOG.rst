@@ -2,6 +2,11 @@
 Changelog for package hector_geotiff_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.5 (2016-06-24)
+------------------
+* hector_geotiff/hector_geotiff_plugins: added possibility to specify Color of robot path in the geotiff file in order to allow multiple color robot paths
+* Contributors: Dorothea Koert
+
 0.3.4 (2015-11-07)
 ------------------
 
