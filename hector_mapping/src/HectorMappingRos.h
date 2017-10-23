@@ -90,9 +90,7 @@ public:
   void staticMapCallback(const nav_msgs::OccupancyGrid& map);
   void initialPoseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg);
 
-  /*
   void setStaticMapData(const nav_msgs::OccupancyGrid& map);
-  */
 protected:
 
   HectorDebugInfoProvider* debugInfoProvider;
@@ -183,6 +181,7 @@ protected:
   bool p_map_with_known_poses_;
   bool p_timing_output_;
 
+  bool p_use_static_map_;
 
   float p_sqr_laser_min_dist_;
   float p_sqr_laser_max_dist_;

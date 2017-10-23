@@ -96,6 +96,14 @@ public:
     return (this->getCell(index).isFree());
   }
 
+  void stablize()
+  {
+    int size = this->getSizeX() * this->getSizeY();
+    for (int i = 0; i < size; ++i) {
+      concreteGridFunctions.stablize(this->getCell(i));
+    }
+  }
+
   float getObstacleThreshold() const
   {
     ConcreteCellType temp;
