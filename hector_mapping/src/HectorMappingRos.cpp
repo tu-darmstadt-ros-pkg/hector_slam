@@ -46,7 +46,6 @@
 HectorMappingRos::HectorMappingRos()
   : debugInfoProvider(0)
   , hectorDrawings(0)
-  , lastGetMapUpdateIndex(-100)
   , tfB_(0)
   , map__publish_thread_(0)
   , initial_pose_set_(false)
@@ -159,7 +158,7 @@ HectorMappingRos::HectorMappingRos()
   slamProcessor->setMapUpdateMinAngleDiff(p_map_update_angle_threshold_);
 
   int mapLevels = slamProcessor->getMapLevels();
-  mapLevels = 1;
+  //mapLevels = 1;
 
   for (int i = 0; i < mapLevels; ++i)
   {
@@ -177,6 +176,7 @@ HectorMappingRos::HectorMappingRos()
     mapMetaTopicStr.append("_metadata");
 
     MapPublisherContainer& tmp = mapPubContainer[i];
+    tmp.lastGetMapUpdateIndex_ = -100;
     tmp.mapPublisher_ = node_.advertise<nav_msgs::OccupancyGrid>(mapTopicStr, 1, true);
     tmp.mapMetadataPublisher_ = node_.advertise<nav_msgs::MapMetaData>(mapMetaTopicStr, 1, true);
 
@@ -187,9 +187,9 @@ HectorMappingRos::HectorMappingRos()
 
     setServiceGetMapData(tmp.map_, slamProcessor->getGridMap(i));
 
-    if ( i== 0){
-      mapPubContainer[i].mapMetadataPublisher_.publish(mapPubContainer[i].map_.map.info);
-    }
+    //if ( i== 0){
+    mapPubContainer[i].mapMetadataPublisher_.publish(mapPubContainer[i].map_.map.info);
+    //}
   }
 
   ROS_INFO("HectorSM p_base_frame_: %s", p_base_frame_.c_str());
@@ -402,10 +402,12 @@ bool HectorMappingRos::mapCallback(nav_msgs::GetMap::Request  &req,
 
 void HectorMappingRos::publishMap(MapPublisherContainer& mapPublisher, const hectorslam::GridMap& gridMap, ros::Time timestamp, MapLockerInterface* mapMutex)
 {
+  if (mapPublisher.mapPublisher_.getNumSubscribers() <= 0) return;
+
   nav_msgs::GetMap::Response& map_ (mapPublisher.map_);
 
   //only update map if it changed
-  if (lastGetMapUpdateIndex != gridMap.getUpdateIndex())
+  if (mapPublisher.lastGetMapUpdateIndex_ != gridMap.getUpdateIndex())
   {
     int sizeX = gridMap.getSizeX();
     int sizeY = gridMap.getSizeY();
@@ -432,9 +434,12 @@ void HectorMappingRos::publishMap(MapPublisherContainer& mapPublisher, const hec
       {
         data[i] = 100;
       }
+      else
+      {
+      }
     }
 
-    lastGetMapUpdateIndex = gridMap.getUpdateIndex();
+    mapPublisher.lastGetMapUpdateIndex_ = gridMap.getUpdateIndex();
 
     if (mapMutex)
     {
@@ -541,24 +546,31 @@ void HectorMappingRos::setStaticMapData(const nav_msgs::OccupancyGrid& map)
 			     -map.info.origin.position.y / (map_size_y*cell_length));
 
   delete slamProcessor;
-  slamProcessor = new hectorslam::HectorSlamProcessor(cell_length, map_size_x, map_size_y, mapOrigin, 1, hectorDrawings, debugInfoProvider);
+  slamProcessor = new hectorslam::HectorSlamProcessor(cell_length, map_size_x, map_size_y, mapOrigin, p_map_multi_res_levels_, hectorDrawings, debugInfoProvider);
 
-  hectorslam::GridMap& gridMap = const_cast<hectorslam::GridMap&>(slamProcessor->getGridMap(0));
-  int size = map_size_x * map_size_y;
-  for (int i = 0; i < size; ++i) {
-    switch (map.data[i]) {
-    case 0:
-      gridMap.updateSetFree(i);
-      break;
-    case 100:
-      gridMap.updateSetOccupied(i);
-      break;
-    default:
-      // pass
-      break;
+  float r = 1.0f;
+  for (int idx = 0; idx < slamProcessor->getMapLevels(); ++idx)
+  {
+    hectorslam::GridMap& gridMap = const_cast<hectorslam::GridMap&>(slamProcessor->getGridMap(idx));
+    for (int y = 0; y < map_size_y; ++y)
+    {
+      for (int x = 0; x < map_size_x; ++x)
+      {
+        int mapX = x * r + 0.5f, mapY = y * r + 0.5f;
+	if (!gridMap.hasGridValue(mapX, mapY)) continue;
+	int d = map.data[y * map_size_x + x];
+	if (d == 0) {
+	  gridMap.updateSetFree(mapX, mapY);
+	} else if (d == 100) {
+          gridMap.updateSetOccupied(mapX, mapY);
+	} else {
+          // pass
+	}
+      }
     }
+    gridMap.stablize();
+    r /= 2.0f;
   }
-  gridMap.stablize();
 }
 
 
@@ -571,8 +583,12 @@ void HectorMappingRos::publishMapLoop(double map_pub_period)
     ros::Time mapTime (ros::Time::now());
     //publishMap(mapPubContainer[2],slamProcessor->getGridMap(2), mapTime);
     //publishMap(mapPubContainer[1],slamProcessor->getGridMap(1), mapTime);
-    publishMap(mapPubContainer[0],slamProcessor->getGridMap(0), mapTime, slamProcessor->getMapMutex(0));
+    // publishMap(mapPubContainer[0],slamProcessor->getGridMap(0), mapTime, slamProcessor->getMapMutex(0));
 
+    for (int i = 0; i < slamProcessor->getMapLevels(); ++i) {
+      publishMap(mapPubContainer[i],slamProcessor->getGridMap(i), mapTime, slamProcessor->getMapMutex(i));
+    }
+    
     //ros::WallDuration t2 = ros::WallTime::now() - t1;
 
     //std::cout << "time s: " << t2.toSec();

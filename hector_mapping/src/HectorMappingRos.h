@@ -58,6 +58,7 @@ class HectorDebugInfoProvider;
 class MapPublisherContainer
 {
 public:
+  int lastGetMapUpdateIndex_;
   ros::Publisher mapPublisher_;
   ros::Publisher mapMetadataPublisher_;
   nav_msgs::GetMap::Response map_;
@@ -95,8 +96,6 @@ protected:
 
   HectorDebugInfoProvider* debugInfoProvider;
   HectorDrawings* hectorDrawings;
-
-  int lastGetMapUpdateIndex;
 
   ros::NodeHandle node_;
 
