@@ -91,6 +91,7 @@ public:
   void staticMapCallback(const nav_msgs::OccupancyGrid& map);
   void initialPoseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg);
 
+  bool loadStaticMap();
   void setStaticMapData(const nav_msgs::OccupancyGrid& map);
 protected:
 
@@ -122,7 +123,8 @@ protected:
   tf::Transform map_to_odom_;
 
   boost::thread* map__publish_thread_;
-
+  boost::mutex slamProcPtr_mutex_;
+	  
   hectorslam::HectorSlamProcessor* slamProcessor;
   hectorslam::DataContainer laserScanContainer;
 
