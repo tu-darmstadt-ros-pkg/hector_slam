@@ -240,13 +240,14 @@ HectorMappingRos::~HectorMappingRos()
 
 void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 {
+  boost::shared_lock<boost::shared_mutex> locked(slamProcPtr_mutex_); // read access (to the pointer)
+
   if (hectorDrawings)
   {
     hectorDrawings->setTime(scan.header.stamp);
   }
 
   ros::WallTime startTime = ros::WallTime::now();
-  boost::lock_guard<boost::mutex> locked(slamProcPtr_mutex_);
 
   if (!p_use_tf_scan_transformation_)
   {
@@ -562,7 +563,7 @@ void HectorMappingRos::setStaticMapData(const nav_msgs::OccupancyGrid& map)
     r /= 2.0f;
   }
 
-  boost::lock_guard<boost::mutex> locked(slamProcPtr_mutex_);
+  boost::unique_lock<boost::shared_mutex> locked(slamProcPtr_mutex_); // write access to the pointer
   delete slamProcessor;
   slamProcessor = ptr;
 }
@@ -596,13 +597,13 @@ void HectorMappingRos::publishMapLoop(double map_pub_period)
   while(ros::ok())
   {
     //ros::WallTime t1 = ros::WallTime::now();
-    ros::Time mapTime (ros::Time::now());
     //publishMap(mapPubContainer[2],slamProcessor->getGridMap(2), mapTime);
     //publishMap(mapPubContainer[1],slamProcessor->getGridMap(1), mapTime);
     // publishMap(mapPubContainer[0],slamProcessor->getGridMap(0), mapTime, slamProcessor->getMapMutex(0));
 
     for (int i = 0; i < slamProcessor->getMapLevels(); ++i) {
-      boost::lock_guard<boost::mutex> locked(slamProcPtr_mutex_);
+      boost::shared_lock<boost::shared_mutex> locked(slamProcPtr_mutex_); // read access
+      ros::Time mapTime (ros::Time::now());
       publishMap(mapPubContainer[i],slamProcessor->getGridMap(i), mapTime, slamProcessor->getMapMutex(i));
     }
     

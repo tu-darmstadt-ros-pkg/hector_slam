@@ -123,7 +123,7 @@ protected:
   tf::Transform map_to_odom_;
 
   boost::thread* map__publish_thread_;
-  boost::mutex slamProcPtr_mutex_;
+  boost::shared_mutex slamProcPtr_mutex_;
 	  
   hectorslam::HectorSlamProcessor* slamProcessor;
   hectorslam::DataContainer laserScanContainer;
