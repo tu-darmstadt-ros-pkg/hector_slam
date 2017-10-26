@@ -373,13 +373,21 @@ void HectorMappingRos::sysMsgCallback(const std_msgs::String& string)
   if (string.data == "reset")
   {
     ROS_INFO("HectorSM reset");
-    slamProcessor->reset();
-  }
-  else if (string.data == "reload")
-  {
-    ROS_INFO("HectorSM reload static map");
+    boost::unique_lock<boost::shared_mutex> locked(slamProcPtr_mutex_); // write access to the pointer
     if (!loadStaticMap()) {
       slamProcessor->reset();
+    }
+  }
+  else if (strncmp(string.data.c_str(), "reload", sizeof("reload")-1) == 0)
+  {
+    ROS_INFO("HectorSM reload static map");
+    boost::unique_lock<boost::shared_mutex> locked(slamProcPtr_mutex_); // write access to the pointer
+    if (!loadStaticMap()) {
+      slamProcessor->reset();
+    }
+    if (sscanf(string.data.c_str(), "reload %f %f %f", &initial_pose_[0], &initial_pose_[1], &initial_pose_[2]) == 3) {
+      initial_pose_set_ = true;
+      ROS_INFO("Setting initial pose with world coords x: %f y: %f yaw: %f", initial_pose_[0], initial_pose_[1], initial_pose_[2]);
     }
   }
 }
@@ -563,7 +571,6 @@ void HectorMappingRos::setStaticMapData(const nav_msgs::OccupancyGrid& map)
     r /= 2.0f;
   }
 
-  boost::unique_lock<boost::shared_mutex> locked(slamProcPtr_mutex_); // write access to the pointer
   delete slamProcessor;
   slamProcessor = ptr;
 }
