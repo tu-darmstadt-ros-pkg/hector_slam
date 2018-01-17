@@ -100,7 +100,7 @@ public:
       cv::Mat* map_mat  = &cv_img_full_.image;
 
       // resize cv image if it doesn't have the same dimensions as the map
-      if ( (map_mat->rows != size_y) && (map_mat->cols != size_x)){
+      if ( (map_mat->rows != size_y) || (map_mat->cols != size_x)){
         *map_mat = cv::Mat(size_y, size_x, CV_8U);
       }
 
