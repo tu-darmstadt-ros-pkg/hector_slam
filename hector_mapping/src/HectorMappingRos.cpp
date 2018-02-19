@@ -326,6 +326,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     tmp.pose = poseInfoContainer_.getPoseWithCovarianceStamped().pose;
 
     tmp.header = poseInfoContainer_.getPoseWithCovarianceStamped().header;
+    tmp.child_frame_id = p_base_frame_;
     odometryPublisher_.publish(tmp);
   }
 
