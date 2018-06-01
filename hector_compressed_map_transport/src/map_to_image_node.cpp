@@ -113,7 +113,7 @@ public:
 
       for (int y = size_y_rev; y >= 0; --y){
 
-        int idx_map_y = size_x * (size_y -y);
+        int idx_map_y = size_x * (size_y - y -1);
         int idx_img_y = size_x * y;
 
         for (int x = 0; x < size_x; ++x){
