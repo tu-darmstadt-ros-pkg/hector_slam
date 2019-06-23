@@ -350,7 +350,7 @@ void GeotiffWriter::drawMap(const nav_msgs::OccupancyGrid& map, bool draw_explor
   }
 }
 
-void GeotiffWriter::drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const Color& color)
+void GeotiffWriter::drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const Color& color, const Shape &shape)
 {
   QPainter qPainter(&image);
 
@@ -371,16 +371,21 @@ void GeotiffWriter::drawObjectOfInterest(const Eigen::Vector2f& coords, const st
 
   float radius = pixelsPerGeoTiffMeter * 0.175f;
 
-  QRectF ellipse_shape( - radius, - radius, radius*2.0f, radius*2.0f);
+  QRectF shape_rect( - radius, - radius, radius*2.0f, radius*2.0f);
   qPainter.save();
-
 
   QBrush tmpBrush(QColor(color.r,color.g,color.b));
   QPen tmpPen(Qt::NoPen);
   qPainter.setBrush(tmpBrush);
   qPainter.setPen(tmpPen);
 
-  qPainter.drawEllipse(ellipse_shape);
+  if (shape == SHAPE_CIRCLE){
+    qPainter.drawEllipse(shape_rect);
+  }else if(shape == SHAPE_DIAMOND){
+    qPainter.rotate(45);
+    qPainter.drawRect(shape_rect);
+  }
+
   qPainter.restore();
 
 
@@ -400,7 +405,7 @@ void GeotiffWriter::drawObjectOfInterest(const Eigen::Vector2f& coords, const st
   qPainter.setPen(Qt::white);
   qPainter.scale(-1.0,1.0);
 
-  qPainter.drawText(ellipse_shape,Qt::AlignCenter , tmp);
+  qPainter.drawText(shape_rect,Qt::AlignCenter , tmp);
 }
 
 void GeotiffWriter::drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points,int color_r, int color_g, int color_b)
