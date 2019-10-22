@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 2.8.11)
 project(hector_geotiff)
 
 ## Find catkin macros and libraries
@@ -9,7 +9,7 @@ find_package(catkin REQUIRED COMPONENTS hector_map_tools hector_nav_msgs nav_msg
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
-find_package(Qt4 4.6 COMPONENTS QtCore QtGui REQUIRED)
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 # Find Eigen3 (from http://wiki.ros.org/jade/Migration)
 find_package(Eigen3)
@@ -23,8 +23,6 @@ if(NOT EIGEN3_FOUND)
 else()
   set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
 endif()
-
-include(${QT_USE_FILE})
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -69,7 +67,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES geotiff_writer
   CATKIN_DEPENDS hector_map_tools hector_nav_msgs nav_msgs pluginlib roscpp std_msgs
-  DEPENDS EIGEN3 QT
+  DEPENDS EIGEN3 Qt5Widgets
 )
 
 ###########
@@ -85,7 +83,7 @@ include_directories(
 )
 
 add_library(geotiff_writer src/geotiff_writer/geotiff_writer.cpp)
-target_link_libraries(geotiff_writer ${catkin_LIBRARIES} ${QT_LIBRARIES})
+target_link_libraries(geotiff_writer ${catkin_LIBRARIES} Qt5::Widgets)
 add_dependencies(geotiff_writer ${catkin_EXPORTED_TARGETS})
 
 add_executable(geotiff_saver src/geotiff_saver.cpp)

@@ -36,10 +36,9 @@
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/MapMetaData.h>
 
-#include <QtGui/QImage>
-#include <QtGui/QApplication>
-#include <QtGui/QFont>
-#include <QtGui/QPen>
+#include <QImage>
+#include <QApplication>
+#include <QFont>
 
 #include <hector_map_tools/HectorMapTools.h>
 

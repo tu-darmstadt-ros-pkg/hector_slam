@@ -26,28 +26,23 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //=================================================================================================
 
+#include "hector_geotiff/geotiff_writer.h"
+#include "hector_geotiff/map_writer_plugin_interface.h"
+
 #include <cstdio>
 #include <ros/ros.h>
 #include <ros/console.h>
+
 #include <pluginlib/class_loader.h>
 
 #include <boost/algorithm/string.hpp>
 
-
-#include "nav_msgs/GetMap.h"
-#include "std_msgs/String.h"
-#include "geometry_msgs/Quaternion.h"
-
-#include <Eigen/Geometry>
-
-#include <QtGui/QApplication>
-
-#include <hector_map_tools/HectorMapTools.h>
-
-#include <hector_geotiff/geotiff_writer.h>
-#include <hector_geotiff/map_writer_plugin_interface.h>
-
+#include <geometry_msgs/Quaternion.h>
+#include <nav_msgs/GetMap.h>
+#include <std_msgs/String.h>
 #include <hector_nav_msgs/GetRobotTrajectory.h>
+
+#include <QApplication>
 
 using namespace std;
 
