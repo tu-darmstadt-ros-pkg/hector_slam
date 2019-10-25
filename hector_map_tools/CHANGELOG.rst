@@ -2,6 +2,16 @@
 Changelog for package hector_map_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* hector_map_tools: Use the FindEigen3.cmake module provided by Eigen
+  This patch applies the recommendation from http://wiki.ros.org/jade/Migration and removes the
+  dependency from package cmake_modules (unless your installation of Eigen3 does not provide a
+  cmake config).
+  Same as 1251d9dc20854f48da116eed25780c103a5bd003, but package hector_map_tools was not updated
+  back then.
+* Contributors: Johannes Meyer
+
 0.3.5 (2016-06-24)
 ------------------
 
