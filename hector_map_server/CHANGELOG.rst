@@ -2,6 +2,9 @@
 Changelog for package hector_map_server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.3.5 (2016-06-24)
 ------------------
 
