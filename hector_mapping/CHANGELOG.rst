@@ -2,8 +2,8 @@
 Changelog for package hector_mapping
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.6 (2019-10-31)
+------------------
 * Merge pull request `#49 <https://github.com/tu-darmstadt-ros-pkg/hector_slam/issues/49>`_ from davidbsp/catkin
   populate child_frame_id in odometry msg
 * Added child_frame_id in hector mapping's odometry msg
