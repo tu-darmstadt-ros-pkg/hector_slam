@@ -46,7 +46,6 @@
 HectorMappingRos::HectorMappingRos()
   : debugInfoProvider(0)
   , hectorDrawings(0)
-  , lastGetMapUpdateIndex(-100)
   , tfB_(0)
   , map__publish_thread_(0)
   , initial_pose_set_(false)
@@ -91,6 +90,8 @@ HectorMappingRos::HectorMappingRos()
 
   private_nh_.param("output_timing", p_timing_output_,false);
 
+  private_nh_.param("use_static_map", p_use_static_map_, false);
+
   private_nh_.param("map_pub_period", p_map_pub_period_, 2.0);
 
   double tmp = 0.0;
@@ -123,14 +124,24 @@ HectorMappingRos::HectorMappingRos()
     odometryPublisher_ = node_.advertise<nav_msgs::Odometry>("scanmatch_odom", 50);
   }
 
-  slamProcessor = new hectorslam::HectorSlamProcessor(static_cast<float>(p_map_resolution_), p_map_size_, p_map_size_, Eigen::Vector2f(p_map_start_x_, p_map_start_y_), p_map_multi_res_levels_, hectorDrawings, debugInfoProvider);
+  slamProcessor = NULL;
+  if (p_use_static_map_)
+  {
+    loadStaticMap();
+  }
+
+  if (!slamProcessor)
+  {
+    slamProcessor = new hectorslam::HectorSlamProcessor(static_cast<float>(p_map_resolution_), p_map_size_, p_map_size_, Eigen::Vector2f(p_map_start_x_, p_map_start_y_), p_map_multi_res_levels_, hectorDrawings, debugInfoProvider);
+  }
+
   slamProcessor->setUpdateFactorFree(p_update_factor_free_);
   slamProcessor->setUpdateFactorOccupied(p_update_factor_occupied_);
   slamProcessor->setMapUpdateMinDistDiff(p_map_update_distance_threshold_);
   slamProcessor->setMapUpdateMinAngleDiff(p_map_update_angle_threshold_);
 
   int mapLevels = slamProcessor->getMapLevels();
-  mapLevels = 1;
+  //mapLevels = 1;
 
   for (int i = 0; i < mapLevels; ++i)
   {
@@ -148,6 +159,7 @@ HectorMappingRos::HectorMappingRos()
     mapMetaTopicStr.append("_metadata");
 
     MapPublisherContainer& tmp = mapPubContainer[i];
+    tmp.lastGetMapUpdateIndex_ = -100;
     tmp.mapPublisher_ = node_.advertise<nav_msgs::OccupancyGrid>(mapTopicStr, 1, true);
     tmp.mapMetadataPublisher_ = node_.advertise<nav_msgs::MapMetaData>(mapMetaTopicStr, 1, true);
 
@@ -158,9 +170,9 @@ HectorMappingRos::HectorMappingRos()
 
     setServiceGetMapData(tmp.map_, slamProcessor->getGridMap(i));
 
-    if ( i== 0){
-      mapPubContainer[i].mapMetadataPublisher_.publish(mapPubContainer[i].map_.map.info);
-    }
+    //if ( i== 0){
+    mapPubContainer[i].mapMetadataPublisher_.publish(mapPubContainer[i].map_.map.info);
+    //}
   }
 
   ROS_INFO("HectorSM p_base_frame_: %s", p_base_frame_.c_str());
@@ -228,6 +240,8 @@ HectorMappingRos::~HectorMappingRos()
 
 void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 {
+  boost::shared_lock<boost::shared_mutex> locked(slamProcPtr_mutex_); // read access (to the pointer)
+
   if (hectorDrawings)
   {
     hectorDrawings->setTime(scan.header.stamp);
@@ -360,7 +374,22 @@ void HectorMappingRos::sysMsgCallback(const std_msgs::String& string)
   if (string.data == "reset")
   {
     ROS_INFO("HectorSM reset");
-    slamProcessor->reset();
+    boost::unique_lock<boost::shared_mutex> locked(slamProcPtr_mutex_); // write access to the pointer
+    if (!loadStaticMap()) {
+      slamProcessor->reset();
+    }
+  }
+  else if (strncmp(string.data.c_str(), "reload", sizeof("reload")-1) == 0)
+  {
+    ROS_INFO("HectorSM reload static map");
+    boost::unique_lock<boost::shared_mutex> locked(slamProcPtr_mutex_); // write access to the pointer
+    if (!loadStaticMap()) {
+      slamProcessor->reset();
+    }
+    if (sscanf(string.data.c_str(), "reload %f %f %f", &initial_pose_[0], &initial_pose_[1], &initial_pose_[2]) == 3) {
+      initial_pose_set_ = true;
+      ROS_INFO("Setting initial pose with world coords x: %f y: %f yaw: %f", initial_pose_[0], initial_pose_[1], initial_pose_[2]);
+    }
   }
 }
 
@@ -374,12 +403,13 @@ bool HectorMappingRos::mapCallback(nav_msgs::GetMap::Request  &req,
 
 void HectorMappingRos::publishMap(MapPublisherContainer& mapPublisher, const hectorslam::GridMap& gridMap, ros::Time timestamp, MapLockerInterface* mapMutex)
 {
+  if (mapPublisher.mapPublisher_.getNumSubscribers() <= 0) return;
+
   nav_msgs::GetMap::Response& map_ (mapPublisher.map_);
 
   //only update map if it changed
-  if (lastGetMapUpdateIndex != gridMap.getUpdateIndex())
+  if (mapPublisher.lastGetMapUpdateIndex_ != gridMap.getUpdateIndex())
   {
-
     int sizeX = gridMap.getSizeX();
     int sizeY = gridMap.getSizeY();
 
@@ -405,9 +435,12 @@ void HectorMappingRos::publishMap(MapPublisherContainer& mapPublisher, const hec
       {
         data[i] = 100;
       }
+      else
+      {
+      }
     }
 
-    lastGetMapUpdateIndex = gridMap.getUpdateIndex();
+    mapPublisher.lastGetMapUpdateIndex_ = gridMap.getUpdateIndex();
 
     if (mapMutex)
     {
@@ -488,7 +521,7 @@ bool HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointClou
 void HectorMappingRos::setServiceGetMapData(nav_msgs::GetMap::Response& map_, const hectorslam::GridMap& gridMap)
 {
   Eigen::Vector2f mapOrigin (gridMap.getWorldCoords(Eigen::Vector2f::Zero()));
-  mapOrigin.array() -= gridMap.getCellLength()*0.5f;
+  // mapOrigin.array() -= gridMap.getCellLength()*0.5f;
 
   map_.map.info.origin.position.x = mapOrigin.x();
   map_.map.info.origin.position.y = mapOrigin.y();
@@ -503,20 +536,68 @@ void HectorMappingRos::setServiceGetMapData(nav_msgs::GetMap::Response& map_, co
   map_.map.data.resize(map_.map.info.width * map_.map.info.height);
 }
 
-/*
 void HectorMappingRos::setStaticMapData(const nav_msgs::OccupancyGrid& map)
 {
   float cell_length = map.info.resolution;
-  Eigen::Vector2f mapOrigin (map.info.origin.position.x + cell_length*0.5f,
-                             map.info.origin.position.y + cell_length*0.5f);
 
   int map_size_x = map.info.width;
   int map_size_y = map.info.height;
 
-  slamProcessor = new hectorslam::HectorSlamProcessor(cell_length, map_size_x, map_size_y, Eigen::Vector2f(0.0f, 0.0f), 1, hectorDrawings, debugInfoProvider);
-}
-*/
+  Eigen::Vector2f mapOrigin (-map.info.origin.position.x / (map_size_x*cell_length),
+			     -map.info.origin.position.y / (map_size_y*cell_length));
 
+  hectorslam::HectorSlamProcessor* ptr = new hectorslam::HectorSlamProcessor(cell_length, map_size_x, map_size_y, mapOrigin, p_map_multi_res_levels_, hectorDrawings, debugInfoProvider);
+
+  float r = 1.0f;
+  for (int idx = 0; idx < ptr->getMapLevels(); ++idx)
+  {
+    hectorslam::GridMap& gridMap = const_cast<hectorslam::GridMap&>(ptr->getGridMap(idx));
+    for (int y = 0; y < map_size_y; ++y)
+    {
+      for (int x = 0; x < map_size_x; ++x)
+      {
+        int mapX = x * r + 0.5f, mapY = y * r + 0.5f;
+	if (!gridMap.hasGridValue(mapX, mapY)) continue;
+	int d = map.data[y * map_size_x + x];
+	if (d == 0) {
+	  gridMap.updateSetFree(mapX, mapY);
+	} else if (d == 100) {
+          gridMap.updateSetOccupied(mapX, mapY);
+	} else {
+          // pass
+	}
+      }
+    }
+    gridMap.stablize();
+    r /= 2.0f;
+  }
+
+  delete slamProcessor;
+  slamProcessor = ptr;
+}
+
+bool HectorMappingRos::loadStaticMap()
+{
+  if (!p_use_static_map_) return false;
+
+  ros::ServiceClient mapCli = node_.serviceClient<nav_msgs::GetMap>("static_map");
+  nav_msgs::GetMap srv;
+  ros::Duration waitTime(1.0);
+  for (int i = 0; i < 3; i++)
+  {
+    if (mapCli.call(srv)) goto succeed;
+    waitTime.sleep();
+  }
+
+// fail:
+  ROS_INFO("HectorSM load static_map %s", "failed");
+  return false;
+
+succeed:
+  setStaticMapData(srv.response.map);
+  ROS_INFO("HectorSM load static_map %s", "succeed");
+  return true;
+}
 
 void HectorMappingRos::publishMapLoop(double map_pub_period)
 {
@@ -524,11 +605,16 @@ void HectorMappingRos::publishMapLoop(double map_pub_period)
   while(ros::ok())
   {
     //ros::WallTime t1 = ros::WallTime::now();
-    ros::Time mapTime (ros::Time::now());
     //publishMap(mapPubContainer[2],slamProcessor->getGridMap(2), mapTime);
     //publishMap(mapPubContainer[1],slamProcessor->getGridMap(1), mapTime);
-    publishMap(mapPubContainer[0],slamProcessor->getGridMap(0), mapTime, slamProcessor->getMapMutex(0));
+    // publishMap(mapPubContainer[0],slamProcessor->getGridMap(0), mapTime, slamProcessor->getMapMutex(0));
 
+    for (int i = 0; i < slamProcessor->getMapLevels(); ++i) {
+      boost::shared_lock<boost::shared_mutex> locked(slamProcPtr_mutex_); // read access
+      ros::Time mapTime (ros::Time::now());
+      publishMap(mapPubContainer[i],slamProcessor->getGridMap(i), mapTime, slamProcessor->getMapMutex(i));
+    }
+    
     //ros::WallDuration t2 = ros::WallTime::now() - t1;
 
     //std::cout << "time s: " << t2.toSec();

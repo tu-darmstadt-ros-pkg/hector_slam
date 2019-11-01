@@ -8,8 +8,11 @@
   <arg name="scan_subscriber_queue_size" default="5"/>
   <arg name="scan_topic" default="scan"/>
   <arg name="map_size" default="2048"/>
+  <arg name="use_static_map" default="true"/>
   
   <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
+    <!-- Load static map -->
+    <param name="use_static_map" value="$(arg use_static_map)" />
     
     <!-- Frame names -->
     <param name="map_frame" value="map" />
