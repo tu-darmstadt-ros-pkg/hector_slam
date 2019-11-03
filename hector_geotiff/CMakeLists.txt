@@ -4,16 +4,25 @@ project(hector_geotiff)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS cmake_modules hector_map_tools hector_nav_msgs nav_msgs pluginlib roscpp std_msgs)
+find_package(catkin REQUIRED COMPONENTS hector_map_tools hector_nav_msgs nav_msgs pluginlib roscpp std_msgs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
 find_package(Qt4 4.6 COMPONENTS QtCore QtGui REQUIRED)
 
-find_package(Eigen REQUIRED)
-include_directories(${Eigen_INCLUDE_DIRS})
-add_definitions(${Eigen_DEFINITIONS})
+# Find Eigen3 (from http://wiki.ros.org/jade/Migration)
+find_package(Eigen3)
+if(NOT EIGEN3_FOUND)
+  # Fallback to cmake_modules
+  find_package(cmake_modules REQUIRED)
+  find_package(Eigen REQUIRED)
+  set(EIGEN3_INCLUDE_DIRS ${EIGEN_INCLUDE_DIRS})
+  set(EIGEN3_LIBRARIES ${EIGEN_LIBRARIES})  # Not strictly necessary as Eigen is head only
+  # Possibly map additional variables to the EIGEN3_ prefix.
+else()
+  set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
+endif()
 
 include(${QT_USE_FILE})
 
@@ -60,7 +69,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES geotiff_writer
   CATKIN_DEPENDS hector_map_tools hector_nav_msgs nav_msgs pluginlib roscpp std_msgs
-  DEPENDS Eigen QT
+  DEPENDS EIGEN3 QT
 )
 
 ###########
@@ -72,6 +81,7 @@ catkin_package(
 include_directories(include include/hector_geotiff)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIRS}
 )
 
 add_library(geotiff_writer src/geotiff_writer/geotiff_writer.cpp)

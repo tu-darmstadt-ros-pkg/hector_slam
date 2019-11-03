@@ -64,8 +64,8 @@ int main(int argc, char **argv) {
   ros::NodeHandle n;
   ros::NodeHandle pn("~");
 
-  pn.param("base_stabilized_frame", p_base_stabilized_frame_, std::string("base_stabilized_frame"));
-  pn.param("base_frame", p_base_frame_, std::string("base_frame"));
+  pn.param("base_stabilized_frame", p_base_stabilized_frame_, std::string("base_stabilized"));
+  pn.param("base_frame", p_base_frame_, std::string("base_link"));
   
   tfB_ = new tf::TransformBroadcaster();
   transform_.getOrigin().setX(0.0);

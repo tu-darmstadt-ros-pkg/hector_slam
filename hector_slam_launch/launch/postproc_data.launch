@@ -4,7 +4,7 @@
 
   <param name="/use_sim_time" value="true"/>
 
-  <node pkg="rviz" type="rviz" name="rviz" 
+  <node pkg="rviz" type="rviz" name="rviz"
     args="-d $(find hector_slam_launch)/rviz_cfg/mapping_demo.rviz"/>
 
   <include file="$(find hector_mapping)/launch/mapping_default.launch">
@@ -13,9 +13,9 @@
     <arg name="odom_frame" value="base_footprint"/>
     <arg name="pub_map_odom_transform" value="false" />
   </include>
- 
+
   <include file="$(find hector_geotiff)/launch/geotiff_mapper.launch">
-    <arg name="trajectory_source_frame_name" value="scanmatcher_frame2"/> 
+    <arg name="trajectory_source_frame_name" value="scanmatcher_frame2"/>
   </include>
 
 </launch>

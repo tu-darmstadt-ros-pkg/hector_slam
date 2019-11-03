@@ -2,6 +2,14 @@
 Changelog for package hector_mapping
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.5 (2016-06-24)
+------------------
+* Use the FindEigen3.cmake module provided by Eigen
+* Contributors: Johannes Meyer
+
+0.3.4 (2015-11-07)
+------------------
+
 0.3.3 (2014-06-15)
 ------------------
 

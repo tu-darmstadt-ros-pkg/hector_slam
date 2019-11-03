@@ -2,6 +2,15 @@
 Changelog for package hector_imu_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.5 (2016-06-24)
+------------------
+
+0.3.4 (2015-11-07)
+------------------
+* Fix sim setup
+* remap for bertl setup
+* Contributors: Florian Kunz, kohlbrecher
+
 0.3.3 (2014-06-15)
 ------------------
 * hector_imu_tools: Basics of simple height etimation

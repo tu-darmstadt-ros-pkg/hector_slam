@@ -32,7 +32,7 @@
     <remap from="map" to="height_map" />
     <remap from="dynamic_map" to="height_map" />
   </node>
-  
+
   <node pkg="hector_geotiff" type="geotiff_node" name="hector_height_geotiff_node" output="screen" launch-prefix="nice -n 15">
     <remap from="map" to="height_map" />
     <param name="map_file_path" type="string" value="$(find hector_geotiff)/maps" />

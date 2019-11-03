@@ -2,15 +2,15 @@
 
 <launch>
 
-  <include file="$(find hector_mapping)/launch/mapping_default.launch">    
+  <include file="$(find hector_mapping)/launch/mapping_default.launch">
     <arg name="base_frame" value="base_link"/>
     <arg name="odom_frame" value="wheelodom"/>
     <arg name="pub_map_odom_transform" value="true"/>
 
     <!-- Topic names -->
-    <arg name="scan_topic" value="/sick_s300/scan_unfiltered" />    
+    <arg name="scan_topic" value="/sick_s300/scan_unfiltered" />
   </include>
-    
+
   <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server" output="screen">
     <param name="target_frame_name" type="string" value="/map" />
     <param name="source_frame_name" type="string" value="/base_link" />
@@ -26,7 +26,7 @@
     <param name="draw_background_checkerboard" type="bool" value="true" />
     <param name="draw_free_space_grid" type="bool" value="true" />
   </node>
-  
+
   <node pkg="topic_tools" type="throttle" name="map_throttle" args="messages map 0.015 map_thottled" />
 
 </launch>

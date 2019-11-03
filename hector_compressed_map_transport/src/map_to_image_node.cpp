@@ -100,7 +100,7 @@ public:
       cv::Mat* map_mat  = &cv_img_full_.image;
 
       // resize cv image if it doesn't have the same dimensions as the map
-      if ( (map_mat->rows != size_y) && (map_mat->cols != size_x)){
+      if ( (map_mat->rows != size_y) || (map_mat->cols != size_x)){
         *map_mat = cv::Mat(size_y, size_x, CV_8U);
       }
 
@@ -113,7 +113,7 @@ public:
 
       for (int y = size_y_rev; y >= 0; --y){
 
-        int idx_map_y = size_x * (size_y -y);
+        int idx_map_y = size_x * (size_y_rev -y);
         int idx_img_y = size_x * y;
 
         for (int x = 0; x < size_x; ++x){

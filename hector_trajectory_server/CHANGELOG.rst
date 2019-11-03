@@ -2,6 +2,15 @@
 Changelog for package hector_trajectory_server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.3.5 (2016-06-24)
+------------------
+* Changed from ros::WallTime to ros::Time in trajectory server
+* hector_trajectory_server: removed bug leading to potential infinite loop
+* Contributors: Andreas Lindahl Flåten, Paul Manns
+
+0.3.4 (2015-11-07)
+------------------
+
 0.3.3 (2014-06-15)
 ------------------
 
