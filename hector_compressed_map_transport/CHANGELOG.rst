@@ -5,6 +5,9 @@ Changelog for package hector_compressed_map_transport
 0.3.6 (2019-10-31)
 ------------------
 
+Forthcoming
+-----------
+
 0.3.5 (2016-06-24)
 ------------------
 * Use the FindEigen3.cmake module provided by Eigen

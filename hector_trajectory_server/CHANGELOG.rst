@@ -5,6 +5,9 @@ Changelog for package hector_trajectory_server
 0.3.6 (2019-10-31)
 ------------------
 
+Forthcoming
+-----------
+
 0.3.5 (2016-06-24)
 ------------------
 * Changed from ros::WallTime to ros::Time in trajectory server

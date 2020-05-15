@@ -9,6 +9,12 @@ Changelog for package hector_mapping
 * Added child_frame_id in hector mapping's odometry msg
 * Contributors: David Portugal, Johannes Meyer
 
+Forthcoming
+-----------
+* Remove unnecessary boost signals find_package
+  With Boost >1.69 hector_mapping won't build. Furthermore, hector_mapping doesn't use signals anywhere.
+* Contributors: Sam Pfeiffer
+
 0.3.5 (2016-06-24)
 ------------------
 * Use the FindEigen3.cmake module provided by Eigen

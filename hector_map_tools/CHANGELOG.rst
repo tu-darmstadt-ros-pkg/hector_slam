@@ -12,6 +12,9 @@ Changelog for package hector_map_tools
   back then.
 * Contributors: Johannes Meyer
 
+Forthcoming
+-----------
+
 0.3.5 (2016-06-24)
 ------------------
 
