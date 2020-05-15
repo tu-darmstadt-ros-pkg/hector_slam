@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>hector_imu_attitude_to_tf</name>
-  <version>0.4.0</version>
+  <version>0.4.1</version>
   <description>
     hector_imu_attitude_to_tf is a lightweight node that can be used to publish the roll/pitch attitude angles reported via a imu message to tf.
   </description>

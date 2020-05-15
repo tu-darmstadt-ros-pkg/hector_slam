@@ -7,8 +7,8 @@ Changelog for package hector_geotiff
 * Update geotiff draw interface to support different shapes
 * Contributors: Stefan Kohlbrecher
 
-Forthcoming
------------
+0.4.1 (2020-05-15)
+------------------
 
 0.3.5 (2016-06-24)
 ------------------

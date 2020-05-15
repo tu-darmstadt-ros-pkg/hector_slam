@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>hector_slam</name>
-  <version>0.4.0</version>
+  <version>0.4.1</version>
   <description>
     The hector_slam metapackage that installs hector_mapping and related packages.
   </description>

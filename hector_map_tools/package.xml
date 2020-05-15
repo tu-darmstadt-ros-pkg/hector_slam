@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>hector_map_tools</name>
-  <version>0.4.0</version>
+  <version>0.4.1</version>
   <description>
     hector_map_tools contains some functions related to accessing information from OccupancyGridMap maps.
     Currently consists of a single header.

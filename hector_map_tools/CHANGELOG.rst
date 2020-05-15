@@ -12,8 +12,8 @@ Changelog for package hector_map_tools
   back then.
 * Contributors: Johannes Meyer
 
-Forthcoming
------------
+0.4.1 (2020-05-15)
+------------------
 
 0.3.5 (2016-06-24)
 ------------------

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>hector_slam_launch</name>
-  <version>0.4.0</version>
+  <version>0.4.1</version>
   <description>
     hector_slam_launch contains launch files for launching hector_slam with different robot systems/setups/postprocessing scenarios.
   </description>

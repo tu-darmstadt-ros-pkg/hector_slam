@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>hector_map_server</name>
-  <version>0.4.0</version>
+  <version>0.4.1</version>
   <description>
     hector_map_server provides a service for retrieving the map, as well as for raycasting based obstacle queries (finds next obstacle in the map, given start and endpoint
     in any tf coordinate frame).
