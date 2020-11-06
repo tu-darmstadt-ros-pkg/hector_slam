@@ -51,24 +51,25 @@ GeotiffWriter::GeotiffWriter( bool useCheckerboardCacheIn )
   cached_map_meta_data_.width = -1;
   cached_map_meta_data_.resolution = -1.0f;
 
-  std::string font_path = ros::package::getPath( "hector_geotiff" ) + "/fonts/Roboto-Regular.ttf";
-  std::cerr << "Loading font: " << font_path.c_str();
-  int id = QFontDatabase::addApplicationFont( QString::fromStdString( font_path ));
-  std::cerr << "Obtaining font family";
-  font_family_ = QFontDatabase::applicationFontFamilies( id ).at( 0 );
   ROS_INFO("Creating application");
 
   int fake_argc = 3;
   char *fake_argv[3] = { new char[15], new char[10], new char[8] };
   strcpy( fake_argv[0], "geotiff_writer" );
   strcpy( fake_argv[1], "-platform" );
-  strcpy( fake_argv[2], "minimal" );
+  strcpy( fake_argv[2], "eglfs" ); // alternative to try: linuxfb
 
   //Create a QApplication cause otherwise drawing text will crash
   app = new QApplication( fake_argc, fake_argv );
   delete[] fake_argv[0];
   delete[] fake_argv[1];
   delete[] fake_argv[2];
+
+  std::string font_path = ros::package::getPath( "hector_geotiff" ) + "/fonts/Roboto-Regular.ttf";
+  std::cerr << "Loading font: " << font_path.c_str();
+  int id = QFontDatabase::addApplicationFont( QString::fromStdString( font_path ));
+  std::cerr << "Obtaining font family";
+  font_family_ = QFontDatabase::applicationFontFamilies( id ).at( 0 );
 
   map_file_name_ = "";
   map_file_path_ = "";
