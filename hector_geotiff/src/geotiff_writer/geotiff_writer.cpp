@@ -51,24 +51,22 @@ GeotiffWriter::GeotiffWriter( bool useCheckerboardCacheIn )
   cached_map_meta_data_.width = -1;
   cached_map_meta_data_.resolution = -1.0f;
 
-  ROS_INFO("Creating application");
-
   int fake_argc = 3;
-  char *fake_argv[3] = { new char[15], new char[10], new char[8] };
+  char *fake_argv[3] = { new char[15], new char[10], new char[10] };
   strcpy( fake_argv[0], "geotiff_writer" );
   strcpy( fake_argv[1], "-platform" );
-  strcpy( fake_argv[2], "eglfs" ); // alternative to try: linuxfb
+  strcpy( fake_argv[2], "offscreen" ); // Set the env QT_DEBUG_PLUGINS to 1 to see available platforms
 
+  ROS_INFO("Creating application with offscreen platform.");
   //Create a QApplication cause otherwise drawing text will crash
   app = new QApplication( fake_argc, fake_argv );
   delete[] fake_argv[0];
   delete[] fake_argv[1];
   delete[] fake_argv[2];
+  ROS_INFO("Created application");
 
   std::string font_path = ros::package::getPath( "hector_geotiff" ) + "/fonts/Roboto-Regular.ttf";
-  std::cerr << "Loading font: " << font_path.c_str();
   int id = QFontDatabase::addApplicationFont( QString::fromStdString( font_path ));
-  std::cerr << "Obtaining font family";
   font_family_ = QFontDatabase::applicationFontFamilies( id ).at( 0 );
 
   map_file_name_ = "";
