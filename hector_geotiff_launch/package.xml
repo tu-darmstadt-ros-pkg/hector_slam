@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>hector_geotiff_launch</name>
+  <version>0.0.0</version>
+  <description>Contains launch files for the hector_geotiff mapper.</description>
+
+  <maintainer email="fabian@sim.tu-darmstadt.de">Stefan Fabian</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://ros.org/wiki/hector_geotiff</url>
+
+  <author email="kohlbrecher@sim.tu-darmstadt.de">Stefan Kohlbrecher</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>hector_geotiff</exec_depend>
+  <exec_depend>hector_geotiff_plugins</exec_depend>
+  <exec_depend>hector_trajectory_server</exec_depend>
+</package>

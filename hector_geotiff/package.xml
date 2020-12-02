@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>hector_geotiff</name>
   <version>0.3.6</version>
   <description>
@@ -26,17 +26,6 @@
   <author email="kohlbrecher@sim.tu-darmstadt.de">Stefan Kohlbrecher</author>
 
 
-  <!-- The *_depend tags are used to specify dependencies -->
-  <!-- Dependencies can be catkin packages or system dependencies -->
-  <!-- Examples: -->
-  <!-- Use build_depend for packages you need at compile time: -->
-  <!--   <build_depend>message_generation</build_depend> -->
-  <!-- Use buildtool_depend for build tool packages: -->
-  <!--   <buildtool_depend>catkin</buildtool_depend> -->
-  <!-- Use run_depend for packages you need at runtime: -->
-  <!--   <run_depend>message_runtime</run_depend> -->
-  <!-- Use test_depend for packages you need only for testing: -->
-  <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>hector_map_tools</build_depend>
   <build_depend>hector_nav_msgs</build_depend>
@@ -45,15 +34,14 @@
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>libqt5-widgets</build_depend>
-  <!--<run_depend>hector_geotiff_plugins</run_depend>-->
-  <run_depend>hector_map_tools</run_depend>
-  <run_depend>hector_nav_msgs</run_depend>
-  <run_depend>nav_msgs</run_depend>
-  <run_depend>pluginlib</run_depend>
-  <run_depend>roscpp</run_depend>
-  <run_depend>std_msgs</run_depend>
-  <run_depend>libqt5-widgets</run_depend>
-  <run_depend>qt5-image-formats-plugins</run_depend>
+  <exec_depend>hector_map_tools</exec_depend>
+  <exec_depend>hector_nav_msgs</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>pluginlib</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>libqt5-widgets</exec_depend>
+  <exec_depend>qt5-image-formats-plugins</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

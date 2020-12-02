@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="2">
   <name>hector_slam_launch</name>
   <version>0.3.6</version>
   <description>
@@ -26,23 +26,15 @@
   <author email="kohlbrecher@sim.tu-darmstadt.de">Stefan Kohlbrecher</author>
 
 
-  <!-- The *_depend tags are used to specify dependencies -->
-  <!-- Dependencies can be catkin packages or system dependencies -->
-  <!-- Examples: -->
-  <!-- Use build_depend for packages you need at compile time: -->
-  <!--   <build_depend>message_generation</build_depend> -->
-  <!-- Use buildtool_depend for build tool packages: -->
-  <!--   <buildtool_depend>catkin</buildtool_depend> -->
-  <!-- Use run_depend for packages you need at runtime: -->
-  <!--   <run_depend>message_runtime</run_depend> -->
-  <!-- Use test_depend for packages you need only for testing: -->
-  <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <run_depend>hector_mapping</run_depend>
-  <run_depend>hector_map_server</run_depend>
-  <run_depend>hector_trajectory_server</run_depend>
-  <run_depend>hector_geotiff</run_depend>
-  <run_depend>hector_geotiff_plugins</run_depend>
+  <exec_depend>hector_mapping</exec_depend>
+  <exec_depend>hector_map_server</exec_depend>
+  <exec_depend>hector_trajectory_server</exec_depend>
+  <exec_depend>hector_geotiff</exec_depend>
+  <exec_depend>hector_geotiff_plugins</exec_depend>
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>tf</exec_depend>
+  <exec_depend>topic_tools</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
