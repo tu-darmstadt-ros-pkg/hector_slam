@@ -2,12 +2,13 @@
 Changelog for package hector_geotiff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.3.6 (2019-10-25)
+0.4.1 (2020-05-15)
 ------------------
-* Renamed depends for (hopefully soon) rosdep compatibility.
-* Moved to Qt5.
+
+0.3.6 (2019-10-31)
+------------------
 * Update geotiff draw interface to support different shapes
-* Contributors: Stefan Fabian, Stefan Kohlbrecher
+* Contributors: Stefan Kohlbrecher
 
 0.3.5 (2016-06-24)
 ------------------

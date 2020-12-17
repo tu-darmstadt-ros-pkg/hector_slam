@@ -2,7 +2,13 @@
 Changelog for package hector_mapping
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.3.6 (2019-10-25)
+0.4.1 (2020-05-15)
+------------------
+* Remove unnecessary boost signals find_package
+  With Boost >1.69 hector_mapping won't build. Furthermore, hector_mapping doesn't use signals anywhere.
+* Contributors: Sam Pfeiffer
+
+0.3.6 (2019-10-31)
 ------------------
 * Merge pull request `#49 <https://github.com/tu-darmstadt-ros-pkg/hector_slam/issues/49>`_ from davidbsp/catkin
   populate child_frame_id in odometry msg
