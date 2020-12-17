@@ -29,11 +29,12 @@
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>hector_map_tools</build_depend>
   <build_depend>hector_nav_msgs</build_depend>
+  <build_depend>libqt5-widgets</build_depend>
   <build_depend>nav_msgs</build_depend>
   <build_depend>pluginlib</build_depend>
+  <build_depend>qtbase5-dev</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
-  <build_depend>libqt5-widgets</build_depend>
   <exec_depend>hector_map_tools</exec_depend>
   <exec_depend>hector_nav_msgs</exec_depend>
   <exec_depend>nav_msgs</exec_depend>
