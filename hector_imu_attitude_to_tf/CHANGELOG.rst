@@ -2,8 +2,8 @@
 Changelog for package hector_imu_attitude_to_tf
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.0 (2020-12-17)
+------------------
 * Moved hector_geotiff launch files to separate package to solve cyclic dependency.
   Clean up for noetic release.
 * Bump CMake version to avoid CMP0048 warning

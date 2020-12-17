@@ -2,8 +2,8 @@
 Changelog for package hector_geotiff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.0 (2020-12-17)
+------------------
 * Added missing dependency for Qt5 cmake.
 * Moved hector_geotiff launch files to separate package to solve cyclic dependency.
   Clean up for noetic release.
