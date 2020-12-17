@@ -2,6 +2,18 @@
 Changelog for package hector_geotiff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added missing dependency for Qt5 cmake.
+* Moved hector_geotiff launch files to separate package to solve cyclic dependency.
+  Clean up for noetic release.
+* Qt5 support for hector geotiff on headless systems.
+* Updated platform args. Test on robot.
+* Experiments with platform argument.
+* Renamed depends for (hopefully soon) rosdep compatibility.
+* Moved to Qt5.
+* Contributors: Stefan Fabian
+
 0.4.1 (2020-05-15)
 ------------------
 

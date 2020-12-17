@@ -2,6 +2,11 @@
 Changelog for package hector_slam
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Bump CMake version to avoid CMP0048 warning
+* Contributors: Marius Schnaubelt, Stefan Fabian
+
 0.4.1 (2020-05-15)
 ------------------
 

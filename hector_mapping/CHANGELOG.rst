@@ -2,6 +2,14 @@
 Changelog for package hector_mapping
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Moved hector_geotiff launch files to separate package to solve cyclic dependency.
+  Clean up for noetic release.
+* Bump CMake version to avoid CMP0048 warning
+* fixed compilation under noetic
+* Contributors: Marius Schnaubelt, Stefan Fabian
+
 0.4.1 (2020-05-15)
 ------------------
 * Remove unnecessary boost signals find_package
