@@ -49,7 +49,7 @@ namespace hector_geotiff{
 class GeotiffWriter : public MapWriterInterface
 {
   public:
-  GeotiffWriter(bool useCheckerboardCacheIn = false);
+  explicit GeotiffWriter(bool useCheckerboardCacheIn = false);
   virtual ~GeotiffWriter();
 
   //setUsePrecalcGrid(bool usePrecalc, const Eigen::Vector2f& size);
@@ -79,17 +79,17 @@ protected:
   void drawArrow(QPainter& painter);
   void drawCoordSystem(QPainter& painter);
 
-  float resolution;
+  float resolution = std::numeric_limits<float>::quiet_NaN();
   Eigen::Vector2f origin;
 
-  int resolutionFactor;
-  float resolutionFactorf;
+  int resolutionFactor = 3;
+  float resolutionFactorf = std::numeric_limits<float>::quiet_NaN();
 
   bool useCheckerboardCache;
   bool use_utc_time_suffix_;
 
-  float pixelsPerMapMeter;
-  float pixelsPerGeoTiffMeter;
+  float pixelsPerMapMeter = std::numeric_limits<float>::quiet_NaN();
+  float pixelsPerGeoTiffMeter = std::numeric_limits<float>::quiet_NaN();
 
   Eigen::Vector2i minCoordsMap;
   Eigen::Vector2i maxCoordsMap;

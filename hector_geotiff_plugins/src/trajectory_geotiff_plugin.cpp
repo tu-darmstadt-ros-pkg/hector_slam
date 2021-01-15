@@ -32,7 +32,6 @@
 #include <ros/ros.h>
 #include <hector_nav_msgs/GetRobotTrajectory.h>
 
-#include <pluginlib/class_loader.h>
 #include <fstream>
 
 namespace hector_geotiff_plugins
@@ -121,8 +120,4 @@ void TrajectoryMapWriter::draw(MapWriterInterface *interface)
 
 //register this planner as a MapWriterPluginInterface plugin
 #include <pluginlib/class_list_macros.h>
-#ifdef PLUGINLIB_EXPORT_CLASS
-  PLUGINLIB_EXPORT_CLASS(hector_geotiff_plugins::TrajectoryMapWriter, hector_geotiff::MapWriterPluginInterface)
-#else
-  PLUGINLIB_DECLARE_CLASS(hector_geotiff_plugins, TrajectoryMapWriter, hector_geotiff_plugins::TrajectoryMapWriter, hector_geotiff::MapWriterPluginInterface)
-#endif
+PLUGINLIB_EXPORT_CLASS(hector_geotiff_plugins::TrajectoryMapWriter, hector_geotiff::MapWriterPluginInterface)
