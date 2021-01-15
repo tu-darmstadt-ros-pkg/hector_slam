@@ -2,6 +2,11 @@
 Changelog for package hector_slam
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Added hector_geotiff_launch to hector_slam metapackge.
+* Contributors: Stefan Fabian
+
 0.5.0 (2020-12-17)
 ------------------
 * Bump CMake version to avoid CMP0048 warning

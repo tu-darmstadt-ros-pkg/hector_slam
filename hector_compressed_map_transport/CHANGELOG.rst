@@ -2,6 +2,9 @@
 Changelog for package hector_compressed_map_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.5.0 (2020-12-17)
 ------------------
 * Moved hector_geotiff launch files to separate package to solve cyclic dependency.

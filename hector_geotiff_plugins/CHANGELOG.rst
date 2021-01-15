@@ -2,6 +2,12 @@
 Changelog for package hector_geotiff_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed "SEVERE WARNING" by pluginloader when killing geotiff node.
+  Some minor cleanup.
+* Contributors: Stefan Fabian
+
 0.5.0 (2020-12-17)
 ------------------
 * Moved hector_geotiff launch files to separate package to solve cyclic dependency.

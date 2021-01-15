@@ -2,6 +2,12 @@
 Changelog for package hector_geotiff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixed "SEVERE WARNING" by pluginloader when killing geotiff node.
+  Some minor cleanup.
+* Contributors: Stefan Fabian
+
 0.5.0 (2020-12-17)
 ------------------
 * Added missing dependency for Qt5 cmake.
