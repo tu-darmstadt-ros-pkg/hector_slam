@@ -14,7 +14,7 @@
     <arg name="pub_map_odom_transform" value="false" />
   </include>
 
-  <include file="$(find hector_geotiff)/launch/geotiff_mapper.launch">
+  <include file="$(find hector_geotiff_launch)/launch/geotiff_mapper.launch">
     <arg name="trajectory_source_frame_name" value="scanmatcher_frame2"/>
   </include>
 

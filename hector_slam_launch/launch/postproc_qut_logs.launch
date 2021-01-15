@@ -14,7 +14,7 @@
     <arg name="scan_subscriber_queue_size" value="25"/>
   </include>
  
-  <include file="$(find hector_geotiff)/launch/geotiff_mapper.launch">
+  <include file="$(find hector_geotiff_launch)/launch/geotiff_mapper.launch">
   </include>
 
   <node pkg="tf" type="static_transform_publisher" name="map_nav_broadcaster" args="0 0 0 0 0 0 base_link laser 100" />
