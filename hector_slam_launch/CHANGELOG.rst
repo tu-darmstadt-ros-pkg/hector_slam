@@ -2,8 +2,8 @@
 Changelog for package hector_slam_launch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.1 (2021-01-15)
+------------------
 * Updated paths to launch files.
 * Contributors: Stefan Fabian
 
