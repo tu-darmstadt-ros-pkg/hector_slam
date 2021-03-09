@@ -407,7 +407,6 @@ bool HectorMappingRos::pauseMapCallback(std_srvs::SetBool::Request  &req,
   return true;
 }
 
-
 void HectorMappingRos::publishMap(MapPublisherContainer& mapPublisher, const hectorslam::GridMap& gridMap, ros::Time timestamp, MapLockerInterface* mapMutex)
 {
   nav_msgs::GetMap::Response& map_ (mapPublisher.map_);
