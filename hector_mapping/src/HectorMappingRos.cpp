@@ -50,6 +50,7 @@ HectorMappingRos::HectorMappingRos()
   , tfB_(0)
   , map__publish_thread_(0)
   , initial_pose_set_(false)
+  , pause_scan_processing_(false)
 {
   ros::NodeHandle private_nh_("~");
 
@@ -156,6 +157,10 @@ HectorMappingRos::HectorMappingRos()
       tmp.dynamicMapServiceServer_ = node_.advertiseService("dynamic_map", &HectorMappingRos::mapCallback, this);
     }
 
+    // Initialize services to reset map, and toggle scan pause
+    resetMapService_ = node_.advertiseService("reset_map", &HectorMappingRos::resetMapCallback, this);
+    toggleScanProcessingService_ = node_.advertiseService("pause_mapping", &HectorMappingRos::pauseMapCallback, this);
+
     setServiceGetMapData(tmp.map_, slamProcessor->getGridMap(i));
 
     if ( i== 0){
@@ -228,6 +233,10 @@ HectorMappingRos::~HectorMappingRos()
 
 void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 {
+  if (pause_scan_processing_) {
+    return;
+  }
+
   if (hectorDrawings)
   {
     hectorDrawings->setTime(scan.header.stamp);
@@ -371,6 +380,30 @@ bool HectorMappingRos::mapCallback(nav_msgs::GetMap::Request  &req,
   res = mapPubContainer[0].map_;
   return true;
 }
+
+bool HectorMappingRos::resetMapCallback(std_srvs::Trigger::Request  &req,
+                                        std_srvs::Trigger::Response &res)
+{
+  ROS_INFO("HectorSM Reset map service called");
+  slamProcessor->reset();
+  return true;
+}
+
+bool HectorMappingRos::pauseMapCallback(std_srvs::SetBool::Request  &req,
+                                        std_srvs::SetBool::Response &res)
+{
+  if (req.data && !pause_scan_processing_)
+  {
+    ROS_INFO("HectorSM Mapping paused");
+  }
+  else if (!req.data && pause_scan_processing_)
+  {
+    ROS_INFO("HectorSM Mapping no longer paused");
+  }
+  pause_scan_processing_ = req.data;
+  return true;
+}
+
 
 void HectorMappingRos::publishMap(MapPublisherContainer& mapPublisher, const hectorslam::GridMap& gridMap, ros::Time timestamp, MapLockerInterface* mapMutex)
 {

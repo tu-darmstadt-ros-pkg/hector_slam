@@ -1,7 +1,16 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(hector_mapping)
 
-find_package(catkin REQUIRED COMPONENTS roscpp nav_msgs visualization_msgs tf message_filters laser_geometry tf_conversions message_generation)
+find_package(catkin REQUIRED COMPONENTS 
+  roscpp
+  nav_msgs
+  visualization_msgs
+  tf
+  message_filters
+  laser_geometry
+  tf_conversions
+  message_generation
+  std_srvs)
 
 find_package(Boost REQUIRED COMPONENTS thread)
 

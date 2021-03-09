@@ -39,6 +39,9 @@
 #include "sensor_msgs/LaserScan.h"
 #include <std_msgs/String.h>
 
+#include <std_srvs/SetBool.h>
+#include <std_srvs/Trigger.h>
+
 #include "laser_geometry/laser_geometry.h"
 #include "nav_msgs/GetMap.h"
 
@@ -75,6 +78,8 @@ public:
   void sysMsgCallback(const std_msgs::String& string);
 
   bool mapCallback(nav_msgs::GetMap::Request  &req, nav_msgs::GetMap::Response &res);
+  bool resetMapCallback(std_srvs::Trigger::Request  &req, std_srvs::Trigger::Response &res);
+  bool pauseMapCallback(std_srvs::SetBool::Request  &req, std_srvs::SetBool::Response &res);
 
   void publishMap(MapPublisherContainer& map_, const hectorslam::GridMap& gridMap, ros::Time timestamp, MapLockerInterface* mapMutex = 0);
 
@@ -115,6 +120,9 @@ protected:
   ros::Publisher odometryPublisher_;
   ros::Publisher scan_point_cloud_publisher_;
 
+  ros::ServiceServer resetMapService_;
+  ros::ServiceServer toggleScanProcessingService_;
+
   std::vector<MapPublisherContainer> mapPubContainer;
 
   tf::TransformListener tf_;
@@ -140,6 +148,7 @@ protected:
   bool initial_pose_set_;
   Eigen::Vector3f initial_pose_;
 
+  bool pause_scan_processing_;
 
   //-----------------------------------------------------------
   // Parameters
@@ -182,7 +191,6 @@ protected:
   bool p_use_tf_pose_start_estimate_;
   bool p_map_with_known_poses_;
   bool p_timing_output_;
-
 
   float p_sqr_laser_min_dist_;
   float p_sqr_laser_max_dist_;
