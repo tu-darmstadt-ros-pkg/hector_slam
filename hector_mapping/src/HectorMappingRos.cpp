@@ -394,13 +394,13 @@ bool HectorMappingRos::pauseMapCallback(std_srvs::SetBool::Request  &req,
 {
   if (req.data && !pause_scan_processing_)
   {
-    res.message = "HectorSM Mapping paused";
-    ROS_INFO("%s", res.message.c_str());
+    res.message = "Mapping paused";
+    ROS_INFO("HectorSM %s", res.message.c_str());
   }
   else if (!req.data && pause_scan_processing_)
   {
-    res.message = "HectorSM Mapping no longer paused";
-    ROS_INFO("%s", res.message.c_str());
+    res.message = "Mapping no longer paused";
+    ROS_INFO("HectorSM %s", res.message.c_str());
   }
   pause_scan_processing_ = req.data;
   res.success = true;
