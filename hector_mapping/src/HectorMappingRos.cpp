@@ -158,8 +158,8 @@ HectorMappingRos::HectorMappingRos()
     }
 
     // Initialize services to reset map, and toggle scan pause
-    resetMapService_ = node_.advertiseService("reset_map", &HectorMappingRos::resetMapCallback, this);
-    toggleScanProcessingService_ = node_.advertiseService("pause_mapping", &HectorMappingRos::pauseMapCallback, this);
+    reset_map_service_ = node_.advertiseService("reset_map", &HectorMappingRos::resetMapCallback, this);
+    toggle_scan_processing_service_ = node_.advertiseService("pause_mapping", &HectorMappingRos::pauseMapCallback, this);
 
     setServiceGetMapData(tmp.map_, slamProcessor->getGridMap(i));
 

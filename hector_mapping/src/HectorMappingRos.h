@@ -120,8 +120,8 @@ protected:
   ros::Publisher odometryPublisher_;
   ros::Publisher scan_point_cloud_publisher_;
 
-  ros::ServiceServer resetMapService_;
-  ros::ServiceServer toggleScanProcessingService_;
+  ros::ServiceServer reset_map_service_;
+  ros::ServiceServer toggle_scan_processing_service_;
 
   std::vector<MapPublisherContainer> mapPubContainer;
 
