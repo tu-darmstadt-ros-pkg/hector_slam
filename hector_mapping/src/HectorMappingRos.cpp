@@ -157,7 +157,8 @@ HectorMappingRos::HectorMappingRos()
       tmp.dynamicMapServiceServer_ = node_.advertiseService("dynamic_map", &HectorMappingRos::mapCallback, this);
     }
 
-    // Initialize services to reset map, and toggle scan pause
+    // Initialize services
+    hector_management_service_ = node_.advertiseService("hector_management", &HectorMappingRos::hectorManagementCallback, this);
     reset_map_service_ = node_.advertiseService("reset_map", &HectorMappingRos::resetMapCallback, this);
     toggle_scan_processing_service_ = node_.advertiseService("pause_mapping", &HectorMappingRos::pauseMapCallback, this);
 
@@ -373,6 +374,28 @@ void HectorMappingRos::sysMsgCallback(const std_msgs::String& string)
   }
 }
 
+bool HectorMappingRos::hectorManagementCallback(hector_mapping::HectorManagement::Request  &req,
+                                                hector_mapping::HectorManagement::Response &res)
+{
+  // Pause/unpause
+  this->toggleMappingPause(req.pause);
+
+  // Reset map?
+  if (req.reset_map) {
+    ROS_INFO("HectorSM Reset map");
+    slamProcessor->reset();
+  }
+
+  // Reset pose?
+  if (req.reset_pose) {
+    this->resetPose(req.pose);
+  }
+
+  // Return
+  res.success = true;
+  return true;
+}
+
 bool HectorMappingRos::mapCallback(nav_msgs::GetMap::Request  &req,
                                    nav_msgs::GetMap::Response &res)
 {
@@ -392,15 +415,7 @@ bool HectorMappingRos::resetMapCallback(std_srvs::Trigger::Request  &req,
 bool HectorMappingRos::pauseMapCallback(std_srvs::SetBool::Request  &req,
                                         std_srvs::SetBool::Response &res)
 {
-  if (req.data && !pause_scan_processing_)
-  {
-    ROS_INFO("HectorSM Mapping paused");
-  }
-  else if (!req.data && pause_scan_processing_)
-  {
-    ROS_INFO("HectorSM Mapping no longer paused");
-  }
-  pause_scan_processing_ = req.data;
+  this->toggleMappingPause(req.data);
   res.success = true;
   return true;
 }
@@ -578,12 +593,27 @@ void HectorMappingRos::staticMapCallback(const nav_msgs::OccupancyGrid& map)
 
 void HectorMappingRos::initialPoseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg)
 {
-  initial_pose_set_ = true;
-
-  tf::Pose pose;
-  tf::poseMsgToTF(msg->pose.pose, pose);
-  initial_pose_ = Eigen::Vector3f(msg->pose.pose.position.x, msg->pose.pose.position.y, tf::getYaw(pose.getRotation()));
-  ROS_INFO("Setting initial pose with world coords x: %f y: %f yaw: %f", initial_pose_[0], initial_pose_[1], initial_pose_[2]);
+  this->resetPose(msg->pose.pose);
 }
 
+void HectorMappingRos::toggleMappingPause(const bool &pause)
+{
+  // Pause/unpause
+  if (pause && !pause_scan_processing_)
+  {
+    ROS_INFO("[HectorSM]: Mapping paused");
+  }
+  else if (!pause && pause_scan_processing_)
+  {
+    ROS_INFO("[HectorSM]: Mapping no longer paused");
+  }
+  pause_scan_processing_ = pause;
+}
 
+void HectorMappingRos::resetPose(const geometry_msgs::Pose &pose)
+{
+  initial_pose_set_ = true;
+  initial_pose_ = Eigen::Vector3f(pose.position.x, pose.position.y, util::getYawFromQuat(pose.orientation));
+  ROS_INFO("[HectorSM]: Setting initial pose with world coords x: %f y: %f yaw: %f",
+           initial_pose_[0], initial_pose_[1], initial_pose_[2]);
+}

@@ -39,6 +39,7 @@
 #include "sensor_msgs/LaserScan.h"
 #include <std_msgs/String.h>
 
+#include <hector_mapping/HectorManagement.h>
 #include <std_srvs/SetBool.h>
 #include <std_srvs/Trigger.h>
 
@@ -77,6 +78,7 @@ public:
   void scanCallback(const sensor_msgs::LaserScan& scan);
   void sysMsgCallback(const std_msgs::String& string);
 
+  bool hectorManagementCallback(hector_mapping::HectorManagement::Request &req, hector_mapping::HectorManagement::Response &res);
   bool mapCallback(nav_msgs::GetMap::Request  &req, nav_msgs::GetMap::Response &res);
   bool resetMapCallback(std_srvs::Trigger::Request  &req, std_srvs::Trigger::Response &res);
   bool pauseMapCallback(std_srvs::SetBool::Request  &req, std_srvs::SetBool::Response &res);
@@ -94,6 +96,10 @@ public:
 
   void staticMapCallback(const nav_msgs::OccupancyGrid& map);
   void initialPoseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg);
+
+  // Management functions
+  void toggleMappingPause(const bool &pause);
+  void resetPose(const geometry_msgs::Pose &pose);
 
   /*
   void setStaticMapData(const nav_msgs::OccupancyGrid& map);
@@ -120,6 +126,7 @@ protected:
   ros::Publisher odometryPublisher_;
   ros::Publisher scan_point_cloud_publisher_;
 
+  ros::ServiceServer hector_management_service_;
   ros::ServiceServer reset_map_service_;
   ros::ServiceServer toggle_scan_processing_service_;
 

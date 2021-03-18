@@ -1,0 +1,16 @@
+# Service definition for hector processing management
+# -------------------------------------------------------------
+# - - - - - Inputs - - - - -
+# pause: whether hector should pause or resume mapping
+# reset_map: if true, resets the whole map
+# reset_pose: if true, reset hector's pose (only x, y, and yaw are captured)
+# pose: if (reset_pose == true), then this pose is captured to reset hector's pose
+# - - - - - Outputs - - - - - 
+# success: boolean indicating whether the service call was successful
+# -------------------------------------------------------------
+bool pause
+bool reset_map
+bool reset_pose
+geometry_msgs/Pose pose
+---
+bool success
