@@ -279,11 +279,8 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
       scan_point_cloud_publisher_.publish(laser_point_cloud_);
     }
 
-    // Return if we can't convert the point cloud to our data container
-    if(!rosPointCloudToDataContainer(laser_point_cloud_, laserTransform, laserScanContainer, slamProcessor->getScaleToMap()))
-    {
-      return;
-    }
+    // Convert the point cloud to our data container
+    this->rosPointCloudToDataContainer(laser_point_cloud_, laserTransform, laserScanContainer, slamProcessor->getScaleToMap());
 
     // Now let's choose the initial pose estimate for our slam process update
     Eigen::Vector3f start_estimate(Eigen::Vector3f::Zero());
@@ -503,7 +500,7 @@ bool HectorMappingRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan&
   return true;
 }
 
-bool HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointCloud& pointCloud, const tf::StampedTransform& laserTransform, hectorslam::DataContainer& dataContainer, float scaleToMap)
+void HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointCloud& pointCloud, const tf::StampedTransform& laserTransform, hectorslam::DataContainer& dataContainer, float scaleToMap)
 {
   size_t size = pointCloud.points.size();
   //ROS_INFO("size: %d", size);
@@ -536,8 +533,6 @@ bool HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointClou
       }
     }
   }
-
-  return true;
 }
 
 void HectorMappingRos::setServiceGetMapData(nav_msgs::GetMap::Response& map_, const hectorslam::GridMap& gridMap)
