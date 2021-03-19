@@ -249,10 +249,8 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     // If we are not using the tf tree to find the transform between the base frame and laser frame,
     // then just convert the laser scan to our data container and process the update based on our last
     // pose estimate
-    if (rosLaserScanToDataContainer(scan, laserScanContainer,slamProcessor->getScaleToMap()))
-    {
-      slamProcessor->update(laserScanContainer,slamProcessor->getLastScanMatchPose());
-    }
+    this->rosLaserScanToDataContainer(scan, laserScanContainer, slamProcessor->getScaleToMap());
+    slamProcessor->update(laserScanContainer, slamProcessor->getLastScanMatchPose());
   }
   else
   {
@@ -297,11 +295,11 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
       {
         tf::StampedTransform stamped_pose;
 
-        tf_.waitForTransform(p_map_frame_,p_base_frame_, scan.header.stamp, ros::Duration(0.5));
+        tf_.waitForTransform(p_map_frame_, p_base_frame_, scan.header.stamp, ros::Duration(0.5));
         tf_.lookupTransform(p_map_frame_, p_base_frame_,  scan.header.stamp, stamped_pose);
 
         const double yaw = tf::getYaw(stamped_pose.getRotation());
-        start_estimate = Eigen::Vector3f(stamped_pose.getOrigin().getX(),stamped_pose.getOrigin().getY(), yaw);
+        start_estimate = Eigen::Vector3f(stamped_pose.getOrigin().getX(), stamped_pose.getOrigin().getY(), yaw);
       }
       catch(tf::TransformException e)
       {
@@ -472,7 +470,7 @@ void HectorMappingRos::publishMap(MapPublisherContainer& mapPublisher, const hec
   mapPublisher.mapPublisher_.publish(map_.map);
 }
 
-bool HectorMappingRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan& scan, hectorslam::DataContainer& dataContainer, float scaleToMap)
+void HectorMappingRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan& scan, hectorslam::DataContainer& dataContainer, float scaleToMap)
 {
   size_t size = scan.ranges.size();
 
@@ -496,8 +494,6 @@ bool HectorMappingRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan&
 
     angle += scan.angle_increment;
   }
-
-  return true;
 }
 
 void HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointCloud& pointCloud, const tf::StampedTransform& laserTransform, hectorslam::DataContainer& dataContainer, float scaleToMap)
