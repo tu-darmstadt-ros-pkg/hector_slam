@@ -264,7 +264,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan) {
     projector_.projectLaser(scan, laser_point_cloud_, 30.0);
 
     // Publish the point cloud if there are any subscribers
-    if (scan_point_cloud_publisher_.getNumSubscribers() > 0){
+    if (scan_point_cloud_publisher_.getNumSubscribers() > 0) {
       scan_point_cloud_publisher_.publish(laser_point_cloud_);
     }
 
