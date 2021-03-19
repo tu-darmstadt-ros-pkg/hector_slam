@@ -31,7 +31,28 @@
 
 #include <cmath>
 
+#include <tf/transform_datatypes.h>
+#include <tf2_ros/transform_listener.h>
+
 namespace util{
+
+static inline bool LookupTransform(const std::string &from_frame,
+                                   const std::string &to_frame,
+                                   tf::StampedTransform *tf_output) {
+  // Create tf listener
+  tf2_ros::Buffer tf_buffer;
+  tf2_ros::TransformListener tf_listener(tf_buffer);
+  try {
+    const geometry_msgs::TransformStamped transform =
+        tf_buffer.lookupTransform(from_frame, to_frame, ros::Time(0), ros::Duration(10.0));
+    tf::transformStampedMsgToTF(transform, *tf_output);
+  } catch (tf2::TransformException &ex) {
+      ROS_WARN("HectorSM Transform between frame \"%s\" and frame \"%s\" was not found: %s",
+               from_frame.c_str(), to_frame.c_str(), ex.what());
+      return false;
+  }
+  return true;
+}
 
 static inline float normalize_angle_pos(float angle)
 {
