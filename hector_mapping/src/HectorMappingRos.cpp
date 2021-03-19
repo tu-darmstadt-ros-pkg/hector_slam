@@ -259,10 +259,10 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     // If we are using the tf tree to find the transform between the base frame and laser frame,
     // let's get that transform
     const ros::Duration dur(0.5);
-    tf::StampedTransform laserTransform;
+    tf::StampedTransform laser_transform;
     if (tf_.waitForTransform(p_base_frame_, scan.header.frame_id, scan.header.stamp, dur))
     {
-      tf_.lookupTransform(p_base_frame_, scan.header.frame_id, scan.header.stamp, laserTransform);
+      tf_.lookupTransform(p_base_frame_, scan.header.frame_id, scan.header.stamp, laser_transform);
     }
     else
     {
@@ -280,7 +280,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     }
 
     // Convert the point cloud to our data container
-    this->rosPointCloudToDataContainer(laser_point_cloud_, laserTransform, laserScanContainer, slamProcessor->getScaleToMap());
+    this->rosPointCloudToDataContainer(laser_point_cloud_, laser_transform, laserScanContainer, slamProcessor->getScaleToMap());
 
     // Now let's choose the initial pose estimate for our slam process update
     Eigen::Vector3f start_estimate(Eigen::Vector3f::Zero());
