@@ -97,7 +97,7 @@ public:
   void staticMapCallback(const nav_msgs::OccupancyGrid& map);
   void initialPoseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg);
 
-  // Management functions
+  // Internal mapping management functions
   void toggleMappingPause(const bool &pause);
   void resetPose(const geometry_msgs::Pose &pose);
 
@@ -126,7 +126,6 @@ protected:
   ros::Publisher odometryPublisher_;
   ros::Publisher scan_point_cloud_publisher_;
 
-  ros::ServiceServer hector_management_service_;
   ros::ServiceServer reset_map_service_;
   ros::ServiceServer restart_hector_service_;
   ros::ServiceServer toggle_scan_processing_service_;
