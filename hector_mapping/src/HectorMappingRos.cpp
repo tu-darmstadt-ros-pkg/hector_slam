@@ -240,8 +240,7 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan) {
     hectorDrawings->setTime(scan.header.stamp);
   }
 
-  ros::WallTime startTime = ros::WallTime::now();
-
+  ros::WallTime start_time = ros::WallTime::now();
   if (!p_use_tf_scan_transformation_) {
     // If we are not using the tf tree to find the transform between the base frame and laser frame,
     // then just convert the laser scan to our data container and process the update based on our last
@@ -275,11 +274,11 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan) {
     }
 
     // Now let's choose the initial pose estimate for our slam process update
-    Eigen::Vector3f startEstimate(Eigen::Vector3f::Zero());
+    Eigen::Vector3f start_estimate(Eigen::Vector3f::Zero());
     if (initial_pose_set_) {
       // User has requested a pose reset
       initial_pose_set_ = false;
-      startEstimate = initial_pose_;
+      start_estimate = initial_pose_;
     } else if (p_use_tf_pose_start_estimate_){
       // Initial pose estimate comes from the tf tree
       try {
@@ -289,27 +288,27 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan) {
         tf_.lookupTransform(p_map_frame_, p_base_frame_,  scan.header.stamp, stamped_pose);
 
         const double yaw = tf::getYaw(stamped_pose.getRotation());
-        startEstimate = Eigen::Vector3f(stamped_pose.getOrigin().getX(),stamped_pose.getOrigin().getY(), yaw);
+        start_estimate = Eigen::Vector3f(stamped_pose.getOrigin().getX(),stamped_pose.getOrigin().getY(), yaw);
       } catch(tf::TransformException e) {
         ROS_ERROR("Transform from %s to %s failed\n", p_map_frame_.c_str(), p_base_frame_.c_str());
-        startEstimate = slamProcessor->getLastScanMatchPose();
+        start_estimate = slamProcessor->getLastScanMatchPose();
       }
     } else {
       // If none of the above, the initial pose is simply the last estimated pose
-      startEstimate = slamProcessor->getLastScanMatchPose();
+      start_estimate = slamProcessor->getLastScanMatchPose();
     }
 
-    // If "p_map_with_known_poses_" is enabled, we assume that startEstimate is precise and doesn't need to be refined
+    // If "p_map_with_known_poses_" is enabled, we assume that start_estimate is precise and doesn't need to be refined
     if (p_map_with_known_poses_) {
-      slamProcessor->update(laserScanContainer, startEstimate, true);
+      slamProcessor->update(laserScanContainer, start_estimate, true);
     } else {
-      slamProcessor->update(laserScanContainer, startEstimate);
+      slamProcessor->update(laserScanContainer, start_estimate);
     }
   }
 
   // If the debug flag "p_timing_output_" is enabled, print how long this last iteration took
   if (p_timing_output_) {
-    ros::WallDuration duration = ros::WallTime::now() - startTime;
+    ros::WallDuration duration = ros::WallTime::now() - start_time;
     ROS_INFO("HectorSLAM Iter took: %f milliseconds", duration.toSec()*1000.0f );
   }
 
