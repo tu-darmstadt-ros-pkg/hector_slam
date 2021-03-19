@@ -157,17 +157,17 @@ HectorMappingRos::HectorMappingRos()
       tmp.dynamicMapServiceServer_ = node_.advertiseService("dynamic_map", &HectorMappingRos::mapCallback, this);
     }
 
-    // Initialize services
-    hector_management_service_ = node_.advertiseService("hector_management", &HectorMappingRos::hectorManagementCallback, this);
-    reset_map_service_ = node_.advertiseService("reset_map", &HectorMappingRos::resetMapCallback, this);
-    toggle_scan_processing_service_ = node_.advertiseService("pause_mapping", &HectorMappingRos::pauseMapCallback, this);
-
     setServiceGetMapData(tmp.map_, slamProcessor->getGridMap(i));
 
     if ( i== 0){
       mapPubContainer[i].mapMetadataPublisher_.publish(mapPubContainer[i].map_.map.info);
     }
   }
+
+  // Initialize services
+  reset_map_service_ = node_.advertiseService("reset_map", &HectorMappingRos::resetMapCallback, this);
+  restart_hector_service_ = node_.advertiseService("restart_hector", &HectorMappingRos::restartHectorCallback, this);
+  toggle_scan_processing_service_ = node_.advertiseService("pause_mapping", &HectorMappingRos::pauseMapCallback, this);
 
   ROS_INFO("HectorSM p_base_frame_: %s", p_base_frame_.c_str());
   ROS_INFO("HectorSM p_map_frame_: %s", p_map_frame_.c_str());
@@ -374,28 +374,6 @@ void HectorMappingRos::sysMsgCallback(const std_msgs::String& string)
   }
 }
 
-bool HectorMappingRos::hectorManagementCallback(hector_mapping::HectorManagement::Request  &req,
-                                                hector_mapping::HectorManagement::Response &res)
-{
-  // Pause/unpause
-  this->toggleMappingPause(req.pause);
-
-  // Reset map?
-  if (req.reset_map) {
-    ROS_INFO("HectorSM Reset map");
-    slamProcessor->reset();
-  }
-
-  // Reset pose?
-  if (req.reset_pose) {
-    this->resetPose(req.pose);
-  }
-
-  // Return
-  res.success = true;
-  return true;
-}
-
 bool HectorMappingRos::mapCallback(nav_msgs::GetMap::Request  &req,
                                    nav_msgs::GetMap::Response &res)
 {
@@ -409,6 +387,24 @@ bool HectorMappingRos::resetMapCallback(std_srvs::Trigger::Request  &req,
 {
   ROS_INFO("HectorSM Reset map service called");
   slamProcessor->reset();
+  return true;
+}
+
+bool HectorMappingRos::restartHectorCallback(hector_mapping::SetInitialPose::Request  &req,
+                                             hector_mapping::SetInitialPose::Response &res)
+{
+  // Reset map
+  ROS_INFO("HectorSM Reset map");
+  slamProcessor->reset();
+
+  // Reset pose
+  this->resetPose(req.pose);
+
+  // Unpause node (in case it is paused)
+  this->toggleMappingPause(false);
+
+  // Return success
+  res.success = true;
   return true;
 }
 
