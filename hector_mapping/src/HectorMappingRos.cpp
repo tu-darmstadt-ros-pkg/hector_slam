@@ -258,11 +258,11 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   {
     // If we are using the tf tree to find the transform between the base frame and laser frame,
     // let's get that transform
-    const ros::Duration dur (0.5);
+    const ros::Duration dur(0.5);
     tf::StampedTransform laserTransform;
-    if (tf_.waitForTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp,dur))
+    if (tf_.waitForTransform(p_base_frame_, scan.header.frame_id, scan.header.stamp, dur))
     {
-      tf_.lookupTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp, laserTransform);
+      tf_.lookupTransform(p_base_frame_, scan.header.frame_id, scan.header.stamp, laserTransform);
     }
     else
     {
