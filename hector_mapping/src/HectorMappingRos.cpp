@@ -166,7 +166,7 @@ HectorMappingRos::HectorMappingRos()
 
   // Initialize services
   reset_map_service_ = node_.advertiseService("reset_map", &HectorMappingRos::resetMapCallback, this);
-  restart_hector_service_ = node_.advertiseService("restart_hector", &HectorMappingRos::restartHectorCallback, this);
+  restart_hector_service_ = node_.advertiseService("restart_mapping_with_new_pose", &HectorMappingRos::restartHectorCallback, this);
   toggle_scan_processing_service_ = node_.advertiseService("pause_mapping", &HectorMappingRos::pauseMapCallback, this);
 
   ROS_INFO("HectorSM p_base_frame_: %s", p_base_frame_.c_str());
