@@ -51,6 +51,7 @@
 #include "util/MapLockerInterface.h"
 
 #include <boost/thread.hpp>
+#include <unordered_map>
 
 #include "PoseInfoContainer.h"
 
@@ -149,6 +150,9 @@ protected:
   Eigen::Vector3f initial_pose_;
 
   bool pause_scan_processing_;
+
+  // Hash table to cache static transforms from base_frame to lidar frames
+  std::unordered_map<std::string, tf::StampedTransform> cached_static_lidar_transforms_;
 
   //-----------------------------------------------------------
   // Parameters

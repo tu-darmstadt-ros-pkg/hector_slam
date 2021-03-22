@@ -124,6 +124,19 @@ HectorMappingRos::HectorMappingRos()
     odometryPublisher_ = node_.advertise<nav_msgs::Odometry>("scanmatch_odom", 50);
   }
 
+  // Cache lidar static transforms
+  std::vector<std::string> static_laser_frame_ids;
+  private_nh_.getParam("static_laser_frame_ids", static_laser_frame_ids);
+  for (const auto& laser_frame : static_laser_frame_ids)
+  {
+    tf::StampedTransform tf_base_to_lidar_frame;
+    if (util::LookupTransform(p_base_frame_, laser_frame, &tf_base_to_lidar_frame))
+    {
+      ROS_INFO("HectorSM Transform from \"%s\" to \"%s\" has been cached", p_base_frame_.c_str(), laser_frame.c_str());
+      cached_static_lidar_transforms_[laser_frame] = tf_base_to_lidar_frame;
+    }
+  }
+
   slamProcessor = new hectorslam::HectorSlamProcessor(static_cast<float>(p_map_resolution_), p_map_size_, p_map_size_, Eigen::Vector2f(p_map_start_x_, p_map_start_y_), p_map_multi_res_levels_, hectorDrawings, debugInfoProvider);
   slamProcessor->setUpdateFactorFree(p_update_factor_free_);
   slamProcessor->setUpdateFactorOccupied(p_update_factor_occupied_);
@@ -256,9 +269,13 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
   {
     // If we are using the tf tree to find the transform between the base frame and laser frame,
     // let's get that transform
-    const ros::Duration dur(0.5);
     tf::StampedTransform laser_transform;
-    if (tf_.waitForTransform(p_base_frame_, scan.header.frame_id, scan.header.stamp, dur))
+    if (cached_static_lidar_transforms_.find(scan.header.frame_id) != cached_static_lidar_transforms_.end())
+    {
+      // Transform from base_frame to laser frame has been cached at node startup, so let's get it without a tf lookup
+      laser_transform = cached_static_lidar_transforms_[scan.header.frame_id];
+    }
+    else if (tf_.waitForTransform(p_base_frame_, scan.header.frame_id, scan.header.stamp, ros::Duration(0.5)))
     {
       tf_.lookupTransform(p_base_frame_, scan.header.frame_id, scan.header.stamp, laser_transform);
     }
