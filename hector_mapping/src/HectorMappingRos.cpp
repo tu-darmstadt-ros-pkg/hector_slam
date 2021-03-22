@@ -404,7 +404,6 @@ bool HectorMappingRos::restartHectorCallback(hector_mapping::SetInitialPose::Req
   this->toggleMappingPause(false);
 
   // Return success
-  res.success = true;
   return true;
 }
 
