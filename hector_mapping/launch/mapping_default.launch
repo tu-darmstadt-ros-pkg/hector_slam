@@ -43,7 +43,7 @@
     <param name="scan_topic" value="$(arg scan_topic)"/>
 
     <!-- Uncomment the following if there are any laser scanners that are static w.r.t. the robot's base_frame. If so, this node caches these static transforms at node startup, preventing repetitive tf tree lookups in unreliable networks -->
-    <rosparam param="static_laser_frame_ids"> ["laser_frame1", "laser_frame2"] </rosparam>
+    <!-- <rosparam param="static_laser_frame_ids"> ["example_laser_frame1", "example_laser_frame2"] </rosparam> -->
     
     <!-- Debug parameters -->
     <!--
