@@ -390,8 +390,8 @@ bool HectorMappingRos::resetMapCallback(std_srvs::Trigger::Request  &req,
   return true;
 }
 
-bool HectorMappingRos::restartHectorCallback(hector_mapping::SetInitialPose::Request  &req,
-                                             hector_mapping::SetInitialPose::Response &res)
+bool HectorMappingRos::restartHectorCallback(hector_mapping::ResetMapping::Request  &req,
+                                             hector_mapping::ResetMapping::Response &res)
 {
   // Reset map
   ROS_INFO("HectorSM Reset map");
