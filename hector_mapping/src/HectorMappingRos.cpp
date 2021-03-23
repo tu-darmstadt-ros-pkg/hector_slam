@@ -398,7 +398,7 @@ bool HectorMappingRos::restartHectorCallback(hector_mapping::ResetMapping::Reque
   slamProcessor->reset();
 
   // Reset pose
-  this->resetPose(req.pose);
+  this->resetPose(req.initial_pose);
 
   // Unpause node (in case it is paused)
   this->toggleMappingPause(false);
