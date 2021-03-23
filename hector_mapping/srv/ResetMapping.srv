@@ -1,2 +1,2 @@
-geometry_msgs/Pose pose
+geometry_msgs/Pose initial_pose
 ---
