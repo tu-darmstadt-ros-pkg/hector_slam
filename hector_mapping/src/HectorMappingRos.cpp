@@ -50,6 +50,7 @@ HectorMappingRos::HectorMappingRos()
   , tfB_(0)
   , map__publish_thread_(0)
   , initial_pose_set_(false)
+  , pause_scan_processing_(false)
 {
   ros::NodeHandle private_nh_("~");
 
@@ -163,6 +164,11 @@ HectorMappingRos::HectorMappingRos()
     }
   }
 
+  // Initialize services
+  reset_map_service_ = node_.advertiseService("reset_map", &HectorMappingRos::resetMapCallback, this);
+  restart_hector_service_ = node_.advertiseService("restart_mapping_with_new_pose", &HectorMappingRos::restartHectorCallback, this);
+  toggle_scan_processing_service_ = node_.advertiseService("pause_mapping", &HectorMappingRos::pauseMapCallback, this);
+
   ROS_INFO("HectorSM p_base_frame_: %s", p_base_frame_.c_str());
   ROS_INFO("HectorSM p_map_frame_: %s", p_map_frame_.c_str());
   ROS_INFO("HectorSM p_odom_frame_: %s", p_odom_frame_.c_str());
@@ -228,88 +234,105 @@ HectorMappingRos::~HectorMappingRos()
 
 void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 {
+  if (pause_scan_processing_)
+  {
+    return;
+  }
+
   if (hectorDrawings)
   {
     hectorDrawings->setTime(scan.header.stamp);
   }
 
-  ros::WallTime startTime = ros::WallTime::now();
-
+  ros::WallTime start_time = ros::WallTime::now();
   if (!p_use_tf_scan_transformation_)
   {
-    if (rosLaserScanToDataContainer(scan, laserScanContainer,slamProcessor->getScaleToMap()))
-    {
-      slamProcessor->update(laserScanContainer,slamProcessor->getLastScanMatchPose());
-    }
+    // If we are not using the tf tree to find the transform between the base frame and laser frame,
+    // then just convert the laser scan to our data container and process the update based on our last
+    // pose estimate
+    this->rosLaserScanToDataContainer(scan, laserScanContainer, slamProcessor->getScaleToMap());
+    slamProcessor->update(laserScanContainer, slamProcessor->getLastScanMatchPose());
   }
   else
   {
-    ros::Duration dur (0.5);
-
-    if (tf_.waitForTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp,dur))
+    // If we are using the tf tree to find the transform between the base frame and laser frame,
+    // let's get that transform
+    const ros::Duration dur(0.5);
+    tf::StampedTransform laser_transform;
+    if (tf_.waitForTransform(p_base_frame_, scan.header.frame_id, scan.header.stamp, dur))
     {
-      tf::StampedTransform laserTransform;
-      tf_.lookupTransform(p_base_frame_,scan.header.frame_id, scan.header.stamp, laserTransform);
-
-      //projector_.transformLaserScanToPointCloud(p_base_frame_ ,scan, pointCloud,tf_);
-      projector_.projectLaser(scan, laser_point_cloud_,30.0);
-
-      if (scan_point_cloud_publisher_.getNumSubscribers() > 0){
-        scan_point_cloud_publisher_.publish(laser_point_cloud_);
-      }
-
-      Eigen::Vector3f startEstimate(Eigen::Vector3f::Zero());
-
-      if(rosPointCloudToDataContainer(laser_point_cloud_, laserTransform, laserScanContainer, slamProcessor->getScaleToMap()))
-      {
-        if (initial_pose_set_){
-          initial_pose_set_ = false;
-          startEstimate = initial_pose_;
-        }else if (p_use_tf_pose_start_estimate_){
-
-          try
-          {
-            tf::StampedTransform stamped_pose;
-
-            tf_.waitForTransform(p_map_frame_,p_base_frame_, scan.header.stamp, ros::Duration(0.5));
-            tf_.lookupTransform(p_map_frame_, p_base_frame_,  scan.header.stamp, stamped_pose);
-
-            tfScalar yaw, pitch, roll;
-            stamped_pose.getBasis().getEulerYPR(yaw, pitch, roll);
-
-            startEstimate = Eigen::Vector3f(stamped_pose.getOrigin().getX(),stamped_pose.getOrigin().getY(), yaw);
-          }
-          catch(tf::TransformException e)
-          {
-            ROS_ERROR("Transform from %s to %s failed\n", p_map_frame_.c_str(), p_base_frame_.c_str());
-            startEstimate = slamProcessor->getLastScanMatchPose();
-          }
-
-        }else{
-          startEstimate = slamProcessor->getLastScanMatchPose();
-        }
-
-
-        if (p_map_with_known_poses_){
-          slamProcessor->update(laserScanContainer, startEstimate, true);
-        }else{
-          slamProcessor->update(laserScanContainer, startEstimate);
-        }
-      }
-
-    }else{
+      tf_.lookupTransform(p_base_frame_, scan.header.frame_id, scan.header.stamp, laser_transform);
+    }
+    else
+    {
       ROS_INFO("lookupTransform %s to %s timed out. Could not transform laser scan into base_frame.", p_base_frame_.c_str(), scan.header.frame_id.c_str());
       return;
     }
+
+    // Convert the laser scan to point cloud
+    projector_.projectLaser(scan, laser_point_cloud_, 30.0);
+
+    // Publish the point cloud if there are any subscribers
+    if (scan_point_cloud_publisher_.getNumSubscribers() > 0)
+    {
+      scan_point_cloud_publisher_.publish(laser_point_cloud_);
+    }
+
+    // Convert the point cloud to our data container
+    this->rosPointCloudToDataContainer(laser_point_cloud_, laser_transform, laserScanContainer, slamProcessor->getScaleToMap());
+
+    // Now let's choose the initial pose estimate for our slam process update
+    Eigen::Vector3f start_estimate(Eigen::Vector3f::Zero());
+    if (initial_pose_set_)
+    {
+      // User has requested a pose reset
+      initial_pose_set_ = false;
+      start_estimate = initial_pose_;
+    }
+    else if (p_use_tf_pose_start_estimate_)
+    {
+      // Initial pose estimate comes from the tf tree
+      try
+      {
+        tf::StampedTransform stamped_pose;
+
+        tf_.waitForTransform(p_map_frame_, p_base_frame_, scan.header.stamp, ros::Duration(0.5));
+        tf_.lookupTransform(p_map_frame_, p_base_frame_,  scan.header.stamp, stamped_pose);
+
+        const double yaw = tf::getYaw(stamped_pose.getRotation());
+        start_estimate = Eigen::Vector3f(stamped_pose.getOrigin().getX(), stamped_pose.getOrigin().getY(), yaw);
+      }
+      catch(tf::TransformException e)
+      {
+        ROS_ERROR("Transform from %s to %s failed\n", p_map_frame_.c_str(), p_base_frame_.c_str());
+        start_estimate = slamProcessor->getLastScanMatchPose();
+      }
+    }
+    else
+    {
+      // If none of the above, the initial pose is simply the last estimated pose
+      start_estimate = slamProcessor->getLastScanMatchPose();
+    }
+
+    // If "p_map_with_known_poses_" is enabled, we assume that start_estimate is precise and doesn't need to be refined
+    if (p_map_with_known_poses_)
+    {
+      slamProcessor->update(laserScanContainer, start_estimate, true);
+    }
+    else
+    {
+      slamProcessor->update(laserScanContainer, start_estimate);
+    }
   }
 
+  // If the debug flag "p_timing_output_" is enabled, print how long this last iteration took
   if (p_timing_output_)
   {
-    ros::WallDuration duration = ros::WallTime::now() - startTime;
+    ros::WallDuration duration = ros::WallTime::now() - start_time;
     ROS_INFO("HectorSLAM Iter took: %f milliseconds", duration.toSec()*1000.0f );
   }
 
-  //If we're just building a map with known poses, we're finished now. Code below this point publishes the localization results.
+  // If we're just building a map with known poses, we're finished now. Code below this point publishes the localization results.
   if (p_map_with_known_poses_)
   {
     return;
@@ -317,9 +340,11 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
 
   poseInfoContainer_.update(slamProcessor->getLastScanMatchPose(), slamProcessor->getLastScanMatchCovariance(), scan.header.stamp, p_map_frame_);
 
+  // Publish pose with and without covariances
   poseUpdatePublisher_.publish(poseInfoContainer_.getPoseWithCovarianceStamped());
   posePublisher_.publish(poseInfoContainer_.getPoseStamped());
 
+  // Publish odometry if enabled
   if(p_pub_odometry_)
   {
     nav_msgs::Odometry tmp;
@@ -330,10 +355,10 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     odometryPublisher_.publish(tmp);
   }
 
+  // Publish the map->odom transform if enabled
   if (p_pub_map_odom_transform_)
   {
     tf::StampedTransform odom_to_base;
-
     try
     {
       tf_.waitForTransform(p_odom_frame_, p_base_frame_, scan.header.stamp, ros::Duration(0.5));
@@ -348,7 +373,9 @@ void HectorMappingRos::scanCallback(const sensor_msgs::LaserScan& scan)
     tfB_->sendTransform( tf::StampedTransform (map_to_odom_, scan.header.stamp, p_map_frame_, p_odom_frame_));
   }
 
-  if (p_pub_map_scanmatch_transform_){
+  // Publish the transform from map to estimated pose (if enabled)
+  if (p_pub_map_scanmatch_transform_)
+  {
     tfB_->sendTransform( tf::StampedTransform(poseInfoContainer_.getTfTransform(), scan.header.stamp, p_map_frame_, p_tf_map_scanmatch_transform_frame_name_));
   }
 }
@@ -369,6 +396,39 @@ bool HectorMappingRos::mapCallback(nav_msgs::GetMap::Request  &req,
 {
   ROS_INFO("HectorSM Map service called");
   res = mapPubContainer[0].map_;
+  return true;
+}
+
+bool HectorMappingRos::resetMapCallback(std_srvs::Trigger::Request  &req,
+                                        std_srvs::Trigger::Response &res)
+{
+  ROS_INFO("HectorSM Reset map service called");
+  slamProcessor->reset();
+  return true;
+}
+
+bool HectorMappingRos::restartHectorCallback(hector_mapping::ResetMapping::Request  &req,
+                                             hector_mapping::ResetMapping::Response &res)
+{
+  // Reset map
+  ROS_INFO("HectorSM Reset map");
+  slamProcessor->reset();
+
+  // Reset pose
+  this->resetPose(req.initial_pose);
+
+  // Unpause node (in case it is paused)
+  this->toggleMappingPause(false);
+
+  // Return success
+  return true;
+}
+
+bool HectorMappingRos::pauseMapCallback(std_srvs::SetBool::Request  &req,
+                                        std_srvs::SetBool::Response &res)
+{
+  this->toggleMappingPause(req.data);
+  res.success = true;
   return true;
 }
 
@@ -420,7 +480,7 @@ void HectorMappingRos::publishMap(MapPublisherContainer& mapPublisher, const hec
   mapPublisher.mapPublisher_.publish(map_.map);
 }
 
-bool HectorMappingRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan& scan, hectorslam::DataContainer& dataContainer, float scaleToMap)
+void HectorMappingRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan& scan, hectorslam::DataContainer& dataContainer, float scaleToMap)
 {
   size_t size = scan.ranges.size();
 
@@ -444,11 +504,9 @@ bool HectorMappingRos::rosLaserScanToDataContainer(const sensor_msgs::LaserScan&
 
     angle += scan.angle_increment;
   }
-
-  return true;
 }
 
-bool HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointCloud& pointCloud, const tf::StampedTransform& laserTransform, hectorslam::DataContainer& dataContainer, float scaleToMap)
+void HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointCloud& pointCloud, const tf::StampedTransform& laserTransform, hectorslam::DataContainer& dataContainer, float scaleToMap)
 {
   size_t size = pointCloud.points.size();
   //ROS_INFO("size: %d", size);
@@ -481,8 +539,6 @@ bool HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointClou
       }
     }
   }
-
-  return true;
 }
 
 void HectorMappingRos::setServiceGetMapData(nav_msgs::GetMap::Response& map_, const hectorslam::GridMap& gridMap)
@@ -545,12 +601,27 @@ void HectorMappingRos::staticMapCallback(const nav_msgs::OccupancyGrid& map)
 
 void HectorMappingRos::initialPoseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg)
 {
-  initial_pose_set_ = true;
-
-  tf::Pose pose;
-  tf::poseMsgToTF(msg->pose.pose, pose);
-  initial_pose_ = Eigen::Vector3f(msg->pose.pose.position.x, msg->pose.pose.position.y, tf::getYaw(pose.getRotation()));
-  ROS_INFO("Setting initial pose with world coords x: %f y: %f yaw: %f", initial_pose_[0], initial_pose_[1], initial_pose_[2]);
+  this->resetPose(msg->pose.pose);
 }
 
+void HectorMappingRos::toggleMappingPause(bool pause)
+{
+  // Pause/unpause
+  if (pause && !pause_scan_processing_)
+  {
+    ROS_INFO("[HectorSM]: Mapping paused");
+  }
+  else if (!pause && pause_scan_processing_)
+  {
+    ROS_INFO("[HectorSM]: Mapping no longer paused");
+  }
+  pause_scan_processing_ = pause;
+}
 
+void HectorMappingRos::resetPose(const geometry_msgs::Pose &pose)
+{
+  initial_pose_set_ = true;
+  initial_pose_ = Eigen::Vector3f(pose.position.x, pose.position.y, util::getYawFromQuat(pose.orientation));
+  ROS_INFO("[HectorSM]: Setting initial pose with world coords x: %f y: %f yaw: %f",
+           initial_pose_[0], initial_pose_[1], initial_pose_[2]);
+}
