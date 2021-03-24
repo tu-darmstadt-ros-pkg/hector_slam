@@ -591,7 +591,7 @@ void HectorMappingRos::initialPoseCallback(const geometry_msgs::PoseWithCovarian
   this->resetPose(msg->pose.pose);
 }
 
-void HectorMappingRos::toggleMappingPause(const bool &pause)
+void HectorMappingRos::toggleMappingPause(bool pause)
 {
   // Pause/unpause
   if (pause && !pause_scan_processing_)
