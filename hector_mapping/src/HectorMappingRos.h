@@ -98,7 +98,7 @@ public:
   void initialPoseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg);
 
   // Internal mapping management functions
-  void toggleMappingPause(const bool &pause);
+  void toggleMappingPause(bool pause);
   void resetPose(const geometry_msgs::Pose &pose);
 
   /*
