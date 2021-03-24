@@ -30,6 +30,7 @@
 #define utilfunctions_h__
 
 #include <cmath>
+#include <tf/LinearMath/Transform.h>
 
 namespace util{
 
@@ -88,6 +89,11 @@ static bool poseDifferenceLargerThan(const Eigen::Vector3f& pose1, const Eigen::
     return true;
   }
   return false;
+}
+
+static double getYawFromQuat(const geometry_msgs::Quaternion &quat)
+{
+  return tf::getYaw(tf::Quaternion(quat.x, quat.y, quat.z, quat.w));
 }
 
 }
