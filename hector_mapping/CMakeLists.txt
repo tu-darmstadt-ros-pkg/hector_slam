@@ -8,7 +8,6 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   message_filters
   laser_geometry
-  tf_conversions
   message_generation
   std_srvs)
 
@@ -44,7 +43,7 @@ generate_messages(
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES hector_mapping
-  CATKIN_DEPENDS roscpp nav_msgs visualization_msgs tf message_filters laser_geometry tf_conversions message_runtime
+  CATKIN_DEPENDS roscpp nav_msgs visualization_msgs tf message_filters laser_geometry message_runtime
   DEPENDS EIGEN3
 )
 

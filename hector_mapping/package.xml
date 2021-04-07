@@ -47,7 +47,6 @@
   <build_depend>tf</build_depend>
   <build_depend>message_filters</build_depend>
   <build_depend>laser_geometry</build_depend>
-  <build_depend>tf_conversions</build_depend>
   <build_depend>eigen</build_depend>
   <build_depend>boost</build_depend>
   <build_depend>message_generation</build_depend>
@@ -57,7 +56,6 @@
   <run_depend>tf</run_depend>
   <run_depend>message_filters</run_depend>
   <run_depend>laser_geometry</run_depend>
-  <run_depend>tf_conversions</run_depend>
   <run_depend>eigen</run_depend>
   <run_depend>boost</run_depend>
   <run_depend>message_runtime</run_depend>
