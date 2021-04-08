@@ -27,22 +27,16 @@
 
 
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>hector_map_tools</build_depend>
-  <build_depend>hector_nav_msgs</build_depend>
-  <build_depend>libqt5-widgets</build_depend>
-  <build_depend>nav_msgs</build_depend>
-  <build_depend>pluginlib</build_depend>
   <build_depend>qtbase5-dev</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <exec_depend>hector_map_tools</exec_depend>
-  <exec_depend>hector_nav_msgs</exec_depend>
-  <exec_depend>nav_msgs</exec_depend>
-  <exec_depend>pluginlib</exec_depend>
-  <exec_depend>roscpp</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>libqt5-widgets</exec_depend>
+  <build_export_depend>qtbase5-dev</build_export_depend>
   <exec_depend>qt5-image-formats-plugins</exec_depend>
+  <depend>hector_map_tools</depend>
+  <depend>hector_nav_msgs</depend>
+  <depend>libqt5-widgets</depend>
+  <depend>nav_msgs</depend>
+  <depend>pluginlib</depend>
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

@@ -19,10 +19,11 @@ catkin_package(
 ## Build ##
 ###########
 
-include_directories(include)
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
+  ${Qt5Widgets_INCLUDE_DIRS}
 )
 
 add_library(geotiff_writer src/geotiff_writer/geotiff_writer.cpp)
