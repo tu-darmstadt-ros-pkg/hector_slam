@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>hector_geotiff_launch</name>
-  <version>0.5.1</version>
+  <version>0.5.2</version>
   <description>Contains launch files for the hector_geotiff mapper.</description>
 
   <maintainer email="fabian@sim.tu-darmstadt.de">Stefan Fabian</maintainer>

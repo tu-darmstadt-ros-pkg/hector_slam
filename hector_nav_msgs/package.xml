@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>hector_nav_msgs</name>
-  <version>0.5.1</version>
+  <version>0.5.2</version>
   <description>
     hector_nav_msgs contains messages and services used in the hector_slam stack.
   </description>

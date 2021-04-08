@@ -2,8 +2,8 @@
 Changelog for package hector_geotiff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.2 (2021-04-08)
+------------------
 * Refactored hector_geotiff dependencies.
 * Contributors: Stefan Fabian
 

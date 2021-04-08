@@ -2,8 +2,8 @@
 Changelog for package hector_mapping
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.2 (2021-04-08)
+------------------
 * Remove tf_conversions as a dependency (`#93 <https://github.com/tu-darmstadt-ros-pkg/hector_slam/issues/93>`_)
 * Add reset mapping (and pose) service (`#87 <https://github.com/tu-darmstadt-ros-pkg/hector_slam/issues/87>`_)
   * add service to reset the mapping with a new initial pose
