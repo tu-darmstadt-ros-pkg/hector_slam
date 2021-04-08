@@ -2,6 +2,12 @@
 Changelog for package hector_compressed_map_transport
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix out of bounds access
+  Fixes `#52 <https://github.com/tu-darmstadt-ros-pkg/hector_slam/issues/52>`_ and `#70 <https://github.com/tu-darmstadt-ros-pkg/hector_slam/issues/70>`_
+* Contributors: Stefan Fabian
+
 0.5.1 (2021-01-15)
 ------------------
 

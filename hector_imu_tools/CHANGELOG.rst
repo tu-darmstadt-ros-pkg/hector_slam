@@ -2,6 +2,9 @@
 Changelog for package hector_imu_tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.5.1 (2021-01-15)
 ------------------
 

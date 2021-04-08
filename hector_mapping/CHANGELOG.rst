@@ -2,6 +2,19 @@
 Changelog for package hector_mapping
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Remove tf_conversions as a dependency (`#93 <https://github.com/tu-darmstadt-ros-pkg/hector_slam/issues/93>`_)
+* Add reset mapping (and pose) service (`#87 <https://github.com/tu-darmstadt-ros-pkg/hector_slam/issues/87>`_)
+  * add service to reset the mapping with a new initial pose
+* Reorganize scanCallback and add comments (`#89 <https://github.com/tu-darmstadt-ros-pkg/hector_slam/issues/89>`_)
+  * Refactor, reformat and comment scanCallback
+  * make rosPointCloudToDataContainer void
+  * make rosLaserScanToDataContainer void
+* Add pause and reset services to hector_mapping (`#86 <https://github.com/tu-darmstadt-ros-pkg/hector_slam/issues/86>`_)
+  * Add pause and reset services to Hector
+* Contributors: Marcelino Almeida
+
 0.5.1 (2021-01-15)
 ------------------
 

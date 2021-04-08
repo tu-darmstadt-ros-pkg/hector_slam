@@ -2,6 +2,11 @@
 Changelog for package hector_geotiff
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Refactored hector_geotiff dependencies.
+* Contributors: Stefan Fabian
+
 0.5.1 (2021-01-15)
 ------------------
 * Fixed "SEVERE WARNING" by pluginloader when killing geotiff node.

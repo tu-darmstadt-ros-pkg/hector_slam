@@ -2,6 +2,9 @@
 Changelog for package hector_imu_attitude_to_tf
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.5.1 (2021-01-15)
 ------------------
 
