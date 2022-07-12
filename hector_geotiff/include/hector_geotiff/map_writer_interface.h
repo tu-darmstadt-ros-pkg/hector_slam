@@ -46,7 +46,7 @@ public:
     unsigned int r,g,b;
   };
 
-
+  bool completed_map_ = false;
 
   virtual std::string getBasePathAndFileName() const = 0;
   virtual void drawObjectOfInterest(const Eigen::Vector2f& coords, const std::string& txt, const Color& color, const Shape& shape = SHAPE_CIRCLE) = 0;

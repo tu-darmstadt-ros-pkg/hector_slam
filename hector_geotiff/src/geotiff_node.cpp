@@ -116,7 +116,7 @@ public:
 
   ~MapGenerator() = default;
 
-  void writeGeotiff()
+  void writeGeotiff(bool completed)
   {
     ros::Time start_time (ros::Time::now());
 
@@ -156,6 +156,8 @@ public:
       geotiff_writer_.drawMap(map, p_draw_free_space_grid_);
       geotiff_writer_.drawCoords();
 
+      geotiff_writer_.completed_map_ = completed;
+
       //ROS_INFO("Sum: %ld", (long int)srv.response.sum);
     }
     else
@@ -164,9 +166,12 @@ public:
       return;
     }
 
+    ROS_INFO("Writing geotiff plugins");
     for (size_t i = 0; i < plugin_vector_.size(); ++i){
       plugin_vector_[i]->draw(&geotiff_writer_);
     }
+
+    ROS_INFO("Writing geotiff");
 
     /**
       * No Victims for now, first  agree on a common standard for representation
@@ -234,7 +239,7 @@ public:
     */
 
 
-    geotiff_writer_.writeGeotiffImage();
+    geotiff_writer_.writeGeotiffImage(completed);
     running_saved_map_num_++;
 
     ros::Duration elapsed_time (ros::Time::now() - start_time);
@@ -244,7 +249,7 @@ public:
 
   void timerSaveGeotiffCallback(const ros::TimerEvent& e)
   {
-    this->writeGeotiff();
+    this->writeGeotiff(false);
   }
 
   void sysCmdCallback(const std_msgs::String& sys_cmd)
@@ -253,7 +258,7 @@ public:
       return;
     }
 
-    this->writeGeotiff();
+    this->writeGeotiff(true);
   }
 
   std::string p_map_file_path_;
@@ -282,6 +287,8 @@ public:
   ros::Timer map_save_timer_;
 
   unsigned int running_saved_map_num_;
+
+  std::string start_dir_;
 };
 
 }

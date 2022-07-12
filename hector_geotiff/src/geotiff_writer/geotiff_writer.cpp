@@ -39,6 +39,14 @@
 
 #include <ros/package.h>
 
+#if  __cplusplus < 201703L
+	#include <experimental/filesystem>
+	namespace fs = std::experimental::filesystem;
+#else
+	#include <filesystem>
+	namespace fs = std::filesystem;
+#endif
+
 namespace hector_geotiff
 {
 
@@ -518,20 +526,40 @@ std::string GeotiffWriter::getBasePathAndFileName() const
   return std::string( map_file_path_ + "/" + map_file_name_ );
 }
 
-void GeotiffWriter::writeGeotiffImage()
+void GeotiffWriter::writeGeotiffImage(bool completed)
 {
   //Only works with recent Qt versions
   //QDateTime now (QDateTime::currentDateTimeUtc());
   //std::string current_time_string = now.toString(Qt::ISODate).toStdString();
+  std::string complete_file_string;
+  if (completed) {
+    complete_file_string = map_file_path_ + "/" + map_file_name_;
+  }
+  else {
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::stringstream start_ss;
+    start_ss <<  std::put_time(&tm, "%Y-%m-%d");
+    
+    complete_file_string = map_file_path_ + "/autosave";
+    if(!fs::exists(complete_file_string.c_str())) {
+      fs::create_directory(complete_file_string.c_str());
+    }
 
+    complete_file_string += "/" + start_ss.str();
+    if(!fs::exists(complete_file_string.c_str())) {
+      fs::create_directory(complete_file_string.c_str());
+    }
 
-  std::string complete_file_string( map_file_path_ + "/" + map_file_name_ + ".tif" );
-  QImageWriter imageWriter( QString::fromStdString( complete_file_string ));
+    complete_file_string += "/" + map_file_name_;
+  }
+  
+  QImageWriter imageWriter( QString::fromStdString( complete_file_string + ".tif" ));
   imageWriter.setCompression( 1 );
 
   bool success = imageWriter.write( image );
 
-  std::string tfw_file_name( map_file_path_ + "/" + map_file_name_ + ".tfw" );
+  std::string tfw_file_name( complete_file_string + ".tfw" );
   QFile tfwFile( QString::fromStdString( tfw_file_name ));
 
   tfwFile.open( QIODevice::WriteOnly );

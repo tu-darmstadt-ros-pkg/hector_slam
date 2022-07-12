@@ -42,6 +42,14 @@
 
 #include <hector_map_tools/HectorMapTools.h>
 
+#if  __cplusplus < 201703L
+	#include <experimental/filesystem>
+	namespace fs = std::experimental::filesystem;
+#else
+	#include <filesystem>
+	namespace fs = std::filesystem;
+#endif
+
 
 namespace hector_geotiff{
 
@@ -69,7 +77,7 @@ class GeotiffWriter : public MapWriterInterface
   void drawPath(const Eigen::Vector3f& start, const std::vector<Eigen::Vector2f>& points, int color_r, int color_g, int color_b);
   void drawCoords();
   std::string getBasePathAndFileName() const;
-  void writeGeotiffImage();
+  void writeGeotiffImage(bool completed);
 
 
 protected:
