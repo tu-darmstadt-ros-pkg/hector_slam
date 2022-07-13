@@ -542,13 +542,22 @@ void GeotiffWriter::writeGeotiffImage(bool completed)
     start_ss <<  std::put_time(&tm, "%Y-%m-%d");
     
     complete_file_string = map_file_path_ + "/autosave";
+    std::error_code error;
     if(!fs::exists(complete_file_string.c_str())) {
-      fs::create_directory(complete_file_string.c_str());
+      fs::create_directory(complete_file_string.c_str(), error);
+      if (error) {
+        ROS_ERROR("Can't create autosave folder");
+        return;
+      }
     }
 
     complete_file_string += "/" + start_ss.str();
     if(!fs::exists(complete_file_string.c_str())) {
-      fs::create_directory(complete_file_string.c_str());
+      fs::create_directory(complete_file_string.c_str(), error);
+      if (error) {
+        ROS_ERROR("Can't create folder in autosave");
+        return;
+      }
     }
 
     complete_file_string += "/" + map_file_name_;
