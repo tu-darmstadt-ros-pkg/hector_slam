@@ -33,7 +33,7 @@
 #include <ros/ros.h>
 #include <ros/console.h>
 
-#include <pluginlib/class_loader.h>
+#include <pluginlib/class_loader.hpp>
 
 #include <memory>
 #include <boost/algorithm/string.hpp>
