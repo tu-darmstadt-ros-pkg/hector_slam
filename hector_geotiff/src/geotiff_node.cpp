@@ -70,8 +70,9 @@ public:
     pn_.param("draw_free_space_grid", p_draw_free_space_grid_, true);
 
     sys_cmd_sub_ = n_.subscribe("syscommand", 1, &MapGenerator::sysCmdCallback, this);
+    pn_.param("use_map_topic", use_map_topic_,false);
 
-    map_service_client_ = n_.serviceClient<nav_msgs::GetMap>("map");
+    if(!use_map_topic_) map_service_client_ = n_.serviceClient<nav_msgs::GetMap>("map");
     //object_service_client_ = n_.serviceClient<worldmodel_msgs::GetObjectModel>("worldmodel/get_object_model");
     path_service_client_ = n_.serviceClient<hector_nav_msgs::GetRobotTrajectory>("trajectory");
 
@@ -122,11 +123,21 @@ public:
 
     std::stringstream ssStream;
 
+
+    bool received_map = false;
+    boost::shared_ptr<const nav_msgs::OccupancyGrid> map;
     nav_msgs::GetMap srv_map;
-    if (map_service_client_.call(srv_map))
+    if(use_map_topic_){
+        map = ros::topic::waitForMessage<nav_msgs::OccupancyGrid>("map",ros::Duration(4));
+        if(map != nullptr) received_map = true;
+    }else{
+        received_map = map_service_client_.call(srv_map);
+        map.reset(&srv_map.response.map);
+    }
+    if (received_map)
     {
       ROS_INFO("GeotiffNode: Map service called successfully");
-      const nav_msgs::OccupancyGrid& map (srv_map.response.map);
+
 
       std::string map_file_name = p_map_file_base_name_;
       std::string competition_name;
@@ -140,7 +151,7 @@ public:
       if (map_file_name.substr(0, 1) == "_") map_file_name = map_file_name.substr(1);
       if (map_file_name.empty()) map_file_name = "GeoTiffMap";
       geotiff_writer_.setMapFileName(map_file_name);
-      bool transformSuccess = geotiff_writer_.setupTransforms(map);
+      bool transformSuccess = geotiff_writer_.setupTransforms(*map);
 
       if(!transformSuccess){
         ROS_INFO("Couldn't set map transform");
@@ -153,7 +164,7 @@ public:
         geotiff_writer_.drawBackgroundCheckerboard();
       }
 
-      geotiff_writer_.drawMap(map, p_draw_free_space_grid_);
+      geotiff_writer_.drawMap(*map, p_draw_free_space_grid_);
       geotiff_writer_.drawCoords();
 
       geotiff_writer_.completed_map_ = completed;
@@ -266,6 +277,7 @@ public:
   std::string p_plugin_list_;
   bool p_draw_background_checkerboard_;
   bool p_draw_free_space_grid_;
+  bool use_map_topic_;
 
   //double p_geotiff_save_period_;
 
