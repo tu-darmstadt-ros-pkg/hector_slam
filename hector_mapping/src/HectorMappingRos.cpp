@@ -544,7 +544,7 @@ void HectorMappingRos::rosPointCloudToDataContainer(const sensor_msgs::PointClou
 void HectorMappingRos::setServiceGetMapData(nav_msgs::GetMap::Response& map_, const hectorslam::GridMap& gridMap)
 {
   Eigen::Vector2f mapOrigin (gridMap.getWorldCoords(Eigen::Vector2f::Zero()));
-  mapOrigin.array() -= gridMap.getCellLength()*0.5f;
+  mapOrigin.array() -= gridMap.getCellLength()/1000*0.5f;
 
   map_.map.info.origin.position.x = mapOrigin.x();
   map_.map.info.origin.position.y = mapOrigin.y();
