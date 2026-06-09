@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-
-<launch>
-  <node pkg="hector_imu_tools" type="pose_and_orientation_to_imu_node" name="pose_and_orientation_to_imu_node" output="screen">
-    <remap from="/imu" to="/imu_quat" />
-    <remap from="/fused_imu" to="/imu_in" />
-    <remap from="/pose" to="/slam_out_pose" />
-  </node>
-</launch>
