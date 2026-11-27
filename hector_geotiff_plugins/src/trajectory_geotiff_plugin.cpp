@@ -119,5 +119,5 @@ void TrajectoryMapWriter::draw(MapWriterInterface *interface)
 } // namespace
 
 //register this planner as a MapWriterPluginInterface plugin
-#include <pluginlib/class_list_macros.h>
+#include <pluginlib/class_list_macros.hpp>
 PLUGINLIB_EXPORT_CLASS(hector_geotiff_plugins::TrajectoryMapWriter, hector_geotiff::MapWriterPluginInterface)
